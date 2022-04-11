@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/jyp/fvm/versions/2.8.0"
-export "FLUTTER_APPLICATION_PATH=/Users/jyp/IdeaProjects/my_to_day"
+export "FLUTTER_APPLICATION_PATH=/Users/jyp/dev/my_to_day"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
