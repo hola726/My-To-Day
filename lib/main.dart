@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_to_day/constants/constants.dart';
 import 'package:my_to_day/routes.dart';
 import 'package:my_to_day/screens/main/init_screen.dart';
 
@@ -11,12 +13,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyToDay',
-      debugShowCheckedModeBanner: false,
-      initialRoute: InitScreen.id,
-      routes: routes,
-      theme: ThemeData.light(),
+    return ScreenUtilInit(
+      designSize: const Size(kRatioBaseWith, kRatioBaseHeight),
+      builder: (BuildContext context) => MaterialApp(
+        title: 'MyToDay',
+        debugShowCheckedModeBanner: false,
+        initialRoute: InitScreen.id,
+        routes: routes,
+        theme: ThemeData.light(),
+      ),
     );
   }
 }
