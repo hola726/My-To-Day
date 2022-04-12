@@ -212,6 +212,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_screenutil">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_screenutil-5.4.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_template_images">
           <value>
             <list>
@@ -678,6 +685,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/file_testing-3.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/fixnum-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_lints-1.0.4/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_screenutil-5.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_template_images-4.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/frontend_server_client-2.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/glob-2.0.2/lib" />
