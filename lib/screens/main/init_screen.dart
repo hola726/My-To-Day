@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_to_day/app_theme.dart';
+import 'package:my_to_day/widgets/common/main_app_bar.dart';
 
 class InitScreen extends StatefulWidget {
   static const id = "/InitScreen";
@@ -10,14 +12,29 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
+  Widget _buildMain() {
+    return Container(
+      color: Colors.black,
+      child: Column(
+        children: const [
+          Center(
+            child: Text('MyToDay'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        Center(
-          child: Text('test'),
-        ),
-      ],
+    return Scaffold(
+      appBar: MainAppBar(
+        title: "MYTODAY",
+        bottomShadow: true,
+        titleColor: AppTheme.primaryContrastColor,
+        backgroundColors: AppTheme.textPrimaryColor,
+      ),
+      body: _buildMain(),
     );
   }
 }
