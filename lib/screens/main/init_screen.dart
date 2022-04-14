@@ -21,17 +21,9 @@ class _InitScreenState extends State<InitScreen> {
       child: Column(
         children: [
           MyToDayTextFormField(
-            suffixIcon: IconButton(
-              padding: EdgeInsets.all(10.w),
-              onPressed: () => {},
-              iconSize: 55.w,
-              icon: const Icon(
-                Icons.check_box,
-                color: AppTheme.backdropOverlay_65,
-              ),
-            ),
             height: 100.h,
             hintText: "오늘은...",
+            onIconPressed: () => {},
           ),
           Container(
             color: AppTheme.commonBlack,
