@@ -1,15 +1,23 @@
-class DiaryDataModel {
-  final String contents;
-  final DateTime time;
-  final dynamic image;
-  final String? locate;
+import 'package:hive/hive.dart';
 
-  const DiaryDataModel({
+part 'dialy_data_model.g.dart';
+
+@HiveType(typeId: 0)
+class DiaryDataModel extends HiveObject {
+  DiaryDataModel({
     required this.contents,
     required this.time,
     this.image,
     this.locate,
   });
+  @HiveField(0)
+  final String contents;
+  @HiveField(1)
+  final DateTime time;
+  @HiveField(2)
+  final dynamic image;
+  @HiveField(3)
+  final String? locate;
 
   DiaryDataModel copyWith({
     String? contents,
