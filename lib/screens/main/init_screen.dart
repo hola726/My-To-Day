@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
+import 'package:my_to_day/model/data/diary_data_model.dart';
 import 'package:my_to_day/utils/date_helper.dart';
+import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 
@@ -15,6 +17,7 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
+  final LocalStorageHelper _localStorageHelper = LocalStorageHelper();
   Widget _buildMain() {
     return Container(
       color: Colors.black,
@@ -23,7 +26,12 @@ class _InitScreenState extends State<InitScreen> {
           MyToDayTextFormField(
             height: 100.h,
             hintText: "오늘은...",
-            onIconPressed: () => {},
+            onIconPressed: (value) {
+              _localStorageHelper.setDiaryData(
+                  date: DateTime.now().toString(),
+                  diaryDataModel:
+                      DiaryDataModel(contents: value, time: DateTime.now()));
+            },
           ),
           Container(
             color: AppTheme.commonBlack,

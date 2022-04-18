@@ -17,7 +17,7 @@ class MyToDayTextFormField extends StatefulWidget {
   final double? height;
   final IconData? suffixIcon;
   final Color? suffixIconColor;
-  final void Function()? onIconPressed;
+  final void Function(String text)? onIconPressed;
 
   @override
   _MyToDayTextFormFieldState createState() => _MyToDayTextFormFieldState();
@@ -33,6 +33,7 @@ class _MyToDayTextFormFieldState extends State<MyToDayTextFormField> {
         TextPosition(offset: value.length),
       ),
     );
+    setState(() {});
   }
 
   @override
@@ -53,7 +54,11 @@ class _MyToDayTextFormFieldState extends State<MyToDayTextFormField> {
             border: InputBorder.none,
             suffixIcon: IconButton(
               padding: EdgeInsets.all(10.w),
-              onPressed: widget.onIconPressed,
+              onPressed: () {
+                if (widget.onIconPressed != null) {
+                  widget.onIconPressed!(_controller.text);
+                }
+              },
               iconSize: 55.w,
               icon: Icon(
                 widget.suffixIcon ?? Icons.check_box,
