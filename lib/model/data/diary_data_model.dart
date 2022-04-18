@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'dialy_data_model.g.dart';
+part 'diary_data_model.g.dart';
 
 @HiveType(typeId: 0)
 class DiaryDataModel extends HiveObject {
