@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:my_to_day/model/data/diary_data_model.dart';
 
 enum HiveKey {
   diaryData,
@@ -28,10 +29,26 @@ class LocalStorageHelper {
   }
 
   void registerAdapter() {
-    // Hive.registerAdapter(BlockTaskAdapter());
+    Hive.registerAdapter(DiaryDataModelAdapter());
   }
 
   Future<void> openBox() async {
-    // await handleOpenBox<String>(HiveKey.USER_ID);
+    await handleOpenBox<DiaryDataModel>(HiveKey.diaryData);
+  }
+
+  DiaryDataModel? getDiaryData({required date}) {
+    return handleBox<DiaryDataModel>(HiveKey.diaryData).get(date);
+  }
+
+  Future<void> setDiaryData({
+    required String date,
+    required DiaryDataModel diaryDataModel,
+  }) async {
+    await handleBox<DiaryDataModel>(HiveKey.diaryData)
+        .put(date, diaryDataModel);
+  }
+
+  Future<void> deleteDiaryData({required date}) async {
+    await handleBox<DiaryDataModel>(HiveKey.diaryData).delete(date);
   }
 }
