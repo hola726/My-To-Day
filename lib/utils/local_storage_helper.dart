@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-import 'package:my_to_day/model/data/diary_data_model.dart';
+import 'package:my_to_day/model/data/diary_data.dart';
 
 enum HiveKey {
   diaryData,
@@ -29,26 +29,32 @@ class LocalStorageHelper {
   }
 
   void registerAdapter() {
-    Hive.registerAdapter(DiaryDataModelAdapter());
+    Hive.registerAdapter(DiaryDataAdapter());
   }
 
   Future<void> openBox() async {
-    await handleOpenBox<DiaryDataModel>(HiveKey.diaryData);
+    await handleOpenBox<DiaryData>(HiveKey.diaryData);
   }
 
-  DiaryDataModel? getDiaryData({required date}) {
-    return handleBox<DiaryDataModel>(HiveKey.diaryData).get(date);
+  DiaryData? getDiaryData({required date}) {
+    return handleBox<DiaryData>(HiveKey.diaryData).get(date);
+  }
+
+  List<DiaryData> getAllDiaryData() {
+    return handleBox<DiaryData>(HiveKey.diaryData)
+        .values
+        .map((data) => data)
+        .toList();
   }
 
   Future<void> setDiaryData({
     required String date,
-    required DiaryDataModel diaryDataModel,
+    required DiaryData diaryDataModel,
   }) async {
-    await handleBox<DiaryDataModel>(HiveKey.diaryData)
-        .put(date, diaryDataModel);
+    await handleBox<DiaryData>(HiveKey.diaryData).put(date, diaryDataModel);
   }
 
   Future<void> deleteDiaryData({required date}) async {
-    await handleBox<DiaryDataModel>(HiveKey.diaryData).delete(date);
+    await handleBox<DiaryData>(HiveKey.diaryData).delete(date);
   }
 }
