@@ -57,6 +57,8 @@ class _MyToDayTextFormFieldState extends State<MyToDayTextFormField> {
               onPressed: () {
                 if (widget.onIconPressed != null) {
                   widget.onIconPressed!(_controller.text);
+                  _controller.clear();
+                  setState(() {});
                 }
               },
               iconSize: 55.w,
