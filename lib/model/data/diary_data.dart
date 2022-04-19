@@ -1,10 +1,10 @@
 import 'package:hive/hive.dart';
 
-part 'diary_data_model.g.dart';
+part 'diary_data.g.dart';
 
 @HiveType(typeId: 0)
-class DiaryDataModel extends HiveObject {
-  DiaryDataModel({
+class DiaryData extends HiveObject {
+  DiaryData({
     required this.contents,
     required this.time,
     this.image,
@@ -19,13 +19,13 @@ class DiaryDataModel extends HiveObject {
   @HiveField(3)
   final String? locate;
 
-  DiaryDataModel copyWith({
+  DiaryData copyWith({
     String? contents,
     DateTime? time,
     dynamic image,
     String? locate,
   }) {
-    return DiaryDataModel(
+    return DiaryData(
       contents: contents ?? this.contents,
       time: time ?? this.time,
       image: image ?? this.image,
@@ -42,8 +42,8 @@ class DiaryDataModel extends HiveObject {
     };
   }
 
-  factory DiaryDataModel.fromJson(Map<String, dynamic> map) {
-    return DiaryDataModel(
+  factory DiaryData.fromJson(Map<String, dynamic> map) {
+    return DiaryData(
       contents: map['contents'] as String,
       time: map['time'] as DateTime,
       image: map['image'] as dynamic,
