@@ -4,6 +4,7 @@ import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 
@@ -24,6 +25,25 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _diaryData = _localStorageHelper.getAllDiaryData();
+  }
+
+  bool _isSameDay(DiaryData data, DiaryData? previousData) {
+    return data.time.year == previousData?.time.year &&
+        data.time.month == previousData?.time.month &&
+        data.time.day == previousData?.time.day;
+  }
+
+  Widget _subTitleDate(DiaryData data) {
+    return Padding(
+      padding: EdgeInsets.only(top: 15.h),
+      child: Text(
+        DateHelper.convertDateMonth(data.time),
+        style: AppTheme.button_small.copyWith(
+          color: AppTheme.grey400,
+          fontSize: 11.sp,
+        ),
+      ),
+    );
   }
 
   Widget _buildMain() {
@@ -101,50 +121,21 @@ class _MainScreenState extends State<MainScreen> {
               itemCount: _diaryData.length,
               itemBuilder: (context, index) {
                 DiaryData data = _diaryData[index];
+                DiaryData? previousData;
+                bool isBuildTime = false;
+                if (0 <= index - 1) {
+                  previousData = _diaryData[index - 1];
+                }
+                if (_isSameDay(data, previousData)) {
+                  isBuildTime = true;
+                }
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      DateHelper.convertDateMonth(data.time),
-                      style: AppTheme.button_small.copyWith(
-                        color: AppTheme.grey400,
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                    Container(
-                      height: 50.h,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: AppTheme.commonBlack,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(10.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.contents,
-                                  style: AppTheme.button_small_KR.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  DateHelper.convertDateAmPm(data.time),
-                                  style: AppTheme.button_small_KR.copyWith(
-                                    color: AppTheme.grey400,
-                                    fontSize: 11.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                    if (isBuildTime == false) _subTitleDate(data),
+                    DiaryItem(
+                      data: data,
                     ),
                   ],
                 );
