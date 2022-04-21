@@ -50,6 +50,14 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  void openBottomModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container();
+        });
+  }
+
   Widget _buildMain() {
     return Container(
       color: Colors.black,
@@ -139,6 +147,7 @@ class _MainScreenState extends State<MainScreen> {
                       data: data,
                       onTap: () {
                         _dataProvider.diaryData = data;
+                        openBottomModal();
                       },
                     ),
                   ],
