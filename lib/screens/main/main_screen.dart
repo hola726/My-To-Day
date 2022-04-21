@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   static const id = "/MainScreen";
@@ -20,11 +22,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final LocalStorageHelper _localStorageHelper = LocalStorageHelper();
   late List<DiaryData> _diaryData;
+  late final DataProvider _dataProvider;
 
   @override
   void initState() {
     super.initState();
     _diaryData = _localStorageHelper.getAllDiaryData();
+    _dataProvider = context.read<DataProvider>();
   }
 
   bool _isSameDay(DiaryData data, DiaryData? previousData) {
@@ -133,6 +137,9 @@ class _MainScreenState extends State<MainScreen> {
                       _subTitleDate(data),
                     DiaryItem(
                       data: data,
+                      onTap: () {
+                        _dataProvider.diaryData = data;
+                      },
                     ),
                   ],
                 );
