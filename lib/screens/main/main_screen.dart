@@ -120,20 +120,17 @@ class _MainScreenState extends State<MainScreen> {
             child: ListView.builder(
               itemCount: _diaryData.length,
               itemBuilder: (context, index) {
-                DiaryData data = _diaryData[index];
-                DiaryData? previousData;
-                bool isBuildTime = false;
-                if (0 <= index - 1) {
-                  previousData = _diaryData[index - 1];
-                }
-                if (_isSameDay(data, previousData)) {
-                  isBuildTime = true;
-                }
+                List<DiaryData> _reversedData =
+                    _diaryData.reversed.map((data) => data).toList();
+                DiaryData data = _reversedData[index];
+                DiaryData? previousData =
+                    0 <= index - 1 ? _reversedData[index - 1] : null;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (isBuildTime == false) _subTitleDate(data),
+                    if (_isSameDay(data, previousData) == false)
+                      _subTitleDate(data),
                     DiaryItem(
                       data: data,
                     ),
