@@ -5,7 +5,7 @@ import 'package:my_to_day/utils/date_helper.dart';
 
 import '../../app_theme.dart';
 
-class DiaryItem extends StatelessWidget {
+class DiaryItem extends StatefulWidget {
   DiaryItem({
     required this.data,
     this.onTap,
@@ -13,6 +13,13 @@ class DiaryItem extends StatelessWidget {
 
   final DiaryData data;
   final void Function()? onTap;
+
+  @override
+  State createState() => _DiaryItemState();
+}
+
+class _DiaryItemState extends State<DiaryItem> {
+  bool _isViewMore = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +27,7 @@ class DiaryItem extends StatelessWidget {
         vertical: 3.h,
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
@@ -37,22 +44,28 @@ class DiaryItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.contents,
-                        maxLines: 3,
+                        widget.data.contents,
+                        maxLines: _isViewMore ? null : 3,
                         style: AppTheme.button_small_KR.copyWith(
                           color: Colors.white,
                         ),
                       ),
-                      data.contents.length > 100
-                          ? Text(
-                              '더보기',
-                              style: AppTheme.button_small_KR.copyWith(
-                                color: AppTheme.grey400,
-                                fontSize: 11.sp,
+                      widget.data.contents.length > 93
+                          ? InkWell(
+                              onTap: () => setState(() {
+                                _isViewMore = !_isViewMore;
+                              }),
+                              child: Text(
+                                _isViewMore ? '접기' : '더보기',
+                                style: AppTheme.button_small_KR.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: AppTheme.grey400,
+                                  fontSize: 11.sp,
+                                ),
                               ),
                             )
                           : Text(
-                              DateHelper.convertDateAmPm(data.time),
+                              DateHelper.convertDateAmPm(widget.data.time),
                               style: AppTheme.button_small_KR.copyWith(
                                 color: AppTheme.grey400,
                                 fontSize: 11.sp,
