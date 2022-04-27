@@ -8,12 +8,10 @@ import '../../app_theme.dart';
 class DiaryItem extends StatelessWidget {
   DiaryItem({
     required this.data,
-    this.height,
     this.onTap,
   });
 
   final DiaryData data;
-  final double? height;
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,6 @@ class DiaryItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: height ?? 50.h,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: AppTheme.commonBlack,
@@ -35,23 +32,34 @@ class DiaryItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.contents,
-                      style: AppTheme.button_small_KR.copyWith(
-                        color: Colors.white,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.contents,
+                        maxLines: 3,
+                        style: AppTheme.button_small_KR.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    Text(
-                      DateHelper.convertDateAmPm(data.time),
-                      style: AppTheme.button_small_KR.copyWith(
-                        color: AppTheme.grey400,
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                  ],
+                      data.contents.length > 100
+                          ? Text(
+                              '더보기',
+                              style: AppTheme.button_small_KR.copyWith(
+                                color: AppTheme.grey400,
+                                fontSize: 11.sp,
+                              ),
+                            )
+                          : Text(
+                              DateHelper.convertDateAmPm(data.time),
+                              style: AppTheme.button_small_KR.copyWith(
+                                color: AppTheme.grey400,
+                                fontSize: 11.sp,
+                              ),
+                            ),
+                    ],
+                  ),
                 ),
               ],
             ),
