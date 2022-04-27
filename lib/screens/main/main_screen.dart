@@ -55,56 +55,63 @@ class _MainScreenState extends State<MainScreen> {
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter modalSetState) {
-            return Container(
-              color: Colors.black,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: AppBar().preferredSize.height,
-                  horizontal: 20.w,
+          return DraggableScrollableSheet(
+            minChildSize: 0.9999,
+            initialChildSize: 1,
+            builder: (context, scrollController) => StatefulBuilder(
+                builder: (BuildContext context, StateSetter modalSetState) {
+              return Container(
+                color: Colors.black,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: AppBar().preferredSize.height,
+                    horizontal: 20.w,
+                  ),
+                  child: ListView(
+                    controller: scrollController,
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: Navigator.of(context).pop,
+                          icon: const Icon(
+                            Icons.cancel,
+                            color: AppTheme.grey600,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        DateHelper.convertDateMonth(data.time),
+                        style: AppTheme.button_small.copyWith(
+                          color: AppTheme.grey400,
+                          fontSize: 11.sp,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      Text(
+                        data.contents,
+                        style: AppTheme.button_small_KR.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      Text(
+                        DateHelper.convertDateAmPm(data.time),
+                        style: AppTheme.button_small.copyWith(
+                          color: AppTheme.grey400,
+                          fontSize: 11.sp,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Align(
-                      alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.cancel,
-                        color: AppTheme.grey600,
-                      ),
-                    ),
-                    Text(
-                      DateHelper.convertDateMonth(data.time),
-                      style: AppTheme.button_small.copyWith(
-                        color: AppTheme.grey400,
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12.h,
-                    ),
-                    Text(
-                      data.contents,
-                      style: AppTheme.button_small_KR.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12.h,
-                    ),
-                    Text(
-                      DateHelper.convertDateAmPm(data.time),
-                      style: AppTheme.button_small.copyWith(
-                        color: AppTheme.grey400,
-                        fontSize: 11.sp,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          });
+              );
+            }),
+          );
         });
   }
 
