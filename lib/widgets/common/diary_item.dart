@@ -20,6 +20,8 @@ class DiaryItem extends StatefulWidget {
 
 class _DiaryItemState extends State<DiaryItem> {
   bool _isViewMore = false;
+  late final bool _isLongLineContents = widget.data.contents.length > 93;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,27 +52,28 @@ class _DiaryItemState extends State<DiaryItem> {
                           color: Colors.white,
                         ),
                       ),
-                      widget.data.contents.length > 93
-                          ? InkWell(
-                              onTap: () => setState(() {
-                                _isViewMore = !_isViewMore;
-                              }),
-                              child: Text(
-                                _isViewMore ? '접기' : '더보기',
-                                style: AppTheme.button_small_KR.copyWith(
-                                  decoration: TextDecoration.underline,
-                                  color: AppTheme.grey400,
-                                  fontSize: 11.sp,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              DateHelper.convertDateAmPm(widget.data.time),
-                              style: AppTheme.button_small_KR.copyWith(
-                                color: AppTheme.grey400,
-                                fontSize: 11.sp,
-                              ),
+                      if (!_isLongLineContents || _isViewMore == true)
+                        Text(
+                          DateHelper.convertDateAmPm(widget.data.time),
+                          style: AppTheme.button_small_KR.copyWith(
+                            color: AppTheme.grey400,
+                            fontSize: 11.sp,
+                          ),
+                        ),
+                      if (_isLongLineContents)
+                        InkWell(
+                          onTap: () => setState(() {
+                            _isViewMore = !_isViewMore;
+                          }),
+                          child: Text(
+                            _isViewMore ? '접기' : '더보기',
+                            style: AppTheme.button_small_KR.copyWith(
+                              decoration: TextDecoration.underline,
+                              color: AppTheme.grey400,
+                              fontSize: 11.sp,
                             ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
