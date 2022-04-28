@@ -53,19 +53,31 @@ class _MainScreenState extends State<MainScreen> {
   void openEditBottomModal() {
     showModalBottomSheet(
         context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(17),
-          ),
+        constraints: BoxConstraints(
+          maxWidth: 150.w,
         ),
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.all(
+        //     Radius.circular(17),
+        //   ),
+        // ),
         builder: (BuildContext context) {
           return Container(
-            width: 50.w,
             height: 100.h,
-            child: Row(
-              children: [
-                Icon(Icons.restore),
-              ],
+            // width: 50.w,
+            // height: 100.h,
+
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 40.w,
+              ),
+              child: Container(
+                child: Row(
+                  children: [
+                    Icon(Icons.restore),
+                  ],
+                ),
+              ),
             ),
           );
         });
