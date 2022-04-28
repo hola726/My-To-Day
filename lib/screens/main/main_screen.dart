@@ -50,6 +50,27 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  void openEditBottomModal() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(17),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return Container(
+            width: 50.w,
+            height: 100.h,
+            child: Row(
+              children: [
+                Icon(Icons.restore),
+              ],
+            ),
+          );
+        });
+  }
+
   void openBottomModal(DiaryData data) {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -80,12 +101,24 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ),
-                      Text(
-                        DateHelper.convertDateMonth(data.time),
-                        style: AppTheme.button_small.copyWith(
-                          color: AppTheme.grey400,
-                          fontSize: 11.sp,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            DateHelper.convertDateMonth(data.time),
+                            style: AppTheme.button_small.copyWith(
+                              color: AppTheme.grey400,
+                              fontSize: 11.sp,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: openEditBottomModal,
+                            icon: const Icon(
+                              Icons.more_horiz_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 12.h,
