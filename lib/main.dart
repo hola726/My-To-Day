@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<DataProvider>(
-          create: (_) => DataProvider(),
+          create: (_) => DataProvider(localStorageHelper: LocalStorageHelper()),
         ),
       ],
       child: ScreenUtilInit(
