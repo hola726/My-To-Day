@@ -22,4 +22,14 @@ class DataProvider extends ChangeNotifier {
   void getDiaryData() {
     _allDiaryData = localStorageHelper.getAllDiaryData();
   }
+
+  void setDiaryData(String contents) {
+    localStorageHelper.setDiaryData(
+      date: DateTime.now().toString(),
+      diaryDataModel: DiaryData(
+        contents: contents,
+        time: DateTime.now(),
+      ),
+    );
+  }
 }
