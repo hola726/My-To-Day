@@ -32,4 +32,10 @@ class DataProvider extends ChangeNotifier {
       ),
     );
   }
+
+  bool isSameDay(DiaryData data, DiaryData? previousData) {
+    return data.time.year == previousData?.time.year &&
+        data.time.month == previousData?.time.month &&
+        data.time.day == previousData?.time.day;
+  }
 }
