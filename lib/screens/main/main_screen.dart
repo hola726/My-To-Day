@@ -4,7 +4,6 @@ import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
-import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
@@ -20,21 +19,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final LocalStorageHelper _localStorageHelper = LocalStorageHelper();
-  late List<DiaryData> _diaryData;
   late final DataProvider _dataProvider;
 
   @override
   void initState() {
     super.initState();
-    _diaryData = _localStorageHelper.getAllDiaryData();
     _dataProvider = context.read<DataProvider>();
-  }
-
-  bool _isSameDay(DiaryData data, DiaryData? previousData) {
-    return data.time.year == previousData?.time.year &&
-        data.time.month == previousData?.time.month &&
-        data.time.day == previousData?.time.day;
+    _dataProvider.getDiaryData();
   }
 
   Widget _subTitleDate(DiaryData data) {
@@ -54,26 +45,18 @@ class _MainScreenState extends State<MainScreen> {
     showModalBottomSheet(
         context: context,
         constraints: BoxConstraints(
-          maxWidth: 150.w,
+          maxWidth: 300.w,
         ),
-        // shape: const RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.all(
-        //     Radius.circular(17),
-        //   ),
-        // ),
         builder: (BuildContext context) {
           return Container(
             height: 100.h,
-            // width: 50.w,
-            // height: 100.h,
-
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 40.w,
+                horizontal: 100.w,
               ),
               child: Container(
                 child: Row(
-                  children: [
+                  children: const [
                     Icon(Icons.restore),
                   ],
                 ),
@@ -169,11 +152,8 @@ class _MainScreenState extends State<MainScreen> {
             height: 100.h,
             hintText: "오늘은...",
             onIconPressed: (value) {
-              _localStorageHelper.setDiaryData(
-                  date: DateTime.now().toString(),
-                  diaryDataModel:
-                      DiaryData(contents: value, time: DateTime.now()));
-              _diaryData = _localStorageHelper.getAllDiaryData();
+              _dataProvider.setDiaryData(value);
+              _dataProvider.getDiaryData();
               setState(() {});
             },
           ),
@@ -232,10 +212,12 @@ class _MainScreenState extends State<MainScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _diaryData.length,
+              itemCount: _dataProvider.allDiaryData?.length,
               itemBuilder: (context, index) {
-                List<DiaryData> _reversedData =
-                    _diaryData.reversed.map((data) => data).toList();
+                List<DiaryData> _reversedData = _dataProvider
+                    .allDiaryData!.reversed
+                    .map((data) => data)
+                    .toList();
                 DiaryData data = _reversedData[index];
                 DiaryData? previousData =
                     0 <= index - 1 ? _reversedData[index - 1] : null;
@@ -243,7 +225,7 @@ class _MainScreenState extends State<MainScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (_isSameDay(data, previousData) == false)
+                    if (_dataProvider.isSameDay(data, previousData) == false)
                       _subTitleDate(data),
                     DiaryItem(
                       data: data,
