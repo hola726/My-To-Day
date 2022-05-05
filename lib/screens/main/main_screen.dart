@@ -15,11 +15,6 @@ class MainScreen extends StatelessWidget {
   late DataProvider _dataProvider;
   late BuildContext _context;
 
-  void _initSet() {
-    _dataProvider = _context.watch<DataProvider>();
-    _dataProvider.getDiaryData();
-  }
-
   void openEditBottomModal() {
     showModalBottomSheet(
         context: _context,
@@ -225,7 +220,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    _initSet();
+    _dataProvider = _context.watch<DataProvider>();
     return Scaffold(
       appBar: MainAppBar(
         title: "MYTODAY",
