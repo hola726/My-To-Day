@@ -9,46 +9,25 @@ import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 import 'package:provider/provider.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends StatelessWidget {
   static const id = "/MainScreen";
 
-  const MainScreen({Key? key}) : super(key: key);
+  late DataProvider _dataProvider;
+  late BuildContext _context;
 
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  late final DataProvider _dataProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    _dataProvider = context.read<DataProvider>();
+  void _initSet() {
+    _dataProvider = _context.watch<DataProvider>();
     _dataProvider.getDiaryData();
-  }
-
-  Widget _subTitleDate(DiaryData data) {
-    return Padding(
-      padding: EdgeInsets.only(top: 15.h),
-      child: Text(
-        DateHelper.convertDateMonth(data.time),
-        style: AppTheme.button_small.copyWith(
-          color: AppTheme.grey400,
-          fontSize: 11.sp,
-        ),
-      ),
-    );
   }
 
   void openEditBottomModal() {
     showModalBottomSheet(
-        context: context,
+        context: _context,
         constraints: BoxConstraints(
           maxWidth: 300.w,
         ),
         builder: (BuildContext context) {
-          return Container(
+          return SizedBox(
             height: 100.h,
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -69,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
   void openBottomModal(DiaryData data) {
     showModalBottomSheet(
         isScrollControlled: true,
-        context: context,
+        context: _context,
         builder: (BuildContext context) {
           return DraggableScrollableSheet(
             minChildSize: 0.9999,
@@ -154,7 +133,6 @@ class _MainScreenState extends State<MainScreen> {
             onIconPressed: (value) {
               _dataProvider.setDiaryData(value);
               _dataProvider.getDiaryData();
-              setState(() {});
             },
           ),
           Container(
@@ -226,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (_dataProvider.isSameDay(data, previousData) == false)
-                      _subTitleDate(data),
+                      SubTitleData(data: data),
                     DiaryItem(
                       data: data,
                       onTap: () {
@@ -246,6 +224,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+    _initSet();
     return Scaffold(
       appBar: MainAppBar(
         title: "MYTODAY",
@@ -254,6 +234,29 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColors: AppTheme.textPrimaryColor,
       ),
       body: _buildMain(),
+    );
+  }
+}
+
+class SubTitleData extends StatelessWidget {
+  const SubTitleData({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final DiaryData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 15.h),
+      child: Text(
+        DateHelper.convertDateMonth(data.time),
+        style: AppTheme.button_small.copyWith(
+          color: AppTheme.grey400,
+          fontSize: 11.sp,
+        ),
+      ),
     );
   }
 }
