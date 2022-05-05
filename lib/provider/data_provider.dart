@@ -21,6 +21,7 @@ class DataProvider extends ChangeNotifier {
 
   void getDiaryData() {
     _allDiaryData = localStorageHelper.getAllDiaryData();
+    notifyListeners();
   }
 
   void setDiaryData(String contents) {
