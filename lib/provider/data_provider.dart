@@ -5,7 +5,9 @@ import 'package:my_to_day/utils/local_storage_helper.dart';
 class DataProvider extends ChangeNotifier {
   DataProvider({
     required this.localStorageHelper,
-  });
+  }) {
+    getDiaryData();
+  }
   final LocalStorageHelper localStorageHelper;
 
   DiaryData? _diaryData;
