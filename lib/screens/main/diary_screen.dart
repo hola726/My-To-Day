@@ -9,10 +9,10 @@ import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 import 'package:provider/provider.dart';
 
-class MainScreen extends StatelessWidget {
-  static const id = "/MainScreen";
+class DiaryScreen extends StatelessWidget {
+  static const id = "/DiaryScreen";
 
-  late DataProvider _dataProvider;
+  late final DataProvider _dataProvider = _context.watch<DataProvider>();
   late BuildContext _context;
 
   void openEditBottomModal() {
@@ -220,7 +220,6 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    _dataProvider = _context.watch<DataProvider>();
     return Scaffold(
       appBar: MainAppBar(
         title: "MYTODAY",
