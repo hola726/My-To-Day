@@ -10,8 +10,6 @@ import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class DiaryScreen extends StatelessWidget {
-  static const id = "/DiaryScreen";
-
   late final DiaryProvider _diaryProvider = _context.watch<DiaryProvider>();
   late BuildContext _context;
 
