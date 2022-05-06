@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 
-class DataProvider extends ChangeNotifier {
-  DataProvider({
+class DiaryProvider extends ChangeNotifier {
+  DiaryProvider({
     required this.localStorageHelper,
   }) {
     getDiaryData();

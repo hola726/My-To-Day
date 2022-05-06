@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class DiaryScreen extends StatelessWidget {
   static const id = "/DiaryScreen";
 
-  late final DataProvider _dataProvider = _context.watch<DataProvider>();
+  late final DiaryProvider _diaryProvider = _context.watch<DiaryProvider>();
   late BuildContext _context;
 
   void openEditBottomModal() {
@@ -126,8 +126,8 @@ class DiaryScreen extends StatelessWidget {
             height: 100.h,
             hintText: "오늘은...",
             onIconPressed: (value) {
-              _dataProvider.setDiaryData(value);
-              _dataProvider.getDiaryData();
+              _diaryProvider.setDiaryData(value);
+              _diaryProvider.getDiaryData();
             },
           ),
           Container(
@@ -185,9 +185,9 @@ class DiaryScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _dataProvider.allDiaryData?.length,
+              itemCount: _diaryProvider.allDiaryData?.length,
               itemBuilder: (context, index) {
-                List<DiaryData> _reversedData = _dataProvider
+                List<DiaryData> _reversedData = _diaryProvider
                     .allDiaryData!.reversed
                     .map((data) => data)
                     .toList();
@@ -198,12 +198,12 @@ class DiaryScreen extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (_dataProvider.isSameDay(data, previousData) == false)
+                    if (_diaryProvider.isSameDay(data, previousData) == false)
                       SubTitleData(data: data),
                     DiaryItem(
                       data: data,
                       onTap: () {
-                        _dataProvider.diaryData = data;
+                        _diaryProvider.diaryData = data;
                         openBottomModal(data);
                       },
                     ),
