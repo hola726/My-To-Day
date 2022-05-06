@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
-import 'package:my_to_day/provider/data_provider.dart';
+import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
@@ -218,14 +218,17 @@ class DiaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Scaffold(
-      appBar: MainAppBar(
-        title: "MYTODAY",
-        bottomShadow: true,
-        titleColor: AppTheme.primaryContrastColor,
-        backgroundColors: AppTheme.textPrimaryColor,
+    return GestureDetector(
+      onTap: _diaryProvider.gestureOnTap,
+      child: Scaffold(
+        appBar: MainAppBar(
+          title: "MYTODAY",
+          bottomShadow: true,
+          titleColor: AppTheme.primaryContrastColor,
+          backgroundColors: AppTheme.textPrimaryColor,
+        ),
+        body: _buildMain(),
       ),
-      body: _buildMain(),
     );
   }
 }
