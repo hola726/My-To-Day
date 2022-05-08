@@ -9,16 +9,19 @@ class DiaryProvider extends ChangeNotifier {
     required BuildContext context,
   })  : _localStorageHelper = localStorageHelper,
         _context = context {
-    getDiaryData();
+    _getDiaryData();
   }
   final LocalStorageHelper _localStorageHelper;
   final BuildContext _context;
 
   DiaryData? _diaryData;
-  List<DiaryData>? _allDiaryData;
+  late List<DiaryData> _allDiaryData;
+  late final List<DiaryData> _reversedData =
+      _allDiaryData.reversed.map((data) => data).toList();
 
   DiaryData? get diaryData => _diaryData;
-  List<DiaryData>? get allDiaryData => _allDiaryData;
+  List<DiaryData> get allDiaryData => _allDiaryData;
+  List<DiaryData> get reversedData => _reversedData;
   void Function() get getDiaryData => _getDiaryData;
   void Function() get gestureOnTap => _gestureOnTap;
 
