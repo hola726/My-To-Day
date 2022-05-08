@@ -32,6 +32,13 @@ class DiaryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _gestureOnTap() {
+    FocusScopeNode currentFocus = FocusScope.of(_context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
   void setDiaryData(String contents) {
     _localStorageHelper.setDiaryData(
       date: DateTime.now().toString(),
@@ -46,12 +53,5 @@ class DiaryProvider extends ChangeNotifier {
     return data.time.year == previousData?.time.year &&
         data.time.month == previousData?.time.month &&
         data.time.day == previousData?.time.day;
-  }
-
-  void _gestureOnTap() {
-    FocusScopeNode currentFocus = FocusScope.of(_context);
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
   }
 }

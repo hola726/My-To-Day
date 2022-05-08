@@ -221,6 +221,7 @@ class DiaryScreen extends StatelessWidget {
     return GestureDetector(
       onTap: _diaryProvider.gestureOnTap,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
           title: "MYTODAY",
           bottomShadow: true,
