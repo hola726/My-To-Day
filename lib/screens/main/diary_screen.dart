@@ -26,12 +26,10 @@ class DiaryScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 100.w,
               ),
-              child: Container(
-                child: Row(
-                  children: const [
-                    Icon(Icons.restore),
-                  ],
-                ),
+              child: Row(
+                children: const [
+                  Icon(Icons.restore),
+                ],
               ),
             ),
           );
@@ -183,15 +181,12 @@ class DiaryScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _diaryProvider.allDiaryData?.length,
+              itemCount: _diaryProvider.allDiaryData.length,
               itemBuilder: (context, index) {
-                List<DiaryData> _reversedData = _diaryProvider
-                    .allDiaryData!.reversed
-                    .map((data) => data)
-                    .toList();
-                DiaryData data = _reversedData[index];
-                DiaryData? previousData =
-                    0 <= index - 1 ? _reversedData[index - 1] : null;
+                DiaryData data = _diaryProvider.reversedData[index];
+                DiaryData? previousData = 0 <= index - 1
+                    ? _diaryProvider.reversedData[index - 1]
+                    : null;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
