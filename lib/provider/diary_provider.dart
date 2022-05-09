@@ -15,16 +15,19 @@ class DiaryProvider extends ChangeNotifier {
   final BuildContext _context;
 
   DiaryData? _diaryData;
+  bool _isLargeTextForm = false;
   late List<DiaryData> _allDiaryData;
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
 
   DiaryData? get diaryData => _diaryData;
+  bool get isLargeTextForm => _isLargeTextForm;
   List<DiaryData> get allDiaryData => _allDiaryData;
   List<DiaryData> get reversedData => _reversedData;
   void Function() get getDiaryData => _getDiaryData;
   void Function() get getReversedData => _getReversedData;
   void Function() get gestureOnTap => _gestureOnTap;
+  void Function() get reSizedDiaryTextFormField => _reSizedDiaryTextFormField;
   BuildContext get context => _context;
 
   set diaryData(DiaryData? diaryData) {
@@ -47,6 +50,11 @@ class DiaryProvider extends ChangeNotifier {
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
+  }
+
+  void _reSizedDiaryTextFormField() {
+    _isLargeTextForm = !_isLargeTextForm;
+    notifyListeners();
   }
 
   Future<void> setDiaryData(String contents) async {
