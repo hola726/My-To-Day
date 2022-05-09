@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_to_day/constants/constants.dart';
-import 'package:my_to_day/page/diary_page.dart';
 import 'package:my_to_day/routes.dart';
+import 'package:my_to_day/screens/main/diary_screen.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 
 void main() async {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context) => MaterialApp(
         title: 'MyToDay',
         debugShowCheckedModeBanner: false,
-        initialRoute: DiaryPage.id,
+        initialRoute: DiaryScreen.id,
         routes: routes,
         theme: ThemeData.light(),
       ),

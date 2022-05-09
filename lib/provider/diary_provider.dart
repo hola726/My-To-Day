@@ -24,6 +24,7 @@ class DiaryProvider extends ChangeNotifier {
   List<DiaryData> get reversedData => _reversedData;
   void Function() get getDiaryData => _getDiaryData;
   void Function() get gestureOnTap => _gestureOnTap;
+  BuildContext get context => _context;
 
   set diaryData(DiaryData? diaryData) {
     _diaryData = diaryData;

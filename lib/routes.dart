@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_to_day/page/diary_page.dart';
+import 'package:my_to_day/screens/main/diary_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
-  DiaryPage.id: (context) => const DiaryPage(),
+  DiaryScreen.id: (context) => DiaryScreen.setProviderRoute(),
 };

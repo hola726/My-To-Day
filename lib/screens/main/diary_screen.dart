@@ -4,18 +4,39 @@ import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
+import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class DiaryScreen extends StatelessWidget {
-  late final DiaryProvider _diaryProvider = _context.watch<DiaryProvider>();
-  late BuildContext _context;
+  static const id = '/DiaryScreen';
+  const DiaryScreen._({
+    Key? key,
+    required DiaryProvider diaryProvider,
+  })  : _diaryProvider = diaryProvider,
+        super(key: key);
+
+  final DiaryProvider _diaryProvider;
+
+  static Widget setProviderRoute() {
+    return ChangeNotifierProvider<DiaryProvider>(
+      create: (BuildContext context) => DiaryProvider(
+        localStorageHelper: LocalStorageHelper(),
+        context: context,
+      ),
+      child: Consumer<DiaryProvider>(
+        builder: (_, diaryProvider, __) => DiaryScreen._(
+          diaryProvider: diaryProvider,
+        ),
+      ),
+    );
+  }
 
   void openEditBottomModal() {
     showModalBottomSheet(
-        context: _context,
+        context: _diaryProvider.context,
         constraints: BoxConstraints(
           maxWidth: 300.w,
         ),
@@ -39,7 +60,7 @@ class DiaryScreen extends StatelessWidget {
   void openBottomModal(DiaryData data) {
     showModalBottomSheet(
         isScrollControlled: true,
-        context: _context,
+        context: _diaryProvider.context,
         builder: (BuildContext context) {
           return DraggableScrollableSheet(
             minChildSize: 0.9999,
@@ -212,7 +233,6 @@ class DiaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return GestureDetector(
       onTap: _diaryProvider.gestureOnTap,
       child: Scaffold(
