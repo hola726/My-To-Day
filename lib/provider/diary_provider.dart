@@ -16,13 +16,14 @@ class DiaryProvider extends ChangeNotifier {
 
   DiaryData? _diaryData;
   late List<DiaryData> _allDiaryData;
-  late final List<DiaryData> _reversedData =
+  late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
 
   DiaryData? get diaryData => _diaryData;
   List<DiaryData> get allDiaryData => _allDiaryData;
   List<DiaryData> get reversedData => _reversedData;
   void Function() get getDiaryData => _getDiaryData;
+  void Function() get getReversedData => _getReversedData;
   void Function() get gestureOnTap => _gestureOnTap;
   BuildContext get context => _context;
 
@@ -33,7 +34,12 @@ class DiaryProvider extends ChangeNotifier {
 
   void _getDiaryData() {
     _allDiaryData = _localStorageHelper.getAllDiaryData();
+    _getReversedData();
     notifyListeners();
+  }
+
+  void _getReversedData() {
+    _reversedData = _allDiaryData.reversed.map((data) => data).toList();
   }
 
   void _gestureOnTap() {
@@ -43,8 +49,8 @@ class DiaryProvider extends ChangeNotifier {
     }
   }
 
-  void setDiaryData(String contents) {
-    _localStorageHelper.setDiaryData(
+  Future<void> setDiaryData(String contents) async {
+    await _localStorageHelper.setDiaryData(
       date: DateTime.now().toString(),
       diaryDataModel: DiaryData(
         contents: contents,
