@@ -142,8 +142,8 @@ class DiaryScreen extends StatelessWidget {
           MyToDayTextFormField(
             height: 100.h,
             hintText: "오늘은...",
-            onIconPressed: (value) {
-              _diaryProvider.setDiaryData(value);
+            onIconPressed: (value) async {
+              await _diaryProvider.setDiaryData(value);
               _diaryProvider.getDiaryData();
             },
           ),
