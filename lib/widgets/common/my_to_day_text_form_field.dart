@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:my_to_day/app_theme.dart';
 
-class MyToDayTextFormField extends StatefulWidget {
-  MyToDayTextFormField({
+class DiaryTextFormField extends StatefulWidget {
+  DiaryTextFormField({
     this.hintText,
     this.textStyle,
     this.height,
@@ -20,10 +20,10 @@ class MyToDayTextFormField extends StatefulWidget {
   final void Function(String text)? onIconPressed;
 
   @override
-  _MyToDayTextFormFieldState createState() => _MyToDayTextFormFieldState();
+  _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
 }
 
-class _MyToDayTextFormFieldState extends State<MyToDayTextFormField> {
+class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   final TextEditingController _controller = TextEditingController();
 
   void handleOnChanged(String value) {

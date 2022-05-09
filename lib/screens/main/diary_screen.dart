@@ -139,8 +139,12 @@ class DiaryScreen extends StatelessWidget {
       color: Colors.black,
       child: Column(
         children: [
-          MyToDayTextFormField(
-            height: 100.h,
+          DiaryTextFormField(
+            height: _diaryProvider.isLargeTextForm
+                ? MediaQuery.of(_diaryProvider.context).size.height -
+                    MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
+                    110.h
+                : 100.h,
             hintText: "오늘은...",
             onIconPressed: (value) async {
               await _diaryProvider.setDiaryData(value);
@@ -174,9 +178,11 @@ class DiaryScreen extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.zoom_out_map_outlined,
+                  onPressed: _diaryProvider.reSizedDiaryTextFormField,
+                  icon: Icon(
+                    _diaryProvider.isLargeTextForm
+                        ? Icons.zoom_in
+                        : Icons.zoom_out_map_outlined,
                     color: Colors.white,
                   ),
                 ),
@@ -238,7 +244,7 @@ class DiaryScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
-          title: "MYTODAY",
+          title: _diaryProvider.isLargeTextForm ? "WRITE" : "MYTODAY",
           bottomShadow: true,
           titleColor: AppTheme.primaryContrastColor,
           backgroundColors: AppTheme.textPrimaryColor,
