@@ -6,8 +6,8 @@ import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
+import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
-import 'package:my_to_day/widgets/common/my_to_day_text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class DiaryScreen extends StatelessWidget {
@@ -24,6 +24,7 @@ class DiaryScreen extends StatelessWidget {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
         localStorageHelper: LocalStorageHelper(),
+        diaryTextFormFocusNode: FocusNode(),
         context: context,
       ),
       child: Consumer<DiaryProvider>(
@@ -146,10 +147,12 @@ class DiaryScreen extends StatelessWidget {
                     110.h
                 : 100.h,
             hintText: "오늘은...",
+            isDisableIcon: _diaryProvider.isLargeTextForm,
             onIconPressed: (value) async {
               await _diaryProvider.setDiaryData(value);
               _diaryProvider.getDiaryData();
             },
+            textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
           Container(
             color: AppTheme.commonBlack,
