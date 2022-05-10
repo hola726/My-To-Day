@@ -15,6 +15,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColors,
     this.bottomShadow,
     this.titleColor,
+    this.rightTopWidget,
   }) : preferredSize = const Size.fromHeight(kAppBarSize);
 
   @override
@@ -24,9 +25,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? isKRTitle;
   final bool? bottomShadow;
   final String? title;
+
   final TextStyle? titleTextStyle;
   final Color? backgroundColors;
   final Color? titleColor;
+  final Widget? rightTopWidget;
   @override
   Widget build(BuildContext context) {
     final NavigatorState _navigatorState = Navigator.of(context);
@@ -43,6 +46,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 )
               : null,
+      actions: rightTopWidget != null
+          ? [
+              rightTopWidget!,
+              SizedBox(
+                width: 16.w,
+              ),
+            ]
+          : null,
       title: title == null
           ? null
           : Text(
