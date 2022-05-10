@@ -23,6 +23,7 @@ class DiaryScreen extends StatelessWidget {
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
+        textEditingController: TextEditingController(),
         localStorageHelper: LocalStorageHelper(),
         diaryTextFormFocusNode: FocusNode(),
         context: context,
@@ -141,6 +142,8 @@ class DiaryScreen extends StatelessWidget {
       child: Column(
         children: [
           DiaryTextFormField(
+            diaryProvider: _diaryProvider,
+            controller: _diaryProvider.textEditingController,
             height: _diaryProvider.isLargeTextForm
                 ? MediaQuery.of(_diaryProvider.context).size.height -
                     MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
@@ -248,6 +251,37 @@ class DiaryScreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
           title: _diaryProvider.isLargeTextForm ? "WRITE" : "MYTODAY",
+          leading: _diaryProvider.isLargeTextForm == true
+              ? IconButton(
+                  onPressed: _diaryProvider.reSizedDiaryTextFormField,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  icon: Icon(
+                    Icons.clear,
+                    size: 27.w,
+                  ),
+                )
+              : null,
+          rightTopWidget: _diaryProvider.isLargeTextForm == true
+              ? IconButton(
+                  onPressed: () async {
+                    await _diaryProvider.setDiaryData(
+                        _diaryProvider.textEditingController.text);
+                    _diaryProvider.getDiaryData();
+                    _diaryProvider.reSizedDiaryTextFormField();
+                    _diaryProvider.textEditingController.clear();
+                  },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  color: _diaryProvider.textEditingController.text.isNotEmpty
+                      ? Colors.red
+                      : null,
+                  icon: Icon(
+                    Icons.check,
+                    size: 27.w,
+                  ),
+                )
+              : null,
           bottomShadow: true,
           titleColor: AppTheme.primaryContrastColor,
           backgroundColors: AppTheme.textPrimaryColor,
