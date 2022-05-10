@@ -4,20 +4,25 @@ import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:my_to_day/app_theme.dart';
 
 class DiaryTextFormField extends StatefulWidget {
-  DiaryTextFormField({
+  const DiaryTextFormField({
+    Key? key,
     this.hintText,
     this.textStyle,
     this.height,
     this.suffixIcon,
     this.suffixIconColor,
     this.onIconPressed,
-  });
+    this.textFocusNode,
+    this.isDisableIcon,
+  }) : super(key: key);
   final String? hintText;
   final TextStyle? textStyle;
   final double? height;
   final IconData? suffixIcon;
   final Color? suffixIconColor;
+  final FocusNode? textFocusNode;
   final void Function(String text)? onIconPressed;
+  final bool? isDisableIcon;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
@@ -41,6 +46,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     return SizedBox(
       height: widget.height,
       child: TextFormField(
+        focusNode: widget.textFocusNode,
         controller: _controller,
         onChanged: handleOnChanged,
         expands: true,
@@ -62,12 +68,15 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                 }
               },
               iconSize: 55.w,
-              icon: Icon(
-                widget.suffixIcon ?? Icons.check_box,
-                color: _controller.text.isNotEmpty
-                    ? AppTheme.errorColor
-                    : widget.suffixIconColor ?? AppTheme.backdropOverlay_65,
-              ),
+              icon: widget.isDisableIcon == true
+                  ? Container()
+                  : Icon(
+                      widget.suffixIcon ?? Icons.check_box,
+                      color: _controller.text.isNotEmpty
+                          ? AppTheme.errorColor
+                          : widget.suffixIconColor ??
+                              AppTheme.backdropOverlay_65,
+                    ),
             ),
             contentPadding: EdgeInsets.all(
               10.w,
