@@ -6,13 +6,16 @@ import 'package:my_to_day/utils/local_storage_helper.dart';
 class DiaryProvider extends ChangeNotifier {
   DiaryProvider({
     required LocalStorageHelper localStorageHelper,
+    required diaryTextFormFocusNode,
     required BuildContext context,
   })  : _localStorageHelper = localStorageHelper,
+        _diaryTextFormFocusNode = diaryTextFormFocusNode,
         _context = context {
-    _getDiaryData();
+    getDiaryData();
   }
   final LocalStorageHelper _localStorageHelper;
   final BuildContext _context;
+  final FocusNode _diaryTextFormFocusNode;
 
   DiaryData? _diaryData;
   bool _isLargeTextForm = false;
@@ -22,12 +25,9 @@ class DiaryProvider extends ChangeNotifier {
 
   DiaryData? get diaryData => _diaryData;
   bool get isLargeTextForm => _isLargeTextForm;
+  FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
   List<DiaryData> get allDiaryData => _allDiaryData;
   List<DiaryData> get reversedData => _reversedData;
-  void Function() get getDiaryData => _getDiaryData;
-  void Function() get getReversedData => _getReversedData;
-  void Function() get gestureOnTap => _gestureOnTap;
-  void Function() get reSizedDiaryTextFormField => _reSizedDiaryTextFormField;
   BuildContext get context => _context;
 
   set diaryData(DiaryData? diaryData) {
@@ -35,26 +35,36 @@ class DiaryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _getDiaryData() {
-    _allDiaryData = _localStorageHelper.getAllDiaryData();
-    _getReversedData();
+  set isLargeTextForm(bool isLargeTextForm) {
+    _isLargeTextForm = isLargeTextForm;
     notifyListeners();
   }
 
-  void _getReversedData() {
+  void getDiaryData() {
+    _allDiaryData = _localStorageHelper.getAllDiaryData();
+    getReversedData();
+    notifyListeners();
+  }
+
+  void getReversedData() {
     _reversedData = _allDiaryData.reversed.map((data) => data).toList();
   }
 
-  void _gestureOnTap() {
+  void gestureOnTap() {
     FocusScopeNode currentFocus = FocusScope.of(_context);
-    if (!currentFocus.hasPrimaryFocus) {
+    if (!currentFocus.hasPrimaryFocus && _isLargeTextForm == false) {
       currentFocus.unfocus();
     }
   }
 
-  void _reSizedDiaryTextFormField() {
-    _isLargeTextForm = !_isLargeTextForm;
-    notifyListeners();
+  void reSizedDiaryTextFormField() {
+    isLargeTextForm = !_isLargeTextForm;
+
+    if (_isLargeTextForm == true) {
+      _diaryTextFormFocusNode.requestFocus();
+    } else {
+      _diaryTextFormFocusNode.unfocus();
+    }
   }
 
   Future<void> setDiaryData(String contents) async {
