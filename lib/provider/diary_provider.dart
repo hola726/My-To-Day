@@ -8,7 +8,9 @@ class DiaryProvider extends ChangeNotifier {
     required LocalStorageHelper localStorageHelper,
     required diaryTextFormFocusNode,
     required BuildContext context,
+    required TextEditingController textEditingController,
   })  : _localStorageHelper = localStorageHelper,
+        _textEditingController = textEditingController,
         _diaryTextFormFocusNode = diaryTextFormFocusNode,
         _context = context {
     getDiaryData();
@@ -16,6 +18,7 @@ class DiaryProvider extends ChangeNotifier {
   final LocalStorageHelper _localStorageHelper;
   final BuildContext _context;
   final FocusNode _diaryTextFormFocusNode;
+  final TextEditingController _textEditingController;
 
   DiaryData? _diaryData;
   bool _isLargeTextForm = false;
@@ -23,6 +26,7 @@ class DiaryProvider extends ChangeNotifier {
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
 
+  TextEditingController get textEditingController => _textEditingController;
   DiaryData? get diaryData => _diaryData;
   bool get isLargeTextForm => _isLargeTextForm;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
@@ -37,6 +41,10 @@ class DiaryProvider extends ChangeNotifier {
 
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
+    notifyListeners();
+  }
+
+  void getChange() {
     notifyListeners();
   }
 
