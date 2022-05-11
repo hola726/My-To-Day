@@ -39,21 +39,39 @@ class DiaryScreen extends StatelessWidget {
   void openEditBottomModal() {
     showModalBottomSheet(
         context: _diaryProvider.context,
-        constraints: BoxConstraints(
-          maxWidth: 300.w,
+        backgroundColor: AppTheme.textSecondary2Color,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 100.h,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 100.w,
-              ),
-              child: Row(
-                children: const [
-                  Icon(Icons.restore),
-                ],
-              ),
+            height: 70.h,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () => {},
+                  iconSize: 20.h,
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  width: 40.w,
+                ),
+                IconButton(
+                  onPressed: () => {},
+                  iconSize: 20.h,
+                  icon: const Icon(
+                    Icons.share,
+                    color: Colors.white,
+                  ),
+                )
+              ],
             ),
           );
         });
