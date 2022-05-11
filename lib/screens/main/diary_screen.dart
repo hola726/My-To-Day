@@ -36,7 +36,7 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  void openEditBottomModal() {
+  void openEditBottomModal(DiaryData data) {
     showModalBottomSheet(
         context: _diaryProvider.context,
         backgroundColor: AppTheme.textSecondary2Color,
@@ -64,7 +64,8 @@ class DiaryScreen extends StatelessWidget {
                   width: 40.w,
                 ),
                 IconButton(
-                  onPressed: () => {},
+                  onPressed: () =>
+                      _diaryProvider.onShareButtonPressed(data.contents),
                   iconSize: 20.h,
                   icon: const Icon(
                     Icons.share,
@@ -118,7 +119,7 @@ class DiaryScreen extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            onPressed: openEditBottomModal,
+                            onPressed: () => openEditBottomModal(data),
                             icon: const Icon(
                               Icons.more_horiz_outlined,
                               color: Colors.white,

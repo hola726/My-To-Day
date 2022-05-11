@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DiaryProvider extends ChangeNotifier {
   DiaryProvider({
@@ -89,5 +90,12 @@ class DiaryProvider extends ChangeNotifier {
     return data.time.year == previousData?.time.year &&
         data.time.month == previousData?.time.month &&
         data.time.day == previousData?.time.day;
+  }
+
+  void onShareButtonPressed(String data) {
+    Share.share(
+      data,
+      subject: data,
+    );
   }
 }
