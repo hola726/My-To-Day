@@ -36,6 +36,84 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
+  void test(DiaryData data) {
+    showModalBottomSheet(
+      // isScrollControlled: true,
+      context: _diaryProvider.context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalSetState) {
+            return Scaffold(
+              appBar: MainAppBar(),
+              body: Container(
+                color: Colors.black,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: AppBar().preferredSize.height,
+                    horizontal: 20.w,
+                  ),
+                  child: ListView(
+                    // controller: scrollController,
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: Navigator.of(context).pop,
+                          icon: const Icon(
+                            Icons.cancel,
+                            color: AppTheme.grey600,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            DateHelper.convertDateMonth(data.time),
+                            style: AppTheme.button_small.copyWith(
+                              color: AppTheme.grey400,
+                              fontSize: 11.sp,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => openEditBottomModal(data),
+                            icon: const Icon(
+                              Icons.more_horiz_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      Text(
+                        data.contents,
+                        style: AppTheme.button_small_KR.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      Text(
+                        DateHelper.convertDateAmPm(data.time),
+                        style: AppTheme.button_small.copyWith(
+                          color: AppTheme.grey400,
+                          fontSize: 11.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void openEditBottomModal(DiaryData data) {
     showModalBottomSheet(
         context: _diaryProvider.context,
@@ -53,8 +131,10 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () => {},
+                  onPressed: () => test(data),
                   iconSize: 20.h,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   icon: const Icon(
                     Icons.edit,
                     color: Colors.white,
@@ -66,6 +146,8 @@ class DiaryScreen extends StatelessWidget {
                 IconButton(
                   onPressed: () =>
                       _diaryProvider.onShareButtonPressed(data.contents),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   iconSize: 20.h,
                   icon: const Icon(
                     Icons.share,
