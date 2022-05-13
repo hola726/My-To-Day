@@ -3,11 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
+import 'package:my_to_day/routes.dart';
+import 'package:my_to_day/screens/main/diary_edit_screen.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
+import 'package:my_to_day/widgets/diary_text_form_option.dart';
 import 'package:provider/provider.dart';
 
 class DiaryScreen extends StatelessWidget {
@@ -36,84 +39,6 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  void test(DiaryData data) {
-    showModalBottomSheet(
-      // isScrollControlled: true,
-      context: _diaryProvider.context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter modalSetState) {
-            return Scaffold(
-              appBar: MainAppBar(),
-              body: Container(
-                color: Colors.black,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: AppBar().preferredSize.height,
-                    horizontal: 20.w,
-                  ),
-                  child: ListView(
-                    // controller: scrollController,
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: Navigator.of(context).pop,
-                          icon: const Icon(
-                            Icons.cancel,
-                            color: AppTheme.grey600,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            DateHelper.convertDateMonth(data.time),
-                            style: AppTheme.button_small.copyWith(
-                              color: AppTheme.grey400,
-                              fontSize: 11.sp,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => openEditBottomModal(data),
-                            icon: const Icon(
-                              Icons.more_horiz_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        data.contents,
-                        style: AppTheme.button_small_KR.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        DateHelper.convertDateAmPm(data.time),
-                        style: AppTheme.button_small.copyWith(
-                          color: AppTheme.grey400,
-                          fontSize: 11.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   void openEditBottomModal(DiaryData data) {
     showModalBottomSheet(
         context: _diaryProvider.context,
@@ -131,7 +56,9 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () => test(data),
+                  onPressed: () => Navigator.of(context).push(
+                    routeWithFullScreenDialog(DiaryEditScreen.id),
+                  ),
                   iconSize: 20.h,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -248,7 +175,7 @@ class DiaryScreen extends StatelessWidget {
             height: _diaryProvider.isLargeTextForm
                 ? MediaQuery.of(_diaryProvider.context).size.height -
                     MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
-                    110.h
+                    116.h
                 : 100.h,
             hintText: "오늘은...",
             isDisableIcon: _diaryProvider.isLargeTextForm,
@@ -258,61 +185,7 @@ class DiaryScreen extends StatelessWidget {
             },
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
-          Container(
-            color: AppTheme.commonBlack,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.camera_alt_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.add_photo_alternate_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.location_on_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: _diaryProvider.reSizedDiaryTextFormField,
-                  icon: Icon(
-                    _diaryProvider.isLargeTextForm
-                        ? Icons.zoom_in
-                        : Icons.zoom_out_map_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.restore_from_trash_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                InkWell(
-                  onTap: () => {},
-                  child: Text(
-                    DateHelper.convertDate(DateTime.now()),
-                    style: AppTheme.subtitle1.copyWith(
-                      color: Colors.white,
-                      fontSize: 15.sp,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          DiaryTextFormOption(diaryProvider: _diaryProvider),
           Expanded(
             child: ListView.builder(
               itemCount: _diaryProvider.allDiaryData.length,
