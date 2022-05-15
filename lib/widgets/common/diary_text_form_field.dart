@@ -17,10 +17,12 @@ class DiaryTextFormField extends StatefulWidget {
     this.onIconPressed,
     this.textFocusNode,
     this.isDisableIcon,
+    this.initialValue,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String? hintText;
+  final String? initialValue;
   final TextStyle? textStyle;
   final double? height;
   final IconData? suffixIcon;
@@ -51,6 +53,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     return SizedBox(
       height: widget.height,
       child: TextFormField(
+        initialValue: widget.initialValue,
         focusNode: widget.textFocusNode,
         controller: widget.controller,
         onChanged: handleOnChanged,
