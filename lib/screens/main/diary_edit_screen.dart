@@ -56,10 +56,6 @@ class DiaryEditScreen extends StatelessWidget {
             hintText: "오늘은...",
             initialValue: _dataProvider.diaryData?.contents,
             isDisableIcon: true,
-            onIconPressed: (value) async {
-              await _diaryProvider.setDiaryData(value);
-              _dataProvider.getDiaryData();
-            },
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
           DiaryTextFormOption(diaryProvider: _diaryProvider),
@@ -92,7 +88,7 @@ class DiaryEditScreen extends StatelessWidget {
               contents: _diaryProvider.textEditingController.text,
               date: _dataProvider.diaryData!.time,
             );
-            _dataProvider.getDiaryData();
+            _dataProvider.getAllDiaryData();
             _diaryProvider.textEditingController.clear();
             Navigator.of(context).pop();
           },
