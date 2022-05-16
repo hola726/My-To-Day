@@ -61,9 +61,12 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () => Navigator.of(context).push(
-                    routeWithFullScreenDialog(DiaryEditScreen.id),
-                  ),
+                  onPressed: () async {
+                    await Navigator.of(context).push(
+                      routeWithFullScreenDialog(DiaryEditScreen.id),
+                    );
+                    Navigator.of(context).pop();
+                  },
                   iconSize: 20.h,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -192,7 +195,7 @@ class DiaryScreen extends StatelessWidget {
             isDisableIcon: _diaryProvider.isLargeTextForm,
             onIconPressed: (value) async {
               await _diaryProvider.setDiaryData(value);
-              _dataProvider.getDiaryData();
+              _dataProvider.getAllDiaryData();
             },
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
@@ -214,6 +217,8 @@ class DiaryScreen extends StatelessWidget {
                     DiaryItem(
                       data: data,
                       onTap: () {
+                        _dataProvider.targetDataIndex = index;
+
                         _dataProvider.diaryData = data;
                         openBottomModal();
                       },
@@ -252,7 +257,7 @@ class DiaryScreen extends StatelessWidget {
                   onPressed: () async {
                     await _diaryProvider.setDiaryData(
                         _diaryProvider.textEditingController.text);
-                    _dataProvider.getDiaryData();
+                    _dataProvider.getAllDiaryData();
                     _diaryProvider.reSizedDiaryTextFormField();
                     _diaryProvider.textEditingController.clear();
                   },
