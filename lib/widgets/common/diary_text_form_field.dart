@@ -37,6 +37,15 @@ class DiaryTextFormField extends StatefulWidget {
 }
 
 class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      widget.controller.text = widget.initialValue!;
+      setState(() {});
+    }
+  }
+
   void handleOnChanged(String value) {
     widget.controller.value = TextEditingValue(
       text: value,
@@ -53,7 +62,6 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     return SizedBox(
       height: widget.height,
       child: TextFormField(
-        initialValue: widget.initialValue,
         focusNode: widget.textFocusNode,
         controller: widget.controller,
         onChanged: handleOnChanged,
