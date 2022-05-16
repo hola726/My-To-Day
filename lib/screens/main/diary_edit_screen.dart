@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
@@ -11,13 +12,18 @@ import '../../app_theme.dart';
 
 class DiaryEditScreen extends StatelessWidget {
   static const id = '/DiaryEditScreen';
-  const DiaryEditScreen._({
+  DiaryEditScreen._({
     Key? key,
     required DiaryProvider diaryProvider,
+    required DataProvider dataProvider,
   })  : _diaryProvider = diaryProvider,
-        super(key: key);
+        _dataProvider = dataProvider,
+        super(key: key) {
+    _diaryProvider.diaryTextFormFocusNode.requestFocus();
+  }
 
   final DiaryProvider _diaryProvider;
+  final DataProvider _dataProvider;
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
@@ -27,9 +33,10 @@ class DiaryEditScreen extends StatelessWidget {
         diaryTextFormFocusNode: FocusNode(),
         context: context,
       ),
-      child: Consumer<DiaryProvider>(
-        builder: (_, diaryProvider, __) => DiaryEditScreen._(
+      child: Consumer2<DiaryProvider, DataProvider>(
+        builder: (_, diaryProvider, dataProvider, __) => DiaryEditScreen._(
           diaryProvider: diaryProvider,
+          dataProvider: dataProvider,
         ),
       ),
     );
@@ -47,10 +54,11 @@ class DiaryEditScreen extends StatelessWidget {
                 MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
                 116.h,
             hintText: "오늘은...",
+            initialValue: _dataProvider.diaryData?.contents,
             isDisableIcon: true,
             onIconPressed: (value) async {
               await _diaryProvider.setDiaryData(value);
-              _diaryProvider.getDiaryData();
+              _dataProvider.getDiaryData();
             },
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
@@ -80,11 +88,13 @@ class DiaryEditScreen extends StatelessWidget {
         ),
         rightTopWidget: IconButton(
           onPressed: () async {
-            await _diaryProvider
-                .setDiaryData(_diaryProvider.textEditingController.text);
-            _diaryProvider.getDiaryData();
-            _diaryProvider.reSizedDiaryTextFormField();
+            await _diaryProvider.editDiaryData(
+              contents: _diaryProvider.textEditingController.text,
+              date: _dataProvider.diaryData!.time,
+            );
+            _dataProvider.getDiaryData();
             _diaryProvider.textEditingController.clear();
+            Navigator.of(context).pop();
           },
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/routes.dart';
 import 'package:my_to_day/screens/main/diary_edit_screen.dart';
@@ -18,10 +19,13 @@ class DiaryScreen extends StatelessWidget {
   const DiaryScreen._({
     Key? key,
     required DiaryProvider diaryProvider,
+    required DataProvider dataProvider,
   })  : _diaryProvider = diaryProvider,
+        _dataProvider = dataProvider,
         super(key: key);
 
   final DiaryProvider _diaryProvider;
+  final DataProvider _dataProvider;
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
@@ -31,16 +35,17 @@ class DiaryScreen extends StatelessWidget {
         diaryTextFormFocusNode: FocusNode(),
         context: context,
       ),
-      child: Consumer<DiaryProvider>(
-        builder: (_, diaryProvider, __) => DiaryScreen._(
+      child: Consumer2<DiaryProvider, DataProvider>(
+        builder: (_, diaryProvider, dataProvider, __) => DiaryScreen._(
           diaryProvider: diaryProvider,
+          dataProvider: dataProvider,
         ),
       ),
     );
   }
 
-  void openEditBottomModal(DiaryData data) {
-    showModalBottomSheet(
+  Future<void> openEditBottomModal() async {
+    await showModalBottomSheet(
         context: _diaryProvider.context,
         backgroundColor: AppTheme.textSecondary2Color,
         shape: const RoundedRectangleBorder(
@@ -71,8 +76,8 @@ class DiaryScreen extends StatelessWidget {
                   width: 40.w,
                 ),
                 IconButton(
-                  onPressed: () =>
-                      _diaryProvider.onShareButtonPressed(data.contents),
+                  onPressed: () => _diaryProvider
+                      .onShareButtonPressed(_dataProvider.diaryData!.contents),
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   iconSize: 20.h,
@@ -87,7 +92,7 @@ class DiaryScreen extends StatelessWidget {
         });
   }
 
-  void openBottomModal(DiaryData data) {
+  void openBottomModal() {
     showModalBottomSheet(
         isScrollControlled: true,
         context: _diaryProvider.context,
@@ -121,14 +126,19 @@ class DiaryScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            DateHelper.convertDateMonth(data.time),
+                            DateHelper.convertDateMonth(
+                                _dataProvider.diaryData!.time),
                             style: AppTheme.button_small.copyWith(
                               color: AppTheme.grey400,
                               fontSize: 11.sp,
                             ),
                           ),
                           IconButton(
-                            onPressed: () => openEditBottomModal(data),
+                            onPressed: () async {
+                              await openEditBottomModal();
+                              _dataProvider.getDiaryData();
+                              modalSetState(() {});
+                            },
                             icon: const Icon(
                               Icons.more_horiz_outlined,
                               color: Colors.white,
@@ -140,7 +150,7 @@ class DiaryScreen extends StatelessWidget {
                         height: 12.h,
                       ),
                       Text(
-                        data.contents,
+                        _dataProvider.diaryData!.contents,
                         style: AppTheme.button_small_KR.copyWith(
                           color: Colors.white,
                         ),
@@ -149,7 +159,8 @@ class DiaryScreen extends StatelessWidget {
                         height: 12.h,
                       ),
                       Text(
-                        DateHelper.convertDateAmPm(data.time),
+                        DateHelper.convertDateAmPm(
+                            _dataProvider.diaryData!.time),
                         style: AppTheme.button_small.copyWith(
                           color: AppTheme.grey400,
                           fontSize: 11.sp,
@@ -181,18 +192,18 @@ class DiaryScreen extends StatelessWidget {
             isDisableIcon: _diaryProvider.isLargeTextForm,
             onIconPressed: (value) async {
               await _diaryProvider.setDiaryData(value);
-              _diaryProvider.getDiaryData();
+              _dataProvider.getDiaryData();
             },
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
           DiaryTextFormOption(diaryProvider: _diaryProvider),
           Expanded(
             child: ListView.builder(
-              itemCount: _diaryProvider.allDiaryData.length,
+              itemCount: _dataProvider.allDiaryData.length,
               itemBuilder: (context, index) {
-                DiaryData data = _diaryProvider.reversedData[index];
+                DiaryData data = _dataProvider.reversedData[index];
                 DiaryData? previousData = 0 <= index - 1
-                    ? _diaryProvider.reversedData[index - 1]
+                    ? _dataProvider.reversedData[index - 1]
                     : null;
 
                 return Column(
@@ -203,8 +214,8 @@ class DiaryScreen extends StatelessWidget {
                     DiaryItem(
                       data: data,
                       onTap: () {
-                        _diaryProvider.diaryData = data;
-                        openBottomModal(data);
+                        _dataProvider.diaryData = data;
+                        openBottomModal();
                       },
                     ),
                   ],
@@ -241,7 +252,7 @@ class DiaryScreen extends StatelessWidget {
                   onPressed: () async {
                     await _diaryProvider.setDiaryData(
                         _diaryProvider.textEditingController.text);
-                    _diaryProvider.getDiaryData();
+                    _dataProvider.getDiaryData();
                     _diaryProvider.reSizedDiaryTextFormField();
                     _diaryProvider.textEditingController.clear();
                   },
