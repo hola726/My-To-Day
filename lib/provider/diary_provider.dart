@@ -13,32 +13,18 @@ class DiaryProvider extends ChangeNotifier {
   })  : _localStorageHelper = localStorageHelper,
         _textEditingController = textEditingController,
         _diaryTextFormFocusNode = diaryTextFormFocusNode,
-        _context = context {
-    getDiaryData();
-  }
+        _context = context;
   final LocalStorageHelper _localStorageHelper;
   final BuildContext _context;
   final FocusNode _diaryTextFormFocusNode;
   final TextEditingController _textEditingController;
 
-  DiaryData? _diaryData;
   bool _isLargeTextForm = false;
-  late List<DiaryData> _allDiaryData;
-  late List<DiaryData> _reversedData =
-      _allDiaryData.reversed.map((data) => data).toList();
 
   TextEditingController get textEditingController => _textEditingController;
-  DiaryData? get diaryData => _diaryData;
   bool get isLargeTextForm => _isLargeTextForm;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
-  List<DiaryData> get allDiaryData => _allDiaryData;
-  List<DiaryData> get reversedData => _reversedData;
   BuildContext get context => _context;
-
-  set diaryData(DiaryData? diaryData) {
-    _diaryData = diaryData;
-    notifyListeners();
-  }
 
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
@@ -47,16 +33,6 @@ class DiaryProvider extends ChangeNotifier {
 
   void getChange() {
     notifyListeners();
-  }
-
-  void getDiaryData() {
-    _allDiaryData = _localStorageHelper.getAllDiaryData();
-    getReversedData();
-    notifyListeners();
-  }
-
-  void getReversedData() {
-    _reversedData = _allDiaryData.reversed.map((data) => data).toList();
   }
 
   void gestureOnTap() {
@@ -77,11 +53,25 @@ class DiaryProvider extends ChangeNotifier {
   }
 
   Future<void> setDiaryData(String contents) async {
+    DateTime time = DateTime.now();
     await _localStorageHelper.setDiaryData(
-      date: DateTime.now().toString(),
+      date: time.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
-        time: DateTime.now(),
+        time: time,
+      ),
+    );
+  }
+
+  Future<void> editDiaryData({
+    required String contents,
+    required DateTime date,
+  }) async {
+    await _localStorageHelper.setDiaryData(
+      date: date.toString(),
+      diaryDataModel: DiaryData(
+        contents: contents,
+        time: date,
       ),
     );
   }
