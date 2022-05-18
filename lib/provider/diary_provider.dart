@@ -20,14 +20,21 @@ class DiaryProvider extends ChangeNotifier {
   final TextEditingController _textEditingController;
 
   bool _isLargeTextForm = false;
+  bool _isSearchState = false;
 
   TextEditingController get textEditingController => _textEditingController;
   bool get isLargeTextForm => _isLargeTextForm;
+  bool get isSearchState => _isSearchState;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
   BuildContext get context => _context;
 
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
+    notifyListeners();
+  }
+
+  set isSearchState(bool isSearchState) {
+    _isSearchState = isSearchState;
     notifyListeners();
   }
 
