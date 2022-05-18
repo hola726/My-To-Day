@@ -233,6 +233,105 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
+  Widget? buildLeading() {
+    if (_diaryProvider.isSearchState == true) return null;
+
+    if (_diaryProvider.isLargeTextForm == true) {
+      return IconButton(
+        onPressed: _diaryProvider.reSizedDiaryTextFormField,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        icon: Icon(
+          Icons.clear,
+          size: 27.w,
+        ),
+      );
+    } else {
+      return Row(
+        children: [
+          IconButton(
+            onPressed: () => {},
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            icon: Icon(
+              Icons.settings,
+              size: 27.w,
+            ),
+          ),
+          IconButton(
+            onPressed: () => _diaryProvider.isSearchState = true,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            icon: Icon(
+              Icons.search,
+              size: 27.w,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  List<Widget>? buildAppBarWidgets() {
+    return [
+      IconButton(
+        onPressed: () => _diaryProvider.isSearchState = false,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        icon: Icon(
+          Icons.arrow_back_ios,
+          size: 25.w,
+        ),
+      ),
+      IconButton(
+        onPressed: () => {},
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        icon: Icon(
+          Icons.search,
+          size: 27.w,
+        ),
+      ),
+      SizedBox(
+        width: 267.w,
+      ),
+    ];
+  }
+
+  Widget? buildRightTopWidget() {
+    if (_diaryProvider.isSearchState == true) return null;
+    if (_diaryProvider.isLargeTextForm == true) {
+      return IconButton(
+        onPressed: () async {
+          await _diaryProvider
+              .setDiaryData(_diaryProvider.textEditingController.text);
+          _dataProvider.getAllDiaryData();
+          _diaryProvider.reSizedDiaryTextFormField();
+          _diaryProvider.textEditingController.clear();
+        },
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        color: _diaryProvider.textEditingController.text.isNotEmpty
+            ? Colors.red
+            : null,
+        icon: Icon(
+          Icons.check,
+          size: 27.w,
+        ),
+      );
+    } else {
+      return IconButton(
+        onPressed: () => {},
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        icon: Icon(
+          Icons.calendar_today,
+          size: 27.w,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -241,37 +340,10 @@ class DiaryScreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
           title: _diaryProvider.isLargeTextForm ? "WRITE" : "MYTODAY",
-          leading: _diaryProvider.isLargeTextForm == true
-              ? IconButton(
-                  onPressed: _diaryProvider.reSizedDiaryTextFormField,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  icon: Icon(
-                    Icons.clear,
-                    size: 27.w,
-                  ),
-                )
-              : null,
-          rightTopWidget: _diaryProvider.isLargeTextForm == true
-              ? IconButton(
-                  onPressed: () async {
-                    await _diaryProvider.setDiaryData(
-                        _diaryProvider.textEditingController.text);
-                    _dataProvider.getAllDiaryData();
-                    _diaryProvider.reSizedDiaryTextFormField();
-                    _diaryProvider.textEditingController.clear();
-                  },
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  color: _diaryProvider.textEditingController.text.isNotEmpty
-                      ? Colors.red
-                      : null,
-                  icon: Icon(
-                    Icons.check,
-                    size: 27.w,
-                  ),
-                )
-              : null,
+          leadingWidth: _diaryProvider.isLargeTextForm == true ? null : 200.w,
+          leading: buildLeading(),
+          appBarWidgets: buildAppBarWidgets(),
+          rightTopWidget: buildRightTopWidget(),
           bottomShadow: true,
           titleColor: AppTheme.primaryContrastColor,
           backgroundColors: AppTheme.textPrimaryColor,
