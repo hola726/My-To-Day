@@ -1,12 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/constants/constants.dart';
 
 import '../../app_theme.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  MainAppBar({
+  const MainAppBar({
+    Key? key,
     this.leading,
     this.isShowBackButton,
     this.title,
@@ -18,7 +18,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.rightTopWidget,
     this.appBarWidgets,
     this.leadingWidth,
-  }) : preferredSize = const Size.fromHeight(kAppBarSize);
+  })  : preferredSize = const Size.fromHeight(kAppBarSize),
+        super(key: key);
 
   @override
   final Size preferredSize;
@@ -39,9 +40,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     final NavigatorState _navigatorState = Navigator.of(context);
     return AppBar(
       centerTitle: true,
-      leading: leading != null
-          ? leading
-          : _navigatorState.canPop() && isShowBackButton == true
+      leading: leading ??
+          (_navigatorState.canPop() && isShowBackButton == true
               ? IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
@@ -49,7 +49,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     size: 24.w,
                   ),
                 )
-              : null,
+              : null),
       actions: rightTopWidget != null
           ? [
               rightTopWidget!,
@@ -63,22 +63,18 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? null
           : Text(
               title!,
-              style: titleTextStyle == null
-                  ? isKRTitle == true
+              style: titleTextStyle ??
+                  (isKRTitle == true
                       ? AppTheme.subtitle1_KR.copyWith(
                           color: titleColor ?? AppTheme.textPrimaryColor,
                         )
                       : AppTheme.subtitle1.copyWith(
                           color: titleColor ?? AppTheme.textPrimaryColor,
-                        )
-                  : titleTextStyle,
+                        )),
               textAlign: TextAlign.start,
             ),
-      backgroundColor: backgroundColors == null
-          ? bottomShadow == true
-              ? Colors.white
-              : Colors.transparent
-          : backgroundColors,
+      backgroundColor: backgroundColors ??
+          (bottomShadow == true ? Colors.white : Colors.transparent),
       toolbarHeight: kAppBarSize.h,
       bottomOpacity: bottomShadow == true ? 1.0 : 0.0,
       toolbarOpacity: 1.0,

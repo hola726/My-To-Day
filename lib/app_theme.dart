@@ -20,10 +20,10 @@ class AppTheme {
       backgroundColor: Colors.white,
       scaffoldBackgroundColor: Colors.white,
       errorColor: primaryMainColor,
-      iconTheme: IconThemeData(
+      iconTheme: const IconThemeData(
         color: primaryMainColor,
       ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: primaryMainColor,
         foregroundColor: Colors.white,
       ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 
 import '../../app_theme.dart';
 
 class DiaryItem extends StatefulWidget {
-  DiaryItem({
+  const DiaryItem({
+    Key? key,
     required this.data,
     this.onTap,
-  });
+  }) : super(key: key);
 
   final DiaryData data;
   final void Function()? onTap;
