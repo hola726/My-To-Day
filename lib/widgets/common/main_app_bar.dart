@@ -16,6 +16,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottomShadow,
     this.titleColor,
     this.rightTopWidget,
+    this.appBarWidgets,
+    this.leadingWidth,
   }) : preferredSize = const Size.fromHeight(kAppBarSize);
 
   @override
@@ -30,6 +32,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? backgroundColors;
   final Color? titleColor;
   final Widget? rightTopWidget;
+  final List<Widget>? appBarWidgets;
+  final double? leadingWidth;
   @override
   Widget build(BuildContext context) {
     final NavigatorState _navigatorState = Navigator.of(context);
@@ -53,7 +57,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: 16.w,
               ),
             ]
-          : null,
+          : appBarWidgets,
+      leadingWidth: leadingWidth,
       title: title == null
           ? null
           : Text(
