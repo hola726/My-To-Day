@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';

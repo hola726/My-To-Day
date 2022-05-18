@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 
