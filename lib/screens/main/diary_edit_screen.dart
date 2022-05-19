@@ -28,7 +28,8 @@ class DiaryEditScreen extends StatelessWidget {
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
-        textEditingController: TextEditingController(),
+        diaryTextFormController: TextEditingController(),
+        searchTextFormController: TextEditingController(),
         localStorageHelper: LocalStorageHelper(),
         diaryTextFormFocusNode: FocusNode(),
         context: context,
@@ -49,7 +50,7 @@ class DiaryEditScreen extends StatelessWidget {
         children: [
           DiaryTextFormField(
             diaryProvider: _diaryProvider,
-            controller: _diaryProvider.textEditingController,
+            controller: _diaryProvider.diaryTextFormController,
             height: MediaQuery.of(_diaryProvider.context).size.height -
                 MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
                 116.h,
@@ -85,16 +86,16 @@ class DiaryEditScreen extends StatelessWidget {
         rightTopWidget: IconButton(
           onPressed: () async {
             await _diaryProvider.editDiaryData(
-              contents: _diaryProvider.textEditingController.text,
+              contents: _diaryProvider.diaryTextFormController.text,
               date: _dataProvider.diaryData!.time,
             );
             _dataProvider.getAllDiaryData();
-            _diaryProvider.textEditingController.clear();
+            _diaryProvider.diaryTextFormController.clear();
             Navigator.of(context).pop();
           },
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
-          color: _diaryProvider.textEditingController.text.isNotEmpty
+          color: _diaryProvider.diaryTextFormController.text.isNotEmpty
               ? Colors.red
               : null,
           icon: Icon(
