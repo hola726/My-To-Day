@@ -48,7 +48,7 @@ class DiaryTextFormOption extends StatelessWidget {
                   padding: EdgeInsets.all(10.h),
                   child: InkWell(
                     onTap: () {
-                      _diaryProvider.textEditingController.clear();
+                      _diaryProvider.diaryTextFormController.clear();
                       Navigator.of(context).pop();
                     },
                     splashColor: Colors.transparent,
@@ -127,7 +127,7 @@ class DiaryTextFormOption extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: _diaryProvider.textEditingController.text.isNotEmpty
+            onPressed: _diaryProvider.diaryTextFormController.text.isNotEmpty
                 ? openDeleteTextModal
                 : null,
             icon: const Icon(
