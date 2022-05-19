@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
+import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
@@ -30,7 +31,8 @@ class DiaryScreen extends StatelessWidget {
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
-        textEditingController: TextEditingController(),
+        diaryTextFormController: TextEditingController(),
+        searchTextFormController: TextEditingController(),
         localStorageHelper: LocalStorageHelper(),
         diaryTextFormFocusNode: FocusNode(),
         context: context,
@@ -181,55 +183,114 @@ class DiaryScreen extends StatelessWidget {
   Widget _buildMain() {
     return Container(
       color: Colors.black,
-      child: Column(
-        children: [
-          DiaryTextFormField(
-            diaryProvider: _diaryProvider,
-            controller: _diaryProvider.textEditingController,
-            height: _diaryProvider.isLargeTextForm
-                ? MediaQuery.of(_diaryProvider.context).size.height -
-                    MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
-                    116.h
-                : 100.h,
-            hintText: "오늘은...",
-            isDisableIcon: _diaryProvider.isLargeTextForm,
-            onIconPressed: (value) async {
-              await _diaryProvider.setDiaryData(value);
-              _dataProvider.getAllDiaryData();
-            },
-            textFocusNode: _diaryProvider.diaryTextFormFocusNode,
-          ),
-          DiaryTextFormOption(diaryProvider: _diaryProvider),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _dataProvider.allDiaryData.length,
-              itemBuilder: (context, index) {
-                DiaryData data = _dataProvider.reversedData[index];
-                DiaryData? previousData = 0 <= index - 1
-                    ? _dataProvider.reversedData[index - 1]
-                    : null;
+      child: _diaryProvider.isSearchState == true
+          ? Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _dataProvider.filteredReversedData.length,
+                    itemBuilder: (context, index) {
+                      DiaryData? data =
+                          _dataProvider.filteredReversedData[index];
+                      DiaryData? previousData = 0 <= index - 1
+                          ? _dataProvider.filteredReversedData[index - 1]
+                          : null;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_diaryProvider.isSameDay(data, previousData) == false)
-                      SubTitleData(data: data),
-                    DiaryItem(
-                      data: data,
-                      onTap: () {
-                        _dataProvider.targetDataIndex = index;
+                      return data == null
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (_diaryProvider.isSameDay(
+                                        data, previousData) ==
+                                    false)
+                                  SubTitleData(data: data),
+                                DiaryItem(
+                                  data: data,
+                                  onTap: () {
+                                    _dataProvider.targetDataIndex = index;
 
-                        _dataProvider.diaryData = data;
-                        openBottomModal();
-                      },
+                                    _dataProvider.diaryData = data;
+                                    openBottomModal();
+                                  },
+                                ),
+                              ],
+                            );
+                    },
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              children: [
+                DiaryTextFormField(
+                  diaryProvider: _diaryProvider,
+                  controller: _diaryProvider.diaryTextFormController,
+                  height: _diaryProvider.isLargeTextForm
+                      ? MediaQuery.of(_diaryProvider.context).size.height -
+                          MediaQuery.of(_diaryProvider.context)
+                              .viewInsets
+                              .bottom -
+                          116.h
+                      : 100.h,
+                  hintText: "오늘은...",
+                  handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
+                  isDisableIcon: _diaryProvider.isLargeTextForm,
+                  onIconPressed: (value) async {
+                    await _diaryProvider.setDiaryData(value);
+                    _dataProvider.getAllDiaryData();
+                  },
+                  suffixIcon: IconButton(
+                    padding: EdgeInsets.all(10.w),
+                    onPressed: () async {
+                      await _diaryProvider.setDiaryData(
+                          _diaryProvider.diaryTextFormController.text);
+                      _dataProvider.getAllDiaryData();
+                      _diaryProvider.diaryTextFormController.clear();
+                    },
+                    iconSize: 55.w,
+                    icon: Icon(
+                      Icons.check_box,
+                      color:
+                          _diaryProvider.diaryTextFormController.text.isNotEmpty
+                              ? AppTheme.errorColor
+                              : AppTheme.backdropOverlay_65,
                     ),
-                  ],
-                );
-              },
+                  ),
+                  textFocusNode: _diaryProvider.diaryTextFormFocusNode,
+                ),
+                DiaryTextFormOption(diaryProvider: _diaryProvider),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _dataProvider.allDiaryData.length,
+                    itemBuilder: (context, index) {
+                      DiaryData data = _dataProvider.reversedData[index];
+                      DiaryData? previousData = 0 <= index - 1
+                          ? _dataProvider.reversedData[index - 1]
+                          : null;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (_diaryProvider.isSameDay(data, previousData) ==
+                              false)
+                            SubTitleData(data: data),
+                          DiaryItem(
+                            data: data,
+                            onTap: () {
+                              _dataProvider.targetDataIndex = index;
+
+                              _dataProvider.diaryData = data;
+                              openBottomModal();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -272,7 +333,7 @@ class DiaryScreen extends StatelessWidget {
     }
   }
 
-  List<Widget>? buildAppBarWidgets() {
+  List<Widget>? buildSearchWidgets() {
     return [
       IconButton(
         onPressed: () => _diaryProvider.isSearchState = false,
@@ -294,6 +355,31 @@ class DiaryScreen extends StatelessWidget {
       ),
       SizedBox(
         width: 267.w,
+        child: DiaryTextFormField(
+          controller: _diaryProvider.searchTextFormController,
+          diaryProvider: _diaryProvider,
+          hintText: CS.SEARCH,
+          handleOnChanged: _dataProvider.handleFilteredDataChanged,
+          hintStyle: AppTheme.button_large_KR.copyWith(
+            color: AppTheme.grey800,
+          ),
+          textStyle: AppTheme.button_large_KR.copyWith(
+            color: Colors.white,
+          ),
+          suffixIcon: IconButton(
+            onPressed: () {
+              _diaryProvider.searchTextFormController.clear();
+              _dataProvider.handleFilteredDataChanged(
+                  _diaryProvider.searchTextFormController.text);
+            },
+            splashColor: Colors.transparent,
+            iconSize: 20.w,
+            icon: Icon(
+              Icons.cancel,
+              color: AppTheme.grey200,
+            ),
+          ),
+        ),
       ),
     ];
   }
@@ -304,14 +390,14 @@ class DiaryScreen extends StatelessWidget {
       return IconButton(
         onPressed: () async {
           await _diaryProvider
-              .setDiaryData(_diaryProvider.textEditingController.text);
+              .setDiaryData(_diaryProvider.diaryTextFormController.text);
           _dataProvider.getAllDiaryData();
           _diaryProvider.reSizedDiaryTextFormField();
-          _diaryProvider.textEditingController.clear();
+          _diaryProvider.diaryTextFormController.clear();
         },
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        color: _diaryProvider.textEditingController.text.isNotEmpty
+        color: _diaryProvider.diaryTextFormController.text.isNotEmpty
             ? Colors.red
             : null,
         icon: Icon(
@@ -342,7 +428,7 @@ class DiaryScreen extends StatelessWidget {
           title: _diaryProvider.isLargeTextForm ? "WRITE" : "MYTODAY",
           leadingWidth: _diaryProvider.isLargeTextForm == true ? null : 200.w,
           leading: buildLeading(),
-          appBarWidgets: buildAppBarWidgets(),
+          appBarWidgets: buildSearchWidgets(),
           rightTopWidget: buildRightTopWidget(),
           bottomShadow: true,
           titleColor: AppTheme.primaryContrastColor,
