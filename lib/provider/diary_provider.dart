@@ -9,20 +9,25 @@ class DiaryProvider extends ChangeNotifier {
     required LocalStorageHelper localStorageHelper,
     required diaryTextFormFocusNode,
     required BuildContext context,
-    required TextEditingController textEditingController,
+    required TextEditingController diaryTextFormController,
+    required TextEditingController searchTextFormController,
   })  : _localStorageHelper = localStorageHelper,
-        _textEditingController = textEditingController,
+        _diaryTextFormController = diaryTextFormController,
+        _searchTextFormController = searchTextFormController,
         _diaryTextFormFocusNode = diaryTextFormFocusNode,
         _context = context;
   final LocalStorageHelper _localStorageHelper;
   final BuildContext _context;
   final FocusNode _diaryTextFormFocusNode;
-  final TextEditingController _textEditingController;
+  final TextEditingController _diaryTextFormController;
+  final TextEditingController _searchTextFormController;
 
   bool _isLargeTextForm = false;
   bool _isSearchState = false;
 
-  TextEditingController get textEditingController => _textEditingController;
+  TextEditingController get diaryTextFormController => _diaryTextFormController;
+  TextEditingController get searchTextFormController =>
+      _searchTextFormController;
   bool get isLargeTextForm => _isLargeTextForm;
   bool get isSearchState => _isSearchState;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
@@ -94,5 +99,25 @@ class DiaryProvider extends ChangeNotifier {
       data,
       subject: data,
     );
+  }
+
+  void handleDiaryTextFormChanged(String value) {
+    diaryTextFormController.value = TextEditingValue(
+      text: value,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: value.length),
+      ),
+    );
+    notifyListeners();
+  }
+
+  void handleSearchTextFormChanged(String value) {
+    searchTextFormController.value = TextEditingValue(
+      text: value,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: value.length),
+      ),
+    );
+    notifyListeners();
   }
 }
