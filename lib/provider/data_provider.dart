@@ -11,18 +11,15 @@ class DataProvider extends ChangeNotifier {
 
   final LocalStorageHelper _localStorageHelper;
   late List<DiaryData> _allDiaryData;
-  List<DiaryData?> _filteredDiaryData = [];
   DiaryData? _diaryData;
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
-
   List<DiaryData?> _filteredReversedData = [];
-
   int _targetDataIndex = 0;
+  String? _filteredValue;
 
   DiaryData? get diaryData => _diaryData;
   List<DiaryData> get allDiaryData => _allDiaryData;
-  List<DiaryData?> get filteredDiaryData => _filteredDiaryData;
   List<DiaryData> get reversedData => _reversedData;
   List<DiaryData?> get filteredReversedData => _filteredReversedData;
   int get targetDataIndex => _targetDataIndex;
@@ -54,24 +51,40 @@ class DataProvider extends ChangeNotifier {
 
   void getReversedData() {
     _reversedData = _allDiaryData.reversed.map((data) => data).toList();
+    _getFilteredReversedData();
   }
 
-  void filteredData(String value) {
-    print(value);
+  void _getFilteredReversedData() {
+    _filteredReversedData = _allDiaryData
+        .map((diaryData) {
+          if (diaryData.contents.contains(_filteredValue ?? '')) {
+            return diaryData;
+          }
+        })
+        .toList()
+        .reversed
+        .map((data) => data)
+        .toList();
+  }
+
+  void handleFilteredDataChanged(String value) {
+    _filteredValue = value;
     if (value == '') {
-      print('in');
-      _filteredDiaryData = [];
       _filteredReversedData = [];
       notifyListeners();
+      return;
     }
 
-    _filteredDiaryData = _allDiaryData.map((diaryData) {
-      if (diaryData.contents.contains(value)) {
-        return diaryData;
-      }
-    }).toList();
-    _filteredReversedData =
-        _filteredDiaryData.reversed.map((data) => data).toList();
+    _filteredReversedData = _allDiaryData
+        .map((diaryData) {
+          if (diaryData.contents.contains(value)) {
+            return diaryData;
+          }
+        })
+        .toList()
+        .reversed
+        .map((data) => data)
+        .toList();
     notifyListeners();
   }
 }
