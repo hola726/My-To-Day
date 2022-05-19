@@ -9,27 +9,29 @@ class DiaryTextFormField extends StatefulWidget {
     required this.controller,
     required this.diaryProvider,
     this.hintText,
+    this.hintStyle,
     this.textStyle,
     this.height,
     this.suffixIcon,
-    this.suffixIconColor,
     this.onIconPressed,
     this.textFocusNode,
     this.isDisableIcon,
     this.initialValue,
+    this.handleOnChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String? hintText;
   final String? initialValue;
   final TextStyle? textStyle;
+  final TextStyle? hintStyle;
   final double? height;
-  final IconData? suffixIcon;
-  final Color? suffixIconColor;
+  final Widget? suffixIcon;
   final FocusNode? textFocusNode;
   final void Function(String text)? onIconPressed;
   final bool? isDisableIcon;
   final DiaryProvider diaryProvider;
+  final void Function(String)? handleOnChanged;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
@@ -45,17 +47,6 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     }
   }
 
-  void handleOnChanged(String value) {
-    widget.controller.value = TextEditingValue(
-      text: value,
-      selection: TextSelection.fromPosition(
-        TextPosition(offset: value.length),
-      ),
-    );
-    widget.diaryProvider.getChange();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -63,7 +54,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
       child: TextFormField(
         focusNode: widget.textFocusNode,
         controller: widget.controller,
-        onChanged: handleOnChanged,
+        onChanged: widget.handleOnChanged,
         expands: true,
         maxLines: null,
         style: widget.textStyle ??
@@ -73,34 +64,16 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
             ),
         decoration: InputDecoration(
             border: InputBorder.none,
-            suffixIcon: IconButton(
-              padding: EdgeInsets.all(10.w),
-              onPressed: () {
-                if (widget.onIconPressed != null) {
-                  widget.onIconPressed!(widget.controller.text);
-                  widget.controller.clear();
-                  setState(() {});
-                }
-              },
-              iconSize: 55.w,
-              icon: widget.isDisableIcon == true
-                  ? Container()
-                  : Icon(
-                      widget.suffixIcon ?? Icons.check_box,
-                      color: widget.controller.text.isNotEmpty
-                          ? AppTheme.errorColor
-                          : widget.suffixIconColor ??
-                              AppTheme.backdropOverlay_65,
-                    ),
-            ),
+            suffixIcon: widget.suffixIcon,
             contentPadding: EdgeInsets.all(
               10.w,
             ),
             hintText: widget.hintText,
-            hintStyle: AppTheme.subtitle1.copyWith(
-              fontSize: 12.sp,
-              color: AppTheme.textDisabledColor,
-            )),
+            hintStyle: widget.hintStyle ??
+                AppTheme.subtitle1.copyWith(
+                  fontSize: 12.sp,
+                  color: AppTheme.textDisabledColor,
+                )),
       ),
     );
   }
