@@ -67,7 +67,7 @@ class DiaryProvider extends ChangeNotifier {
   Future<void> setDiaryData(String contents) async {
     DateTime time = DateTime.now();
     await _localStorageHelper.setDiaryData(
-      date: time.toString(),
+      key: time.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
         time: time,
@@ -80,7 +80,7 @@ class DiaryProvider extends ChangeNotifier {
     required DateTime date,
   }) async {
     await _localStorageHelper.setDiaryData(
-      date: date.toString(),
+      key: date.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
         time: date,

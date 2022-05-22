@@ -48,10 +48,10 @@ class LocalStorageHelper {
   }
 
   Future<void> setDiaryData({
-    required String date,
+    required String key,
     required DiaryData diaryDataModel,
   }) async {
-    await handleBox<DiaryData>(HiveKey.diaryData).put(date, diaryDataModel);
+    await handleBox<DiaryData>(HiveKey.diaryData).put(key, diaryDataModel);
   }
 
   Future<void> deleteDiaryData({required date}) async {
