@@ -54,7 +54,15 @@ class LocalStorageHelper {
     await handleBox<DiaryData>(HiveKey.diaryData).put(key, diaryDataModel);
   }
 
-  Future<void> deleteDiaryData({required date}) async {
-    await handleBox<DiaryData>(HiveKey.diaryData).delete(date);
+  Future<void> editDiaryData({
+    required String key,
+    required DiaryData diaryDataModel,
+  }) async {
+    await deleteDiaryData(key: key);
+    await setDiaryData(key: key, diaryDataModel: diaryDataModel);
+  }
+
+  Future<void> deleteDiaryData({required key}) async {
+    await handleBox<DiaryData>(HiveKey.diaryData).delete(key);
   }
 }
