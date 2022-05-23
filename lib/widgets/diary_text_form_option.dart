@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
+import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 
@@ -11,10 +14,13 @@ class DiaryTextFormOption extends StatelessWidget {
   const DiaryTextFormOption({
     Key? key,
     required DiaryProvider diaryProvider,
+    required DataProvider dataProvider,
   })  : _diaryProvider = diaryProvider,
+        _dataProvider = dataProvider,
         super(key: key);
 
   final DiaryProvider _diaryProvider;
+  final DataProvider _dataProvider;
 
   Future<void> openDeleteTextModal() async {
     await showModalBottomSheet(
@@ -97,7 +103,24 @@ class DiaryTextFormOption extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            onPressed: () => {},
+            onPressed: () async {
+              final ImagePicker _picker = ImagePicker();
+              final XFile? photo =
+                  await _picker.pickImage(source: ImageSource.camera);
+              if (photo != null) {
+                if (_dataProvider.diaryData != null) {
+                  _dataProvider.diaryData = _dataProvider.diaryData!.copyWith(
+                    image: photo,
+                  );
+                } else {
+                  _dataProvider.diaryData = DiaryData(
+                    contents: '',
+                    time: DateTime.now(),
+                    image: photo,
+                  );
+                }
+              }
+            },
             icon: const Icon(
               Icons.camera_alt_outlined,
               color: Colors.white,

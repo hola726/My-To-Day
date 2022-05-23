@@ -259,7 +259,10 @@ class DiaryScreen extends StatelessWidget {
                   ),
                   textFocusNode: _diaryProvider.diaryTextFormFocusNode,
                 ),
-                DiaryTextFormOption(diaryProvider: _diaryProvider),
+                DiaryTextFormOption(
+                  diaryProvider: _diaryProvider,
+                  dataProvider: _dataProvider,
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _dataProvider.allDiaryData.length,
