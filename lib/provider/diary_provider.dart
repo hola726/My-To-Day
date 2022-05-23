@@ -79,7 +79,7 @@ class DiaryProvider extends ChangeNotifier {
     required String contents,
     required DateTime date,
   }) async {
-    await _localStorageHelper.setDiaryData(
+    await _localStorageHelper.editDiaryData(
       key: date.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
