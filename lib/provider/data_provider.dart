@@ -12,6 +12,7 @@ class DataProvider extends ChangeNotifier {
   final LocalStorageHelper _localStorageHelper;
   late List<DiaryData> _allDiaryData;
   DiaryData? _diaryData;
+  DiaryData? _tmpDiaryData;
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
   List<DiaryData?> _filteredReversedData = [];
@@ -19,6 +20,7 @@ class DataProvider extends ChangeNotifier {
   String? _filteredValue;
 
   DiaryData? get diaryData => _diaryData;
+  DiaryData? get tmpDiaryData => _tmpDiaryData;
   List<DiaryData> get allDiaryData => _allDiaryData;
   List<DiaryData> get reversedData => _reversedData;
   List<DiaryData?> get filteredReversedData => _filteredReversedData;
@@ -26,6 +28,11 @@ class DataProvider extends ChangeNotifier {
 
   set diaryData(DiaryData? diaryData) {
     _diaryData = diaryData;
+    notifyListeners();
+  }
+
+  set tmpDiaryData(DiaryData? tmpDiaryData) {
+    _tmpDiaryData = tmpDiaryData;
     notifyListeners();
   }
 
