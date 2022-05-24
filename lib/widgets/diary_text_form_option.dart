@@ -107,23 +107,17 @@ class DiaryTextFormOption extends StatelessWidget {
               final ImagePicker _picker = ImagePicker();
               final XFile? photo =
                   await _picker.pickImage(source: ImageSource.camera);
-              if (photo != null) {
-                if (_dataProvider.diaryData != null) {
-                  _dataProvider.diaryData = _dataProvider.diaryData!.copyWith(
-                    image: photo,
-                  );
-                } else {
-                  _dataProvider.diaryData = DiaryData(
-                    contents: '',
-                    time: DateTime.now(),
-                    image: photo,
-                  );
-                }
-              }
+              _dataProvider.tmpDiaryData = DiaryData(
+                contents: '',
+                time: DateTime.now(),
+                image: photo,
+              );
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.camera_alt_outlined,
-              color: Colors.white,
+              color: _dataProvider.tmpDiaryData?.image != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
