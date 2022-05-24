@@ -64,13 +64,19 @@ class DiaryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setDiaryData(String contents) async {
+  Future<void> setDiaryData({
+    required String contents,
+    dynamic image,
+    String? locate,
+  }) async {
     DateTime time = DateTime.now();
     await _localStorageHelper.setDiaryData(
       key: time.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
         time: time,
+        image: image,
+        locate: locate,
       ),
     );
   }
