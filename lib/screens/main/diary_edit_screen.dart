@@ -59,7 +59,10 @@ class DiaryEditScreen extends StatelessWidget {
             isDisableIcon: true,
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),
-          DiaryTextFormOption(diaryProvider: _diaryProvider),
+          DiaryTextFormOption(
+            diaryProvider: _diaryProvider,
+            dataProvider: _dataProvider,
+          ),
         ],
       ),
     );

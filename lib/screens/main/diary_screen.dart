@@ -237,14 +237,19 @@ class DiaryScreen extends StatelessWidget {
                   handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
                   isDisableIcon: _diaryProvider.isLargeTextForm,
                   onIconPressed: (value) async {
-                    await _diaryProvider.setDiaryData(value);
+                    await _diaryProvider.setDiaryData(
+                      contents: value,
+                    );
                     _dataProvider.getAllDiaryData();
                   },
                   suffixIcon: IconButton(
                     padding: EdgeInsets.all(10.w),
                     onPressed: () async {
                       await _diaryProvider.setDiaryData(
-                          _diaryProvider.diaryTextFormController.text);
+                        contents: _diaryProvider.diaryTextFormController.text,
+                        image: _dataProvider.tmpDiaryData?.image,
+                        locate: _dataProvider.tmpDiaryData?.locate,
+                      );
                       _dataProvider.getAllDiaryData();
                       _diaryProvider.diaryTextFormController.clear();
                     },
@@ -392,8 +397,9 @@ class DiaryScreen extends StatelessWidget {
     if (_diaryProvider.isLargeTextForm == true) {
       return IconButton(
         onPressed: () async {
-          await _diaryProvider
-              .setDiaryData(_diaryProvider.diaryTextFormController.text);
+          await _diaryProvider.setDiaryData(
+            contents: _diaryProvider.diaryTextFormController.text,
+          );
           _dataProvider.getAllDiaryData();
           _diaryProvider.reSizedDiaryTextFormField();
           _diaryProvider.diaryTextFormController.clear();
