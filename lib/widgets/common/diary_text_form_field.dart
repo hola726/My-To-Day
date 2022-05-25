@@ -43,40 +43,52 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialValue != null) {
-      widget.controller.text = widget.initialValue!;
+    if (widget.initialText != null) {
+      widget.controller.text = widget.initialText!;
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: widget.height,
-      child: TextFormField(
-        focusNode: widget.textFocusNode,
-        controller: widget.controller,
-        onChanged: widget.handleOnChanged,
-        expands: true,
-        maxLines: null,
-        style: widget.textStyle ??
-            AppTheme.subtitle1.copyWith(
-              fontSize: 12.sp,
-              color: Colors.white,
-            ),
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            suffixIcon: widget.suffixIcon,
-            contentPadding: EdgeInsets.all(
-              10.w,
-            ),
-            hintText: widget.hintText,
-            hintStyle: widget.hintStyle ??
+    return Column(
+      children: [
+        SizedBox(
+          height: widget.height,
+          child: TextFormField(
+            focusNode: widget.textFocusNode,
+            controller: widget.controller,
+            onChanged: widget.handleOnChanged,
+            expands: true,
+            maxLines: null,
+            style: widget.textStyle ??
                 AppTheme.subtitle1.copyWith(
                   fontSize: 12.sp,
-                  color: AppTheme.textDisabledColor,
-                )),
-      ),
+                  color: Colors.white,
+                ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixIcon:
+                    widget.isDisableIcon == true ? null : widget.suffixIcon,
+                contentPadding: EdgeInsets.all(
+                  10.w,
+                ),
+                hintText: widget.hintText,
+                hintStyle: widget.hintStyle ??
+                    AppTheme.subtitle1.copyWith(
+                      fontSize: 12.sp,
+                      color: AppTheme.textDisabledColor,
+                    )),
+          ),
+        ),
+        if (widget.initialImage != null &&
+            widget.diaryProvider.isLargeTextForm == true)
+          Row(
+            children: [
+              //todo
+            ],
+          ),
+      ],
     );
   }
 }
