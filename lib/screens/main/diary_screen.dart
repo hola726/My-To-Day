@@ -234,6 +234,7 @@ class DiaryScreen extends StatelessWidget {
                           116.h
                       : 100.h,
                   hintText: "오늘은...",
+                  initialImage: _dataProvider.tmpDiaryData?.image,
                   handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
                   isDisableIcon: _diaryProvider.isLargeTextForm,
                   onIconPressed: (value) async {
