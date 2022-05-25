@@ -16,13 +16,14 @@ class DiaryTextFormField extends StatefulWidget {
     this.onIconPressed,
     this.textFocusNode,
     this.isDisableIcon,
-    this.initialValue,
+    this.initialText,
+    this.initialImage,
     this.handleOnChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String? hintText;
-  final String? initialValue;
+  final String? initialText;
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final double? height;
@@ -32,6 +33,7 @@ class DiaryTextFormField extends StatefulWidget {
   final bool? isDisableIcon;
   final DiaryProvider diaryProvider;
   final void Function(String)? handleOnChanged;
+  final dynamic initialImage;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
