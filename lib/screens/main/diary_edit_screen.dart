@@ -56,7 +56,7 @@ class DiaryEditScreen extends StatelessWidget {
                 116.h,
             hintText: "오늘은...",
             initialText: _dataProvider.diaryData?.contents,
-            initialImage: _dataProvider.diaryData?.image,
+            initialImage: _dataProvider.diaryData?.cameraImage,
             isDisableIcon: true,
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
           ),

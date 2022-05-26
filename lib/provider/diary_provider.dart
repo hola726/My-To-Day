@@ -75,7 +75,7 @@ class DiaryProvider extends ChangeNotifier {
       diaryDataModel: DiaryData(
         contents: contents,
         time: time,
-        image: image,
+        cameraImage: image,
         locate: locate,
       ),
     );

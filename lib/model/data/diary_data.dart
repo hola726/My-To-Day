@@ -7,7 +7,8 @@ class DiaryData extends HiveObject {
   DiaryData({
     required this.contents,
     required this.time,
-    this.image,
+    this.cameraImage,
+    this.pickerImages,
     this.locate,
   });
   @HiveField(0)
@@ -15,8 +16,10 @@ class DiaryData extends HiveObject {
   @HiveField(1)
   final DateTime time;
   @HiveField(2)
-  final dynamic image;
+  final dynamic cameraImage;
   @HiveField(3)
+  final dynamic pickerImages;
+  @HiveField(4)
   final String? locate;
 
   DiaryData copyWith({
@@ -28,7 +31,7 @@ class DiaryData extends HiveObject {
     return DiaryData(
       contents: contents ?? this.contents,
       time: time ?? this.time,
-      image: image ?? this.image,
+      cameraImage: image ?? this.cameraImage,
       locate: locate ?? this.locate,
     );
   }
@@ -37,7 +40,7 @@ class DiaryData extends HiveObject {
     return {
       'contents': contents,
       'time': time,
-      'image': image,
+      'image': cameraImage,
       'locate': locate,
     };
   }
@@ -46,7 +49,7 @@ class DiaryData extends HiveObject {
     return DiaryData(
       contents: map['contents'] as String,
       time: map['time'] as DateTime,
-      image: map['image'] as dynamic,
+      cameraImage: map['image'] as dynamic,
       locate: map['locate'] as String,
     );
   }
