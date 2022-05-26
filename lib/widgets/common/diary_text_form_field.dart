@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
@@ -49,46 +51,60 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: widget.height,
-          child: TextFormField(
-            focusNode: widget.textFocusNode,
-            controller: widget.controller,
-            onChanged: widget.handleOnChanged,
-            expands: true,
-            maxLines: null,
-            style: widget.textStyle ??
+  SizedBox buildTextFormField() {
+    return SizedBox(
+      height: widget.height,
+      child: TextFormField(
+        focusNode: widget.textFocusNode,
+        controller: widget.controller,
+        onChanged: widget.handleOnChanged,
+        expands: true,
+        maxLines: null,
+        style: widget.textStyle ??
+            AppTheme.subtitle1.copyWith(
+              fontSize: 12.sp,
+              color: Colors.white,
+            ),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            suffixIcon: widget.isDisableIcon == true ? null : widget.suffixIcon,
+            contentPadding: EdgeInsets.all(
+              10.w,
+            ),
+            hintText: widget.hintText,
+            hintStyle: widget.hintStyle ??
                 AppTheme.subtitle1.copyWith(
                   fontSize: 12.sp,
-                  color: Colors.white,
-                ),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                suffixIcon:
-                    widget.isDisableIcon == true ? null : widget.suffixIcon,
-                contentPadding: EdgeInsets.all(
-                  10.w,
-                ),
-                hintText: widget.hintText,
-                hintStyle: widget.hintStyle ??
-                    AppTheme.subtitle1.copyWith(
-                      fontSize: 12.sp,
-                      color: AppTheme.textDisabledColor,
-                    )),
-          ),
-        ),
-        if (widget.initialImage != null &&
-            widget.diaryProvider.isLargeTextForm == true)
-          Row(
-            children: [
-              //todo
-            ],
-          ),
-      ],
+                  color: AppTheme.textDisabledColor,
+                )),
+      ),
     );
+  }
+
+  bool isImageTextFormField() {
+    return widget.initialImage != null &&
+        widget.diaryProvider.isLargeTextForm == true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isImageTextFormField()
+        ? Column(
+            children: [
+              buildTextFormField(),
+              Row(
+                children: [
+                  Container(
+                    child: Image.file(
+                      File(widget.initialImage.path),
+                      height: 50.h,
+                      width: 50.w,
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        : buildTextFormField();
   }
 }
