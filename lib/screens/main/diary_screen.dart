@@ -181,7 +181,7 @@ class DiaryScreen extends StatelessWidget {
   }
 
   double handleImageSize() {
-    return _dataProvider.tmpDiaryData?.image != null ? 166.h : 116.h;
+    return _dataProvider.tmpDiaryData?.cameraImage != null ? 166.h : 116.h;
   }
 
   Widget _buildMain() {
@@ -238,7 +238,7 @@ class DiaryScreen extends StatelessWidget {
                           handleImageSize()
                       : 100.h,
                   hintText: "오늘은...",
-                  initialImage: _dataProvider.tmpDiaryData?.image,
+                  initialImage: _dataProvider.tmpDiaryData?.cameraImage,
                   handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
                   isDisableIcon: _diaryProvider.isLargeTextForm,
                   onIconPressed: (value) async {
@@ -252,7 +252,7 @@ class DiaryScreen extends StatelessWidget {
                     onPressed: () async {
                       await _diaryProvider.setDiaryData(
                         contents: _diaryProvider.diaryTextFormController.text,
-                        image: _dataProvider.tmpDiaryData?.image,
+                        image: _dataProvider.tmpDiaryData?.cameraImage,
                         locate: _dataProvider.tmpDiaryData?.locate,
                       );
                       _dataProvider.getAllDiaryData();

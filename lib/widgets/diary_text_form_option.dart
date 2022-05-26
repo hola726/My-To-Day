@@ -110,12 +110,12 @@ class DiaryTextFormOption extends StatelessWidget {
               _dataProvider.tmpDiaryData = DiaryData(
                 contents: '',
                 time: DateTime.now(),
-                image: photo,
+                cameraImage: photo,
               );
             },
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: _dataProvider.tmpDiaryData?.image != null
+              color: _dataProvider.tmpDiaryData?.cameraImage != null
                   ? Colors.red
                   : Colors.white,
             ),

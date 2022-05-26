@@ -19,22 +19,25 @@ class DiaryDataAdapter extends TypeAdapter<DiaryData> {
     return DiaryData(
       contents: fields[0] as String,
       time: fields[1] as DateTime,
-      image: fields[2] as dynamic,
-      locate: fields[3] as String?,
+      cameraImage: fields[2] as dynamic,
+      pickerImages: fields[3] as dynamic,
+      locate: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, DiaryData obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.contents)
       ..writeByte(1)
       ..write(obj.time)
       ..writeByte(2)
-      ..write(obj.image)
+      ..write(obj.cameraImage)
       ..writeByte(3)
+      ..write(obj.pickerImages)
+      ..writeByte(4)
       ..write(obj.locate);
   }
 
