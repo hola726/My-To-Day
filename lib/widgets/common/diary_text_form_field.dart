@@ -20,6 +20,7 @@ class DiaryTextFormField extends StatefulWidget {
     this.isDisableIcon,
     this.initialText,
     this.initialImage,
+    this.initialPickerImages,
     this.handleOnChanged,
   }) : super(key: key);
 
@@ -36,6 +37,7 @@ class DiaryTextFormField extends StatefulWidget {
   final DiaryProvider diaryProvider;
   final void Function(String)? handleOnChanged;
   final dynamic initialImage;
+  final dynamic initialPickerImages;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
@@ -82,7 +84,8 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   }
 
   bool isImageTextFormField() {
-    return widget.initialImage != null &&
+    return (widget.initialImage != null ||
+            widget.initialPickerImages != null) &&
         widget.diaryProvider.isLargeTextForm == true;
   }
 
@@ -100,7 +103,20 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                       height: 50.h,
                       width: 50.w,
                     ),
-                  )
+                  ),
+                  // widget.initialPickerImages.map((image) {
+                  //   if (image != null) {
+                  //     return Container(
+                  //       child: Image.file(
+                  //         File(image.path),
+                  //         height: 50.h,
+                  //         width: 50.w,
+                  //       ),
+                  //     );
+                  //   } else {
+                  //     return Container();
+                  //   }
+                  // }).toList()
                 ],
               ),
             ],
