@@ -107,11 +107,18 @@ class DiaryTextFormOption extends StatelessWidget {
               final ImagePicker _picker = ImagePicker();
               final XFile? photo =
                   await _picker.pickImage(source: ImageSource.camera);
-              _dataProvider.tmpDiaryData = DiaryData(
-                contents: '',
-                time: DateTime.now(),
-                cameraImage: photo,
-              );
+              if (_dataProvider.tmpDiaryData != null) {
+                _dataProvider.tmpDiaryData =
+                    _dataProvider.tmpDiaryData!.copyWith(
+                  cameraImage: photo,
+                );
+              } else {
+                _dataProvider.tmpDiaryData = DiaryData(
+                  contents: '',
+                  time: DateTime.now(),
+                  cameraImage: photo,
+                );
+              }
             },
             icon: Icon(
               Icons.camera_alt_outlined,
@@ -121,10 +128,27 @@ class DiaryTextFormOption extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () => {},
-            icon: const Icon(
+            onPressed: () async {
+              final ImagePicker _picker = ImagePicker();
+              final List<XFile>? images = await _picker.pickMultiImage();
+              if (_dataProvider.tmpDiaryData != null) {
+                _dataProvider.tmpDiaryData =
+                    _dataProvider.tmpDiaryData!.copyWith(
+                  pickerImages: images,
+                );
+              } else {
+                _dataProvider.tmpDiaryData = DiaryData(
+                  contents: '',
+                  time: DateTime.now(),
+                  pickerImages: images,
+                );
+              }
+            },
+            icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: Colors.white,
+              color: _dataProvider.tmpDiaryData?.pickerImages != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
