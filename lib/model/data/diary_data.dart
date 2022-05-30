@@ -25,13 +25,15 @@ class DiaryData extends HiveObject {
   DiaryData copyWith({
     String? contents,
     DateTime? time,
-    dynamic image,
+    dynamic cameraImage,
+    dynamic pickerImages,
     String? locate,
   }) {
     return DiaryData(
       contents: contents ?? this.contents,
       time: time ?? this.time,
-      cameraImage: image ?? this.cameraImage,
+      cameraImage: cameraImage ?? this.cameraImage,
+      pickerImages: pickerImages ?? this.pickerImages,
       locate: locate ?? this.locate,
     );
   }
