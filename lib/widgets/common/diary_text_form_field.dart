@@ -97,26 +97,30 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
               buildTextFormField(),
               Row(
                 children: [
-                  Container(
-                    child: Image.file(
-                      File(widget.initialImage.path),
-                      height: 50.h,
-                      width: 50.w,
+                  if (widget.initialImage != null)
+                    Container(
+                      child: Image.file(
+                        File(widget.initialImage.path),
+                        height: 50.h,
+                        width: 50.w,
+                      ),
                     ),
-                  ),
-                  // widget.initialPickerImages.map((image) {
-                  //   if (image != null) {
-                  //     return Container(
-                  //       child: Image.file(
-                  //         File(image.path),
-                  //         height: 50.h,
-                  //         width: 50.w,
-                  //       ),
-                  //     );
-                  //   } else {
-                  //     return Container();
-                  //   }
-                  // }).toList()
+                  if (widget.initialPickerImages != null)
+                    Row(
+                      children: widget.initialPickerImages.map<Widget>((image) {
+                        if (image != null) {
+                          return Container(
+                            child: Image.file(
+                              File(image.path),
+                              height: 50.h,
+                              width: 50.w,
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    ),
                 ],
               ),
             ],
