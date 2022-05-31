@@ -181,7 +181,10 @@ class DiaryScreen extends StatelessWidget {
   }
 
   double handleImageSize() {
-    return _dataProvider.tmpDiaryData?.cameraImage != null ? 166.h : 116.h;
+    return (_dataProvider.tmpDiaryData?.cameraImage != null ||
+            _dataProvider.tmpDiaryData?.pickerImages != null)
+        ? 166.h
+        : 116.h;
   }
 
   Widget _buildMain() {
