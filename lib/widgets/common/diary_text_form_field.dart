@@ -95,33 +95,40 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
         ? Column(
             children: [
               buildTextFormField(),
-              Row(
-                children: [
-                  if (widget.initialImage != null)
-                    Container(
-                      child: Image.file(
-                        File(widget.initialImage.path),
-                        height: 50.h,
-                        width: 50.w,
-                      ),
-                    ),
-                  if (widget.initialPickerImages != null)
-                    Row(
-                      children: widget.initialPickerImages.map<Widget>((image) {
-                        if (image != null) {
-                          return Container(
-                            child: Image.file(
-                              File(image.path),
-                              height: 50.h,
-                              width: 50.w,
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }).toList(),
-                    ),
-                ],
+              Container(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      if (widget.initialImage != null)
+                        Container(
+                          child: Image.file(
+                            File(widget.initialImage.path),
+                            height: 50.h,
+                            width: 50.w,
+                          ),
+                        ),
+                      if (widget.initialPickerImages != null)
+                        Row(
+                          children:
+                              widget.initialPickerImages.map<Widget>((image) {
+                            if (image != null) {
+                              return Container(
+                                child: Image.file(
+                                  File(image.path),
+                                  height: 50.h,
+                                  width: 50.w,
+                                ),
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          }).toList(),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ],
           )
