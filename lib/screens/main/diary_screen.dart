@@ -248,6 +248,9 @@ class DiaryScreen extends StatelessWidget {
                   onIconPressed: (value) async {
                     await _diaryProvider.setDiaryData(
                       contents: value,
+                      cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
+                      pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
+                      locate: _dataProvider.tmpDiaryData?.pickerImages,
                     );
                     _dataProvider.getAllDiaryData();
                   },
@@ -256,7 +259,8 @@ class DiaryScreen extends StatelessWidget {
                     onPressed: () async {
                       await _diaryProvider.setDiaryData(
                         contents: _diaryProvider.diaryTextFormController.text,
-                        image: _dataProvider.tmpDiaryData?.cameraImage,
+                        cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
+                        pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
                         locate: _dataProvider.tmpDiaryData?.locate,
                       );
                       _dataProvider.getAllDiaryData();
@@ -408,6 +412,9 @@ class DiaryScreen extends StatelessWidget {
         onPressed: () async {
           await _diaryProvider.setDiaryData(
             contents: _diaryProvider.diaryTextFormController.text,
+            cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
+            pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
+            locate: _dataProvider.tmpDiaryData?.locate,
           );
           _dataProvider.getAllDiaryData();
           _diaryProvider.reSizedDiaryTextFormField();
