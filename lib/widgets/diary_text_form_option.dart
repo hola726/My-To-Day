@@ -15,12 +15,15 @@ class DiaryTextFormOption extends StatelessWidget {
     Key? key,
     required DiaryProvider diaryProvider,
     required DataProvider dataProvider,
-  })  : _diaryProvider = diaryProvider,
+    bool? isEditTextFormOption,
+  })  : _isEdit = isEditTextFormOption,
+        _diaryProvider = diaryProvider,
         _dataProvider = dataProvider,
         super(key: key);
 
   final DiaryProvider _diaryProvider;
   final DataProvider _dataProvider;
+  final bool? _isEdit;
 
   Future<void> openDeleteTextModal() async {
     await showModalBottomSheet(
@@ -95,6 +98,70 @@ class DiaryTextFormOption extends StatelessWidget {
         });
   }
 
+  void setPhoto(XFile? photo) {
+    if (_dataProvider.tmpDiaryData != null) {
+      _dataProvider.tmpDiaryData = _dataProvider.tmpDiaryData!.copyWith(
+        cameraImage: photo,
+      );
+    } else {
+      _dataProvider.tmpDiaryData = DiaryData(
+        contents: '',
+        time: DateTime.now(),
+        cameraImage: photo,
+      );
+    }
+  }
+
+  void editPhoto(XFile? photo) {
+    if (_dataProvider.diaryData != null) {
+      _dataProvider.diaryData = _dataProvider.diaryData!.copyWith(
+        cameraImage: photo,
+      );
+    }
+  }
+
+  void setPickerImages(List<XFile>? images) {
+    if (_dataProvider.tmpDiaryData != null) {
+      _dataProvider.tmpDiaryData = _dataProvider.tmpDiaryData!.copyWith(
+        pickerImages: images,
+      );
+    } else {
+      _dataProvider.tmpDiaryData = DiaryData(
+        contents: '',
+        time: DateTime.now(),
+        pickerImages: images,
+      );
+    }
+  }
+
+  void editPickerImages(List<XFile>? images) {
+    if (_dataProvider.diaryData != null) {
+      _dataProvider.diaryData = _dataProvider.diaryData!.copyWith(
+        pickerImages: images,
+      );
+    }
+  }
+
+  Color setPhotoColor() {
+    return _isEdit == true
+        ? _dataProvider.diaryData?.cameraImage != null
+            ? Colors.red
+            : Colors.white
+        : _dataProvider.tmpDiaryData?.cameraImage != null
+            ? Colors.red
+            : Colors.white;
+  }
+
+  Color setPickerImageColor() {
+    return _isEdit == true
+        ? _dataProvider.diaryData?.pickerImages != null
+            ? Colors.red
+            : Colors.white
+        : _dataProvider.tmpDiaryData?.pickerImages != null
+            ? Colors.red
+            : Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,48 +174,31 @@ class DiaryTextFormOption extends StatelessWidget {
               final ImagePicker _picker = ImagePicker();
               final XFile? photo =
                   await _picker.pickImage(source: ImageSource.camera);
-              if (_dataProvider.tmpDiaryData != null) {
-                _dataProvider.tmpDiaryData =
-                    _dataProvider.tmpDiaryData!.copyWith(
-                  cameraImage: photo,
-                );
+              if (_isEdit == true) {
+                editPhoto(photo);
               } else {
-                _dataProvider.tmpDiaryData = DiaryData(
-                  contents: '',
-                  time: DateTime.now(),
-                  cameraImage: photo,
-                );
+                setPhoto(photo);
               }
             },
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: _dataProvider.tmpDiaryData?.cameraImage != null
-                  ? Colors.red
-                  : Colors.white,
+              color: setPhotoColor(),
             ),
           ),
           IconButton(
             onPressed: () async {
               final ImagePicker _picker = ImagePicker();
               final List<XFile>? images = await _picker.pickMultiImage();
-              if (_dataProvider.tmpDiaryData != null) {
-                _dataProvider.tmpDiaryData =
-                    _dataProvider.tmpDiaryData!.copyWith(
-                  pickerImages: images,
-                );
+
+              if (_isEdit == true) {
+                editPickerImages(images);
               } else {
-                _dataProvider.tmpDiaryData = DiaryData(
-                  contents: '',
-                  time: DateTime.now(),
-                  pickerImages: images,
-                );
+                setPickerImages(images);
               }
             },
             icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: _dataProvider.tmpDiaryData?.pickerImages != null
-                  ? Colors.red
-                  : Colors.white,
+              color: setPickerImageColor(),
             ),
           ),
           IconButton(
