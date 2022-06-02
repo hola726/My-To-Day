@@ -180,13 +180,6 @@ class DiaryScreen extends StatelessWidget {
         });
   }
 
-  double handleImageSize() {
-    return (_dataProvider.tmpDiaryData?.cameraImage != null ||
-            _dataProvider.tmpDiaryData?.pickerImages != null)
-        ? 166.h
-        : 116.h;
-  }
-
   Widget _buildMain() {
     return Container(
       color: Colors.black,
@@ -238,7 +231,7 @@ class DiaryScreen extends StatelessWidget {
                           MediaQuery.of(_diaryProvider.context)
                               .viewInsets
                               .bottom -
-                          handleImageSize()
+                          _dataProvider.handleFillImageHeight()
                       : 100.h,
                   hintText: "오늘은...",
                   initialImage: _dataProvider.tmpDiaryData?.cameraImage,

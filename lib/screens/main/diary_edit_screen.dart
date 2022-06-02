@@ -53,13 +53,14 @@ class DiaryEditScreen extends StatelessWidget {
             controller: _diaryProvider.diaryTextFormController,
             height: MediaQuery.of(_diaryProvider.context).size.height -
                 MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
-                116.h,
+                _dataProvider.handleEditImageHeight(),
             hintText: "오늘은...",
             initialText: _dataProvider.diaryData?.contents,
             initialImage: _dataProvider.diaryData?.cameraImage,
             initialPickerImages: _dataProvider.diaryData?.pickerImages,
             isDisableIcon: true,
             textFocusNode: _diaryProvider.diaryTextFormFocusNode,
+            isEditTextFormOption: true,
           ),
           DiaryTextFormOption(
             diaryProvider: _diaryProvider,
