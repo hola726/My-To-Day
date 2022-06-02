@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -179,5 +180,25 @@ class DataProvider extends ChangeNotifier {
     } else {
       _setPickerImages(images);
     }
+  }
+
+  Color setPhotoColor(bool? isEdit) {
+    return isEdit == true
+        ? _diaryData?.cameraImage != null
+            ? Colors.red
+            : Colors.white
+        : _tmpDiaryData?.cameraImage != null
+            ? Colors.red
+            : Colors.white;
+  }
+
+  Color setPickerImageColor(bool? isEdit) {
+    return isEdit == true
+        ? _diaryData?.pickerImages != null
+            ? Colors.red
+            : Colors.white
+        : _tmpDiaryData?.pickerImages != null
+            ? Colors.red
+            : Colors.white;
   }
 }
