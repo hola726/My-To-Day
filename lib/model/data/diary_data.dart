@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:hive/hive.dart';
 
 part 'diary_data.g.dart';
@@ -16,17 +18,17 @@ class DiaryData extends HiveObject {
   @HiveField(1)
   final DateTime time;
   @HiveField(2)
-  final dynamic cameraImage;
+  final String? cameraImage;
   @HiveField(3)
-  final dynamic pickerImages;
+  final List<String>? pickerImages;
   @HiveField(4)
   final String? locate;
 
   DiaryData copyWith({
     String? contents,
     DateTime? time,
-    dynamic cameraImage,
-    dynamic pickerImages,
+    String? cameraImage,
+    List<String>? pickerImages,
     String? locate,
   }) {
     return DiaryData(
