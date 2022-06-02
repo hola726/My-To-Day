@@ -22,6 +22,7 @@ class DiaryTextFormField extends StatefulWidget {
     this.initialImage,
     this.initialPickerImages,
     this.handleOnChanged,
+    this.isEditTextFormOption,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -38,6 +39,7 @@ class DiaryTextFormField extends StatefulWidget {
   final void Function(String)? handleOnChanged;
   final dynamic initialImage;
   final dynamic initialPickerImages;
+  final bool? isEditTextFormOption;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
@@ -86,7 +88,8 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   bool isImageTextFormField() {
     return (widget.initialImage != null ||
             widget.initialPickerImages != null) &&
-        widget.diaryProvider.isLargeTextForm == true;
+        (widget.diaryProvider.isLargeTextForm == true ||
+            widget.isEditTextFormOption == true);
   }
 
   @override
