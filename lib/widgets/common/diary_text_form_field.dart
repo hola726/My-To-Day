@@ -15,7 +15,6 @@ class DiaryTextFormField extends StatefulWidget {
     this.textStyle,
     this.height,
     this.suffixIcon,
-    this.onIconPressed,
     this.textFocusNode,
     this.isDisableIcon,
     this.initialText,
@@ -33,12 +32,11 @@ class DiaryTextFormField extends StatefulWidget {
   final double? height;
   final Widget? suffixIcon;
   final FocusNode? textFocusNode;
-  final void Function(String text)? onIconPressed;
   final bool? isDisableIcon;
   final DiaryProvider diaryProvider;
   final void Function(String)? handleOnChanged;
-  final dynamic initialImage;
-  final dynamic initialPickerImages;
+  final String? initialImage;
+  final List<String>? initialPickerImages;
   final bool? isEditTextFormOption;
 
   @override
@@ -107,7 +105,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                       if (widget.initialImage != null)
                         Container(
                           child: Image.file(
-                            File(widget.initialImage.path),
+                            File(widget.initialImage!),
                             height: 50.h,
                             width: 50.w,
                           ),
@@ -115,18 +113,14 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                       if (widget.initialPickerImages != null)
                         Row(
                           children:
-                              widget.initialPickerImages.map<Widget>((image) {
-                            if (image != null) {
-                              return Container(
-                                child: Image.file(
-                                  File(image.path),
-                                  height: 50.h,
-                                  width: 50.w,
-                                ),
-                              );
-                            } else {
-                              return SizedBox();
-                            }
+                              widget.initialPickerImages!.map<Widget>((image) {
+                            return Container(
+                              child: Image.file(
+                                File(image),
+                                height: 50.h,
+                                width: 50.w,
+                              ),
+                            );
                           }).toList(),
                         ),
                     ],

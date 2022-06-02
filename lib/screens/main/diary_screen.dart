@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
@@ -127,6 +129,51 @@ class DiaryScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      _dataProvider.diaryData?.cameraImage != null ||
+                              _dataProvider.diaryData?.pickerImages != null
+                          ? Container(
+                              alignment: Alignment.centerLeft,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    if (_dataProvider.diaryData?.cameraImage !=
+                                        null)
+                                      Container(
+                                        child: Image.file(
+                                          File(_dataProvider
+                                              .diaryData!.cameraImage!),
+                                          height: 250.h,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                        ),
+                                      ),
+                                    if (_dataProvider.diaryData?.pickerImages !=
+                                        null)
+                                      Row(
+                                        children: _dataProvider
+                                            .diaryData!.pickerImages!
+                                            .map<Widget>((image) {
+                                          if (image != null) {
+                                            return Container(
+                                              child: Image.file(
+                                                File(image),
+                                                height: 250.h,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              ),
+                                            );
+                                          } else {
+                                            return SizedBox();
+                                          }
+                                        }).toList(),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -238,15 +285,6 @@ class DiaryScreen extends StatelessWidget {
                   initialPickerImages: _dataProvider.tmpDiaryData?.pickerImages,
                   handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
                   isDisableIcon: _diaryProvider.isLargeTextForm,
-                  onIconPressed: (value) async {
-                    await _diaryProvider.setDiaryData(
-                      contents: value,
-                      cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
-                      pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
-                      locate: _dataProvider.tmpDiaryData?.pickerImages,
-                    );
-                    _dataProvider.getAllDiaryData();
-                  },
                   suffixIcon: IconButton(
                     padding: EdgeInsets.all(10.w),
                     onPressed: () async {
@@ -256,6 +294,7 @@ class DiaryScreen extends StatelessWidget {
                         pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
                         locate: _dataProvider.tmpDiaryData?.locate,
                       );
+                      _dataProvider.tmpDiaryData = null;
                       _dataProvider.getAllDiaryData();
                       _diaryProvider.diaryTextFormController.clear();
                     },
@@ -409,6 +448,7 @@ class DiaryScreen extends StatelessWidget {
             pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
             locate: _dataProvider.tmpDiaryData?.locate,
           );
+          _dataProvider.tmpDiaryData = null;
           _dataProvider.getAllDiaryData();
           _diaryProvider.reSizedDiaryTextFormField();
           _diaryProvider.diaryTextFormController.clear();
