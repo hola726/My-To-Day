@@ -41,6 +41,7 @@ class DataProvider extends ChangeNotifier {
 
   set tmpDiaryData(DiaryData? tmpDiaryData) {
     _tmpDiaryData = tmpDiaryData;
+
     notifyListeners();
   }
 
@@ -116,16 +117,15 @@ class DataProvider extends ChangeNotifier {
         : 116.h;
   }
 
-  void _editPhoto(XFile? photo) {
+  void _editPhoto(String? photo) {
     if (_diaryData != null) {
-      print('edit photo');
       diaryData = _diaryData!.copyWith(
         cameraImage: photo,
       );
     }
   }
 
-  void _setPhoto(XFile? photo) {
+  void _setPhoto(String? photo) {
     if (_tmpDiaryData != null) {
       tmpDiaryData = _tmpDiaryData!.copyWith(
         cameraImage: photo,
@@ -142,20 +142,21 @@ class DataProvider extends ChangeNotifier {
   void getPhoto(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    final String? photoString = photo != null ? photo.path : null;
     if (isEdit == true) {
-      _editPhoto(photo);
+      _editPhoto(photoString);
     } else {
-      _setPhoto(photo);
+      _setPhoto(photoString);
     }
   }
 
-  void _setPickerImages(List<XFile>? images) {
+  void _setPickerImages(List<String>? images) {
     if (_tmpDiaryData != null) {
       tmpDiaryData = _tmpDiaryData!.copyWith(
         pickerImages: images,
       );
     } else {
-      _tmpDiaryData = DiaryData(
+      tmpDiaryData = DiaryData(
         contents: '',
         time: DateTime.now(),
         pickerImages: images,
@@ -163,7 +164,7 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void _editPickerImages(List<XFile>? images) {
+  void _editPickerImages(List<String>? images) {
     if (_diaryData != null) {
       diaryData = _diaryData!.copyWith(
         pickerImages: images,
@@ -174,11 +175,12 @@ class DataProvider extends ChangeNotifier {
   void getPickerImages(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? images = await _picker.pickMultiImage();
+    List<String>? imageStrings = images?.map((image) => image.path).toList();
 
     if (isEdit == true) {
-      _editPickerImages(images);
+      _editPickerImages(imageStrings);
     } else {
-      _setPickerImages(images);
+      _setPickerImages(imageStrings);
     }
   }
 
@@ -193,6 +195,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   Color setPickerImageColor(bool? isEdit) {
+    print(_tmpDiaryData?.pickerImages);
     return isEdit == true
         ? _diaryData?.pickerImages != null
             ? Colors.red
