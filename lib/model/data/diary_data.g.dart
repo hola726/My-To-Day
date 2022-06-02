@@ -19,8 +19,8 @@ class DiaryDataAdapter extends TypeAdapter<DiaryData> {
     return DiaryData(
       contents: fields[0] as String,
       time: fields[1] as DateTime,
-      cameraImage: fields[2] as dynamic,
-      pickerImages: fields[3] as dynamic,
+      cameraImage: fields[2] as String?,
+      pickerImages: (fields[3] as List?)?.cast<String>(),
       locate: fields[4] as String?,
     );
   }
