@@ -95,6 +95,9 @@ class DiaryEditScreen extends StatelessWidget {
             await _diaryProvider.editDiaryData(
               contents: _diaryProvider.diaryTextFormController.text,
               date: _dataProvider.diaryData!.time,
+              cameraImage: _dataProvider.diaryData?.cameraImage,
+              pickerImage: _dataProvider.diaryData?.pickerImages,
+              locate: _dataProvider.diaryData?.locate,
             );
             _dataProvider.getAllDiaryData();
             _diaryProvider.diaryTextFormController.clear();
