@@ -66,8 +66,8 @@ class DiaryProvider extends ChangeNotifier {
 
   Future<void> setDiaryData({
     required String contents,
-    dynamic cameraImage,
-    dynamic pickerImage,
+    String? cameraImage,
+    List<String>? pickerImage,
     String? locate,
   }) async {
     DateTime time = DateTime.now();
