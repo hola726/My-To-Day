@@ -86,12 +86,18 @@ class DiaryProvider extends ChangeNotifier {
   Future<void> editDiaryData({
     required String contents,
     required DateTime date,
+    String? cameraImage,
+    List<String>? pickerImage,
+    String? locate,
   }) async {
     await _localStorageHelper.editDiaryData(
       key: date.toString(),
       diaryDataModel: DiaryData(
         contents: contents,
         time: date,
+        cameraImage: cameraImage,
+        pickerImages: pickerImage,
+        locate: locate,
       ),
     );
   }
