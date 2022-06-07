@@ -142,4 +142,33 @@ class DiaryProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  int handleSwipeItemCount() {
+    if (_dataProvider.diaryData?.cameraImage != null &&
+        _dataProvider.diaryData?.pickerImages != null) {
+      return _dataProvider.diaryData!.pickerImages!.length + 1;
+    }
+    if (_dataProvider.diaryData?.cameraImage != null) {
+      return 1;
+    }
+
+    return _dataProvider.diaryData!.pickerImages!.length;
+  }
+
+  Widget handleSwipeItemBuilder(BuildContext context, int index) {
+    bool isExistCameraImage = _dataProvider.diaryData?.cameraImage != null;
+    if (isExistCameraImage && index == 0) {
+      return Image.file(
+        File(
+          _dataProvider.diaryData!.cameraImage!,
+        ),
+      );
+    }
+    return Image.file(
+      File(
+        _dataProvider
+            .diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
+      ),
+    );
+  }
 }

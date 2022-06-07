@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,11 +32,12 @@ class DiaryScreen extends StatelessWidget {
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
+        context: context,
+        diaryTextFormFocusNode: FocusNode(),
+        dataProvider: context.read<DataProvider>(),
+        localStorageHelper: LocalStorageHelper(),
         diaryTextFormController: TextEditingController(),
         searchTextFormController: TextEditingController(),
-        localStorageHelper: LocalStorageHelper(),
-        diaryTextFormFocusNode: FocusNode(),
-        context: context,
       ),
       child: Consumer2<DiaryProvider, DataProvider>(
         builder: (_, diaryProvider, dataProvider, __) => DiaryScreen._(
@@ -100,35 +99,6 @@ class DiaryScreen extends StatelessWidget {
         });
   }
 
-  int handleItemCount() {
-    if (_dataProvider.diaryData?.cameraImage != null &&
-        _dataProvider.diaryData?.pickerImages != null) {
-      return _dataProvider.diaryData!.pickerImages!.length + 1;
-    }
-    if (_dataProvider.diaryData?.cameraImage != null) {
-      return 1;
-    }
-
-    return _dataProvider.diaryData!.pickerImages!.length;
-  }
-
-  Widget handleItem(BuildContext context, int index) {
-    bool isExistCameraImage = _dataProvider.diaryData?.cameraImage != null;
-    if (isExistCameraImage && index == 0) {
-      return Image.file(
-        File(
-          _dataProvider.diaryData!.cameraImage!,
-        ),
-      );
-    }
-    return Image.file(
-      File(
-        _dataProvider
-            .diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
-      ),
-    );
-  }
-
   void openBottomModal() {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -155,8 +125,10 @@ class DiaryScreen extends StatelessWidget {
                               ? Container(
                                   height: 300.h,
                                   child: Swiper(
-                                    itemCount: handleItemCount(),
-                                    itemBuilder: handleItem,
+                                    itemCount:
+                                        _diaryProvider.handleSwipeItemCount(),
+                                    itemBuilder:
+                                        _diaryProvider.handleSwipeItemBuilder,
                                     scrollDirection: Axis.horizontal,
                                     pagination: SwiperPagination(
                                       builder: DotSwiperPaginationBuilder(
