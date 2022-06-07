@@ -114,110 +114,96 @@ class DiaryScreen extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: AppBar().preferredSize.height,
-                    horizontal: 20.w,
                   ),
                   child: ListView(
                     controller: scrollController,
                     children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: Navigator.of(context).pop,
-                          icon: const Icon(
-                            Icons.cancel,
-                            color: AppTheme.grey600,
-                          ),
-                        ),
-                      ),
-                      _dataProvider.diaryData?.cameraImage != null ||
-                              _dataProvider.diaryData?.pickerImages != null
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    if (_dataProvider.diaryData?.cameraImage !=
-                                        null)
-                                      Container(
-                                        child: Image.file(
-                                          File(_dataProvider
-                                              .diaryData!.cameraImage!),
-                                          height: 250.h,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                        ),
-                                      ),
-                                    if (_dataProvider.diaryData?.pickerImages !=
-                                        null)
-                                      Row(
-                                        children: _dataProvider
-                                            .diaryData!.pickerImages!
-                                            .map<Widget>((image) {
-                                          if (image != null) {
-                                            return Container(
-                                              child: Image.file(
-                                                File(image),
-                                                height: 250.h,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                              ),
-                                            );
-                                          } else {
-                                            return SizedBox();
-                                          }
-                                        }).toList(),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Stack(
                         children: [
-                          Text(
-                            DateHelper.convertDateMonth(
-                                _dataProvider.diaryData!.time),
-                            style: AppTheme.button_small.copyWith(
-                              color: AppTheme.grey400,
-                              fontSize: 11.sp,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              await openEditBottomModal();
-                              _dataProvider.getDiaryData();
-                              modalSetState(() {});
-                            },
-                            icon: const Icon(
-                              Icons.more_horiz_outlined,
-                              color: Colors.white,
+                          _dataProvider.diaryData?.cameraImage != null ||
+                                  _dataProvider.diaryData?.pickerImages != null
+                              ? Container(
+                                  height: 300.h,
+                                  child: Swiper(
+                                    itemCount: handleItemCount(),
+                                    itemBuilder: handleItem,
+                                    scrollDirection: Axis.horizontal,
+                                    pagination: SwiperPagination(
+                                      builder: DotSwiperPaginationBuilder(
+                                        color: AppTheme.grey800,
+                                        activeColor: Colors.white,
+                                        size: 5,
+                                        activeSize: 7,
+                                      ),
+                                    ),
+                                    loop: false,
+                                  ),
+                                )
+                              : Container(),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: Navigator.of(context).pop,
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: AppTheme.grey600,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        _dataProvider.diaryData!.contents,
-                        style: AppTheme.button_small_KR.copyWith(
-                          color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  DateHelper.convertDateMonth(
+                                      _dataProvider.diaryData!.time),
+                                  style: AppTheme.button_small.copyWith(
+                                    color: AppTheme.grey400,
+                                    fontSize: 11.sp,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () async {
+                                    await openEditBottomModal();
+                                    _dataProvider.getDiaryData();
+                                    modalSetState(() {});
+                                  },
+                                  icon: const Icon(
+                                    Icons.more_horiz_outlined,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                            Text(
+                              _dataProvider.diaryData!.contents,
+                              style: AppTheme.button_small_KR.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                            Text(
+                              DateHelper.convertDateAmPm(
+                                  _dataProvider.diaryData!.time),
+                              style: AppTheme.button_small.copyWith(
+                                color: AppTheme.grey400,
+                                fontSize: 11.sp,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        DateHelper.convertDateAmPm(
-                            _dataProvider.diaryData!.time),
-                        style: AppTheme.button_small.copyWith(
-                          color: AppTheme.grey400,
-                          fontSize: 11.sp,
-                        ),
-                      )
                     ],
                   ),
                 ),
