@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
@@ -97,6 +98,35 @@ class DiaryScreen extends StatelessWidget {
             ),
           );
         });
+  }
+
+  int handleItemCount() {
+    if (_dataProvider.diaryData?.cameraImage != null &&
+        _dataProvider.diaryData?.pickerImages != null) {
+      return _dataProvider.diaryData!.pickerImages!.length + 1;
+    }
+    if (_dataProvider.diaryData?.cameraImage != null) {
+      return 1;
+    }
+
+    return _dataProvider.diaryData!.pickerImages!.length;
+  }
+
+  Widget handleItem(BuildContext context, int index) {
+    bool isExistCameraImage = _dataProvider.diaryData?.cameraImage != null;
+    if (isExistCameraImage && index == 0) {
+      return Image.file(
+        File(
+          _dataProvider.diaryData!.cameraImage!,
+        ),
+      );
+    }
+    return Image.file(
+      File(
+        _dataProvider
+            .diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
+      ),
+    );
   }
 
   void openBottomModal() {
