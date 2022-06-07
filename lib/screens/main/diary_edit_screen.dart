@@ -28,11 +28,12 @@ class DiaryEditScreen extends StatelessWidget {
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
       create: (BuildContext context) => DiaryProvider(
+        context: context,
+        diaryTextFormFocusNode: FocusNode(),
+        localStorageHelper: LocalStorageHelper(),
+        dataProvider: context.read<DataProvider>(),
         diaryTextFormController: TextEditingController(),
         searchTextFormController: TextEditingController(),
-        localStorageHelper: LocalStorageHelper(),
-        diaryTextFormFocusNode: FocusNode(),
-        context: context,
       ),
       child: Consumer2<DiaryProvider, DataProvider>(
         builder: (_, diaryProvider, dataProvider, __) => DiaryEditScreen._(

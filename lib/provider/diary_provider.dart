@@ -1,37 +1,45 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DiaryProvider extends ChangeNotifier {
   DiaryProvider({
-    required LocalStorageHelper localStorageHelper,
-    required diaryTextFormFocusNode,
     required BuildContext context,
+    required diaryTextFormFocusNode,
+    required DataProvider dataProvider,
+    required LocalStorageHelper localStorageHelper,
     required TextEditingController diaryTextFormController,
     required TextEditingController searchTextFormController,
-  })  : _localStorageHelper = localStorageHelper,
-        _diaryTextFormController = diaryTextFormController,
-        _searchTextFormController = searchTextFormController,
+  })  : _context = context,
+        _dataProvider = dataProvider,
+        _localStorageHelper = localStorageHelper,
         _diaryTextFormFocusNode = diaryTextFormFocusNode,
-        _context = context;
-  final LocalStorageHelper _localStorageHelper;
+        _diaryTextFormController = diaryTextFormController,
+        _searchTextFormController = searchTextFormController;
+
   final BuildContext _context;
+  final DataProvider _dataProvider;
   final FocusNode _diaryTextFormFocusNode;
+  final LocalStorageHelper _localStorageHelper;
   final TextEditingController _diaryTextFormController;
   final TextEditingController _searchTextFormController;
 
   bool _isLargeTextForm = false;
   bool _isSearchState = false;
 
-  TextEditingController get diaryTextFormController => _diaryTextFormController;
+  BuildContext get context => _context;
+  bool get isSearchState => _isSearchState;
+  bool get isLargeTextForm => _isLargeTextForm;
+  DataProvider get dataProvider => _dataProvider;
   TextEditingController get searchTextFormController =>
       _searchTextFormController;
-  bool get isLargeTextForm => _isLargeTextForm;
-  bool get isSearchState => _isSearchState;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
-  BuildContext get context => _context;
+  TextEditingController get diaryTextFormController => _diaryTextFormController;
 
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
