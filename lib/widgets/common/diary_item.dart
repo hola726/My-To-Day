@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
@@ -78,6 +80,20 @@ class _DiaryItemState extends State<DiaryItem> {
                     ],
                   ),
                 ),
+                SizedBox(width: 10.w),
+                if (widget.data.cameraImage != null ||
+                    widget.data.pickerImages != null)
+                  InkWell(
+                    onTap: () {
+                      // todo
+                    },
+                    child: Image.file(
+                      File(widget.data.cameraImage ??
+                          widget.data.pickerImages![0]),
+                      width: 40.w,
+                      height: 40.h,
+                    ),
+                  ),
               ],
             ),
           ),
