@@ -117,8 +117,25 @@ class DiaryProvider extends ChangeNotifier {
   }
 
   void onShareButtonPressed(String data) {
-    Share.share(
-      data,
+    if (_dataProvider.diaryData?.pickerImages == null &&
+        _dataProvider.diaryData?.cameraImage == null) {
+      Share.share(
+        data,
+        subject: data,
+      );
+      return;
+    }
+    List<String> images = [];
+    if (_dataProvider.diaryData?.cameraImage != null) {
+      images.add(_dataProvider.diaryData!.cameraImage!);
+    }
+    if (_dataProvider.diaryData?.pickerImages != null) {
+      images.addAll(_dataProvider.diaryData!.pickerImages!);
+    }
+
+    Share.shareFiles(
+      images,
+      text: data,
       subject: data,
     );
   }
