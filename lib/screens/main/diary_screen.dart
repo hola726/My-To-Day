@@ -125,10 +125,10 @@ class DiaryScreen extends StatelessWidget {
                               ? Container(
                                   height: 300.h,
                                   child: Swiper(
-                                    itemCount:
-                                        _diaryProvider.handleSwipeItemCount(),
-                                    itemBuilder:
-                                        _diaryProvider.handleSwipeItemBuilder,
+                                    itemCount: _diaryProvider.dataProvider
+                                        .handleSwipeItemCount(),
+                                    itemBuilder: _diaryProvider
+                                        .dataProvider.handleSwipeItemBuilder,
                                     scrollDirection: Axis.horizontal,
                                     pagination: SwiperPagination(
                                       builder: DotSwiperPaginationBuilder(
@@ -242,6 +242,7 @@ class DiaryScreen extends StatelessWidget {
                                   SubTitleData(data: data),
                                 DiaryItem(
                                   data: data,
+                                  dataProvider: _dataProvider,
                                   onTap: () {
                                     _dataProvider.targetDataIndex = index;
 
@@ -318,6 +319,7 @@ class DiaryScreen extends StatelessWidget {
                             SubTitleData(data: data),
                           DiaryItem(
                             data: data,
+                            dataProvider: _dataProvider,
                             onTap: () {
                               _dataProvider.targetDataIndex = index;
 
