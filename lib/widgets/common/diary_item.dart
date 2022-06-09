@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 
 import '../../app_theme.dart';
@@ -11,11 +14,13 @@ class DiaryItem extends StatefulWidget {
   const DiaryItem({
     Key? key,
     required this.data,
+    required this.dataProvider,
     this.onTap,
   }) : super(key: key);
 
   final DiaryData data;
   final void Function()? onTap;
+  final DataProvider dataProvider;
 
   @override
   State createState() => _DiaryItemState();
@@ -83,17 +88,44 @@ class _DiaryItemState extends State<DiaryItem> {
                 SizedBox(width: 10.w),
                 if (widget.data.cameraImage != null ||
                     widget.data.pickerImages != null)
-                  InkWell(
-                    onTap: () {
-                      // todo
-                    },
-                    child: Image.file(
-                      File(widget.data.cameraImage ??
-                          widget.data.pickerImages![0]),
+                  InkWell( onTap: () {
+                    widget.dataProvider.diaryData = widget.data;
+                  },
+                    child: SizedBox(
                       width: 40.w,
                       height: 40.h,
+                      child: InstaImageViewer(
+                        child:  Image.file(
+                          File(widget.data.cameraImage ??
+                              widget.data.pickerImages![0]),
+                        ),
+                      ),
                     ),
                   ),
+                // SizedBox(
+                //   width: 40,
+                //   height: 40,
+                //   child: InstaImageViewer(
+                //     child: Image.file(
+                //       File(widget.data.cameraImage ??
+                //           widget.data.pickerImages![0]),
+                //       width: 40.w,
+                //       height: 40.h,
+                //     ),
+                //   ),
+                // ),
+                // InkWell(
+                //   onTap: () {
+                //     widget.dataProvider.diaryData = widget.data;
+                //     Navigator.of(context).pushNamed(ImageSwiperScreen.id);
+                //   },
+                //   child: Image.file(
+                //     File(widget.data.cameraImage ??
+                //         widget.data.pickerImages![0]),
+                //     width: 40.w,
+                //     height: 40.h,
+                //   ),
+                // ),
               ],
             ),
           ),
