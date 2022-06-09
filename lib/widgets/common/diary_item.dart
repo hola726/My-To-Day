@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
@@ -88,44 +87,16 @@ class _DiaryItemState extends State<DiaryItem> {
                 SizedBox(width: 10.w),
                 if (widget.data.cameraImage != null ||
                     widget.data.pickerImages != null)
-                  InkWell( onTap: () {
-                    widget.dataProvider.diaryData = widget.data;
-                  },
-                    child: SizedBox(
-                      width: 40.w,
-                      height: 40.h,
-                      child: InstaImageViewer(
-                        child:  Image.file(
-                          File(widget.data.cameraImage ??
-                              widget.data.pickerImages![0]),
-                        ),
+                  SizedBox(
+                    width: 40.w,
+                    height: 40.h,
+                    child: InstaImageViewer(
+                      child: Image.file(
+                        File(widget.data.cameraImage ??
+                            widget.data.pickerImages![0]),
                       ),
                     ),
                   ),
-                // SizedBox(
-                //   width: 40,
-                //   height: 40,
-                //   child: InstaImageViewer(
-                //     child: Image.file(
-                //       File(widget.data.cameraImage ??
-                //           widget.data.pickerImages![0]),
-                //       width: 40.w,
-                //       height: 40.h,
-                //     ),
-                //   ),
-                // ),
-                // InkWell(
-                //   onTap: () {
-                //     widget.dataProvider.diaryData = widget.data;
-                //     Navigator.of(context).pushNamed(ImageSwiperScreen.id);
-                //   },
-                //   child: Image.file(
-                //     File(widget.data.cameraImage ??
-                //         widget.data.pickerImages![0]),
-                //     width: 40.w,
-                //     height: 40.h,
-                //   ),
-                // ),
               ],
             ),
           ),
