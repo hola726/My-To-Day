@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -203,5 +205,32 @@ class DataProvider extends ChangeNotifier {
         : _tmpDiaryData?.pickerImages != null
             ? Colors.red
             : Colors.white;
+  }
+
+  int handleSwipeItemCount() {
+    if (_diaryData?.cameraImage != null && _diaryData?.pickerImages != null) {
+      return _diaryData!.pickerImages!.length + 1;
+    }
+    if (_diaryData?.cameraImage != null) {
+      return 1;
+    }
+
+    return _diaryData!.pickerImages!.length;
+  }
+
+  Widget handleSwipeItemBuilder(BuildContext context, int index) {
+    bool isExistCameraImage = _diaryData?.cameraImage != null;
+    if (isExistCameraImage && index == 0) {
+      return Image.file(
+        File(
+          _diaryData!.cameraImage!,
+        ),
+      );
+    }
+    return Image.file(
+      File(
+        _diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
+      ),
+    );
   }
 }
