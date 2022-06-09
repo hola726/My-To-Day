@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(kRatioBaseWith, kRatioBaseHeight),
-      builder: (BuildContext context) => MaterialApp(
+      builder: (BuildContext context, _) => MaterialApp(
         title: 'MyToDay',
         debugShowCheckedModeBanner: false,
         initialRoute: DiaryScreen.id,
