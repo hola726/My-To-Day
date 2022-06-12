@@ -24,6 +24,7 @@ class DiaryEditScreen extends StatelessWidget {
 
   final DiaryProvider _diaryProvider;
   final DataProvider _dataProvider;
+  double _bottom = 0;
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
@@ -53,7 +54,7 @@ class DiaryEditScreen extends StatelessWidget {
             diaryProvider: _diaryProvider,
             controller: _diaryProvider.diaryTextFormController,
             height: MediaQuery.of(_diaryProvider.context).size.height -
-                MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
+                _bottom -
                 _dataProvider.handleEditImageHeight(),
             hintText: "오늘은...",
             initialText: _dataProvider.diaryData?.contents,
@@ -75,6 +76,7 @@ class DiaryEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _bottom = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: MainAppBar(
