@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
@@ -57,6 +58,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     return SizedBox(
       height: widget.height,
       child: TextFormField(
+        keyboardAppearance: SchedulerBinding.instance.window.platformBrightness,
         focusNode: widget.textFocusNode,
         controller: widget.controller,
         onChanged: widget.handleOnChanged,
