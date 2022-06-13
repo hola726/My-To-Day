@@ -7,6 +7,7 @@ import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/routes.dart';
+import 'package:my_to_day/screens/main/diary_calendar_screen.dart';
 import 'package:my_to_day/screens/main/diary_edit_screen.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
@@ -455,7 +456,8 @@ class DiaryScreen extends StatelessWidget {
       );
     } else {
       return IconButton(
-        onPressed: () => {},
+        onPressed: () => Navigator.of(_diaryProvider.context)
+            .pushNamed(DiaryCalendarScreen.id),
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         icon: Icon(
