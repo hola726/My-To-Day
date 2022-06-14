@@ -32,7 +32,27 @@ class DiaryCalendarScreen extends StatelessWidget {
     return Container(
       color: Colors.black,
       child: TableCalendar(
-        calendarStyle: CalendarStyle(),
+        calendarStyle: CalendarStyle(
+          defaultTextStyle: TextStyle(
+            color: Colors.white,
+          ),
+          weekendTextStyle: TextStyle(
+            color: Colors.white,
+          ),
+          outsideTextStyle: TextStyle(
+            color: AppTheme.grey600,
+          ),
+          disabledTextStyle: TextStyle(
+            color: AppTheme.secondaryColor,
+          ),
+        ),
+        selectedDayPredicate: (day) {
+          return isSameDay(_calendarProvider.selectedDay, day);
+        },
+        onDaySelected: (selectedDay, focusedDay) {
+          _calendarProvider.selectedDay = selectedDay;
+          _calendarProvider.focusedDay = focusedDay;
+        },
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: DateTime.now(),
