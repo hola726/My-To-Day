@@ -21,6 +21,7 @@ class DataProvider extends ChangeNotifier {
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
   List<DiaryData?> _filteredReversedData = [];
+  List<DiaryData?> _selectDateReversedData = [];
   int _targetDataIndex = 0;
   String? _filteredValue;
 
@@ -33,6 +34,7 @@ class DataProvider extends ChangeNotifier {
   List<DiaryData> get reversedData => _reversedData;
 
   List<DiaryData?> get filteredReversedData => _filteredReversedData;
+  List<DiaryData?> get selectDateReversedData => _selectDateReversedData;
 
   int get targetDataIndex => _targetDataIndex;
 
@@ -85,6 +87,12 @@ class DataProvider extends ChangeNotifier {
         .toList();
   }
 
+  bool isSameDay(DiaryData data, DiaryData? previousData) {
+    return data.time.year == previousData?.time.year &&
+        data.time.month == previousData?.time.month &&
+        data.time.day == previousData?.time.day;
+  }
+
   void handleFilteredDataChanged(String value) {
     _filteredValue = value;
     if (value == '') {
@@ -96,6 +104,22 @@ class DataProvider extends ChangeNotifier {
     _filteredReversedData = _allDiaryData
         .map((diaryData) {
           if (diaryData.contents.contains(value)) {
+            return diaryData;
+          }
+        })
+        .toList()
+        .reversed
+        .map((data) => data)
+        .toList();
+    notifyListeners();
+  }
+
+  void handleSelectDateDataChanged(DateTime date) {
+    _selectDateReversedData = _allDiaryData
+        .map((diaryData) {
+          if (diaryData.time.year == date.year &&
+              diaryData.time.month == date.month &&
+              diaryData.time.day == date.day) {
             return diaryData;
           }
         })
