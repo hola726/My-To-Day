@@ -237,7 +237,7 @@ class DiaryScreen extends StatelessWidget {
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (_diaryProvider.isSameDay(
+                                if (_dataProvider.isSameDay(
                                         data, previousData) ==
                                     false)
                                   SubTitleData(data: data),
@@ -315,7 +315,7 @@ class DiaryScreen extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_diaryProvider.isSameDay(data, previousData) ==
+                          if (_dataProvider.isSameDay(data, previousData) ==
                               false)
                             SubTitleData(data: data),
                           DiaryItem(
