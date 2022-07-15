@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_to_day/provider/data_provider.dart';
+import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -23,7 +24,9 @@ class DiaryCalendarScreen extends StatelessWidget {
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<CalendarProvider>(
-      create: (BuildContext context) => CalendarProvider(),
+      create: (BuildContext context) => CalendarProvider(
+        context: context,
+      ),
       child: Consumer2<CalendarProvider, DataProvider>(
         builder: (_, calendarProvider, dataProvider, __) =>
             DiaryCalendarScreen._(
@@ -39,10 +42,11 @@ class DiaryCalendarScreen extends StatelessWidget {
 
   Widget _buildMain() {
     return Container(
-      color: Colors.black,
+      color: Colors.white,
       child: Column(
         children: [
           TableCalendar(
+            calendarBuilders: CalendarBuilders(),
             calendarStyle: CalendarStyle(
               defaultTextStyle: TextStyle(
                 color: Colors.white,
@@ -55,6 +59,12 @@ class DiaryCalendarScreen extends StatelessWidget {
               ),
               disabledTextStyle: TextStyle(
                 color: AppTheme.secondaryColor,
+              ),
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleTextStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
             selectedDayPredicate: (day) {
@@ -89,10 +99,14 @@ class DiaryCalendarScreen extends StatelessWidget {
                           DiaryItem(
                             data: data,
                             dataProvider: _dataProvider,
-                            onTap: () {
+                            onTap: () async {
                               _dataProvider.targetDataIndex = index;
                               _dataProvider.diaryData = data;
-                              // openBottomModal();
+                              await ModalHelper.openDiaryDetailModal(
+                                context: context,
+                                dataProvider: _dataProvider,
+                              );
+                              _dataProvider.getSelectDateData();
                             },
                           ),
                         ],
@@ -119,3 +133,5 @@ class DiaryCalendarScreen extends StatelessWidget {
     );
   }
 }
+
+class Message {}
