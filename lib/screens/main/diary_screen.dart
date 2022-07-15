@@ -1,4 +1,3 @@
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
@@ -6,11 +5,10 @@ import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
-import 'package:my_to_day/routes.dart';
 import 'package:my_to_day/screens/main/diary_calendar_screen.dart';
-import 'package:my_to_day/screens/main/diary_edit_screen.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
@@ -49,173 +47,6 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Future<void> openEditBottomModal() async {
-    await showModalBottomSheet(
-        context: _diaryProvider.context,
-        backgroundColor: AppTheme.textSecondary2Color,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: 70.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    await Navigator.of(context).push(
-                      routeWithFullScreenDialog(DiaryEditScreen.id),
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  iconSize: 20.h,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(
-                  width: 40.w,
-                ),
-                IconButton(
-                  onPressed: () => _diaryProvider
-                      .onShareButtonPressed(_dataProvider.diaryData!.contents),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  iconSize: 20.h,
-                  icon: const Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-  }
-
-  void openBottomModal() {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: _diaryProvider.context,
-        builder: (BuildContext context) {
-          return DraggableScrollableSheet(
-            minChildSize: 0.9999,
-            initialChildSize: 1,
-            builder: (context, scrollController) => StatefulBuilder(
-                builder: (BuildContext context, StateSetter modalSetState) {
-              return Container(
-                color: Colors.black,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: AppBar().preferredSize.height,
-                  ),
-                  child: ListView(
-                    controller: scrollController,
-                    children: [
-                      Stack(
-                        children: [
-                          _dataProvider.diaryData?.cameraImage != null ||
-                                  _dataProvider.diaryData?.pickerImages != null
-                              ? Container(
-                                  height: 300.h,
-                                  child: Swiper(
-                                    itemCount: _diaryProvider.dataProvider
-                                        .handleSwipeItemCount(),
-                                    itemBuilder: _diaryProvider
-                                        .dataProvider.handleSwipeItemBuilder,
-                                    scrollDirection: Axis.horizontal,
-                                    pagination: SwiperPagination(
-                                      builder: DotSwiperPaginationBuilder(
-                                        color: AppTheme.grey800,
-                                        activeColor: Colors.white,
-                                        size: 5,
-                                        activeSize: 7,
-                                      ),
-                                    ),
-                                    loop: false,
-                                  ),
-                                )
-                              : Container(),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: Navigator.of(context).pop,
-                              icon: const Icon(
-                                Icons.cancel,
-                                color: AppTheme.grey600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  DateHelper.convertDateMonth(
-                                      _dataProvider.diaryData!.time),
-                                  style: AppTheme.button_small.copyWith(
-                                    color: AppTheme.grey400,
-                                    fontSize: 11.sp,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () async {
-                                    await openEditBottomModal();
-                                    _dataProvider.getDiaryData();
-                                    modalSetState(() {});
-                                  },
-                                  icon: const Icon(
-                                    Icons.more_horiz_outlined,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Text(
-                              _dataProvider.diaryData!.contents,
-                              style: AppTheme.button_small_KR.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Text(
-                              DateHelper.convertDateAmPm(
-                                  _dataProvider.diaryData!.time),
-                              style: AppTheme.button_small.copyWith(
-                                color: AppTheme.grey400,
-                                fontSize: 11.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          );
-        });
-  }
-
   Widget _buildMain() {
     return Container(
       color: Colors.black,
@@ -248,7 +79,10 @@ class DiaryScreen extends StatelessWidget {
                                     _dataProvider.targetDataIndex = index;
 
                                     _dataProvider.diaryData = data;
-                                    openBottomModal();
+                                    ModalHelper.openDiaryDetailModal(
+                                      dataProvider: _dataProvider,
+                                      context: context,
+                                    );
                                   },
                                 ),
                               ],
@@ -325,7 +159,10 @@ class DiaryScreen extends StatelessWidget {
                               _dataProvider.targetDataIndex = index;
 
                               _dataProvider.diaryData = data;
-                              openBottomModal();
+                              ModalHelper.openDiaryDetailModal(
+                                context: context,
+                                dataProvider: _dataProvider,
+                              );
                             },
                           ),
                         ],
