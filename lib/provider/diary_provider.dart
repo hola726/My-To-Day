@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
-import 'package:share_plus/share_plus.dart';
 
 class DiaryProvider extends ChangeNotifier {
   DiaryProvider({
@@ -105,30 +104,6 @@ class DiaryProvider extends ChangeNotifier {
         pickerImages: pickerImage,
         locate: locate,
       ),
-    );
-  }
-
-  void onShareButtonPressed(String data) {
-    if (_dataProvider.diaryData?.pickerImages == null &&
-        _dataProvider.diaryData?.cameraImage == null) {
-      Share.share(
-        data,
-        subject: data,
-      );
-      return;
-    }
-    List<String> images = [];
-    if (_dataProvider.diaryData?.cameraImage != null) {
-      images.add(_dataProvider.diaryData!.cameraImage!);
-    }
-    if (_dataProvider.diaryData?.pickerImages != null) {
-      images.addAll(_dataProvider.diaryData!.pickerImages!);
-    }
-
-    Share.shareFiles(
-      images,
-      text: data,
-      subject: data,
     );
   }
 
