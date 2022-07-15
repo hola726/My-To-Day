@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DataProvider extends ChangeNotifier {
   DataProvider({
@@ -21,9 +22,21 @@ class DataProvider extends ChangeNotifier {
   late List<DiaryData> _reversedData =
       _allDiaryData.reversed.map((data) => data).toList();
   List<DiaryData?> _filteredReversedData = [];
-  List<DiaryData?> _selectDateReversedData = [];
+  late List<DiaryData?> _selectDateReversedData = _allDiaryData
+      .map((diaryData) {
+        if (diaryData.time.year == DateTime.now().year &&
+            diaryData.time.month == DateTime.now().month &&
+            diaryData.time.day == DateTime.now().day) {
+          return diaryData;
+        }
+      })
+      .toList()
+      .reversed
+      .map((data) => data)
+      .toList();
   int _targetDataIndex = 0;
   String? _filteredValue;
+  DateTime _selectDate = DateTime.now();
 
   DiaryData? get diaryData => _diaryData;
 
@@ -87,6 +100,22 @@ class DataProvider extends ChangeNotifier {
         .toList();
   }
 
+  void getSelectDateData() {
+    _selectDateReversedData = _allDiaryData
+        .map((diaryData) {
+          if (diaryData.time.year == _selectDate.year &&
+              diaryData.time.month == _selectDate.month &&
+              diaryData.time.day == _selectDate.day) {
+            return diaryData;
+          }
+        })
+        .toList()
+        .reversed
+        .map((data) => data)
+        .toList();
+    notifyListeners();
+  }
+
   bool isSameDay(DiaryData data, DiaryData? previousData) {
     return data.time.year == previousData?.time.year &&
         data.time.month == previousData?.time.month &&
@@ -115,6 +144,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   void handleSelectDateDataChanged(DateTime date) {
+    _selectDate = date;
     _selectDateReversedData = _allDiaryData
         .map((diaryData) {
           if (diaryData.time.year == date.year &&
@@ -255,6 +285,30 @@ class DataProvider extends ChangeNotifier {
       File(
         _diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
       ),
+    );
+  }
+
+  void onShareButtonPressed() {
+    String data = diaryData!.contents;
+    if (diaryData?.pickerImages == null && diaryData?.cameraImage == null) {
+      Share.share(
+        data,
+        subject: data,
+      );
+      return;
+    }
+    List<String> images = [];
+    if (diaryData?.cameraImage != null) {
+      images.add(diaryData!.cameraImage!);
+    }
+    if (diaryData?.pickerImages != null) {
+      images.addAll(diaryData!.pickerImages!);
+    }
+
+    Share.shareFiles(
+      images,
+      text: data,
+      subject: data,
     );
   }
 }
