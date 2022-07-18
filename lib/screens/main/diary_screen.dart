@@ -112,6 +112,7 @@ class DiaryScreen extends StatelessWidget {
                   suffixIcon: IconButton(
                     padding: EdgeInsets.all(10.w),
                     onPressed: () async {
+                      if (_diaryProvider.diaryTextFormController.text == "" ) return;
                       await _diaryProvider.setDiaryData(
                         contents: _diaryProvider.diaryTextFormController.text,
                         cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
