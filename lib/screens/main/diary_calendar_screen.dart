@@ -40,9 +40,22 @@ class DiaryCalendarScreen extends StatelessWidget {
   final CalendarProvider _calendarProvider;
   final DataProvider _dataProvider;
 
+  List<DiaryData> eventHandler(DateTime day) {
+    List<DiaryData> event = [];
+    for (DiaryData data in _dataProvider.allDiaryData) {
+      if (data.time.year == day.year &&
+          data.time.month == day.month &&
+          data.time.day == day.day) {
+        event.add(data);
+      }
+    }
+
+    return event;
+  }
+
   Widget _buildMain() {
     return Container(
-      color: Colors.white,
+      color: Colors.black,
       child: Column(
         children: [
           TableCalendar(
@@ -59,6 +72,10 @@ class DiaryCalendarScreen extends StatelessWidget {
               ),
               disabledTextStyle: TextStyle(
                 color: AppTheme.secondaryColor,
+              ),
+              markerDecoration: BoxDecoration(
+                color: Colors.lightBlue,
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             headerStyle: HeaderStyle(
@@ -77,6 +94,7 @@ class DiaryCalendarScreen extends StatelessWidget {
             },
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
+            eventLoader: eventHandler,
             focusedDay: _calendarProvider.focusedDay,
           ),
           Expanded(
