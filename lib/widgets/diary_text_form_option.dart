@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
@@ -8,7 +10,7 @@ import 'package:my_to_day/utils/date_helper.dart';
 import '../app_theme.dart';
 import 'common/contour.dart';
 
-class DiaryTextFormOption extends StatelessWidget {
+class DiaryTextFormOption extends StatefulWidget {
   const DiaryTextFormOption({
     Key? key,
     required DiaryProvider diaryProvider,
@@ -23,9 +25,34 @@ class DiaryTextFormOption extends StatelessWidget {
   final DataProvider _dataProvider;
   final bool? _isEditTextFormOption;
 
+  @override
+  State createState() => _DiaryTextFormOptionState();
+}
+
+class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
+  DateTime nowTime = DateTime.now();
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    timer = Timer.periodic(
+        Duration(seconds: 1),
+        (Timer t) => setState(() {
+              nowTime = DateTime.now();
+            }));
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
   Future<void> openDeleteTextModal() async {
     await showModalBottomSheet(
-        context: _diaryProvider.context,
+        context: widget._diaryProvider.context,
         backgroundColor: AppTheme.textSecondary2Color,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -55,7 +82,7 @@ class DiaryTextFormOption extends StatelessWidget {
                   padding: EdgeInsets.all(10.h),
                   child: InkWell(
                     onTap: () {
-                      _diaryProvider.diaryTextFormController.clear();
+                      widget._diaryProvider.diaryTextFormController.clear();
                       Navigator.of(context).pop();
                     },
                     splashColor: Colors.transparent,
@@ -104,18 +131,21 @@ class DiaryTextFormOption extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            onPressed: () => _dataProvider.getPhoto(_isEditTextFormOption),
+            onPressed: () =>
+                widget._dataProvider.getPhoto(widget._isEditTextFormOption),
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: _dataProvider.setPhotoColor(_isEditTextFormOption),
+              color: widget._dataProvider
+                  .setPhotoColor(widget._isEditTextFormOption),
             ),
           ),
           IconButton(
-            onPressed: () =>
-                _dataProvider.getPickerImages(_isEditTextFormOption),
+            onPressed: () => widget._dataProvider
+                .getPickerImages(widget._isEditTextFormOption),
             icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: _dataProvider.setPickerImageColor(_isEditTextFormOption),
+              color: widget._dataProvider
+                  .setPickerImageColor(widget._isEditTextFormOption),
             ),
           ),
           IconButton(
@@ -126,18 +156,19 @@ class DiaryTextFormOption extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: _diaryProvider.reSizedDiaryTextFormField,
+            onPressed: widget._diaryProvider.reSizedDiaryTextFormField,
             icon: Icon(
-              _diaryProvider.isLargeTextForm
+              widget._diaryProvider.isLargeTextForm
                   ? Icons.zoom_in
                   : Icons.zoom_out_map_outlined,
               color: Colors.white,
             ),
           ),
           IconButton(
-            onPressed: _diaryProvider.diaryTextFormController.text.isNotEmpty
-                ? openDeleteTextModal
-                : null,
+            onPressed:
+                widget._diaryProvider.diaryTextFormController.text.isNotEmpty
+                    ? openDeleteTextModal
+                    : null,
             icon: const Icon(
               Icons.restore_from_trash_outlined,
               color: Colors.white,
@@ -146,7 +177,7 @@ class DiaryTextFormOption extends StatelessWidget {
           InkWell(
             onTap: () => {},
             child: Text(
-              DateHelper.convertDate(DateTime.now()),
+              DateHelper.convertDate(nowTime),
               style: AppTheme.subtitle1.copyWith(
                 color: Colors.white,
                 fontSize: 15.sp,
