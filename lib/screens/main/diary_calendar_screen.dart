@@ -26,6 +26,7 @@ class DiaryCalendarScreen extends StatelessWidget {
     return ChangeNotifierProvider<CalendarProvider>(
       create: (BuildContext context) => CalendarProvider(
         context: context,
+        dataProvider: context.read<DataProvider>(),
       ),
       child: Consumer2<CalendarProvider, DataProvider>(
         builder: (_, calendarProvider, dataProvider, __) =>
@@ -39,19 +40,6 @@ class DiaryCalendarScreen extends StatelessWidget {
 
   final CalendarProvider _calendarProvider;
   final DataProvider _dataProvider;
-
-  List<DiaryData> eventHandler(DateTime day) {
-    List<DiaryData> event = [];
-    for (DiaryData data in _dataProvider.allDiaryData) {
-      if (data.time.year == day.year &&
-          data.time.month == day.month &&
-          data.time.day == day.day) {
-        event.add(data);
-      }
-    }
-
-    return event;
-  }
 
   Widget _buildMain() {
     return Container(
@@ -94,7 +82,7 @@ class DiaryCalendarScreen extends StatelessWidget {
             },
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
-            eventLoader: eventHandler,
+            eventLoader: _calendarProvider.eventHandler,
             focusedDay: _calendarProvider.focusedDay,
           ),
           Expanded(

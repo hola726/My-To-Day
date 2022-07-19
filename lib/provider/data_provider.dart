@@ -56,6 +56,11 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set selectDateReversedData(List<DiaryData?> selectDateReversedData) {
+    _selectDateReversedData = selectDateReversedData;
+    notifyListeners();
+  }
+
   set tmpDiaryData(DiaryData? tmpDiaryData) {
     _tmpDiaryData = tmpDiaryData;
 
