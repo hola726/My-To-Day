@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:my_to_day/provider/data_provider.dart';
+
+import '../model/data/diary_data.dart';
 
 class CalendarProvider extends ChangeNotifier {
   CalendarProvider({
     required BuildContext context,
-  }) : _context = context;
+    required DataProvider dataProvider,
+  })  : _context = context,
+        _dataProvider = dataProvider {
+    _dataProvider.selectDateReversedData = _dataProvider.allDiaryData
+        .map((diaryData) {
+          if (diaryData.time.year == DateTime.now().year &&
+              diaryData.time.month == DateTime.now().month &&
+              diaryData.time.day == DateTime.now().day) {
+            return diaryData;
+          }
+        })
+        .toList()
+        .reversed
+        .map((data) => data)
+        .toList();
+  }
   final BuildContext _context;
+  final DataProvider _dataProvider;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
@@ -24,5 +43,18 @@ class CalendarProvider extends ChangeNotifier {
 
   bool isSameDay(DateTime firstDay, DateTime secondDay) {
     return firstDay == secondDay;
+  }
+
+  List<DiaryData> eventHandler(DateTime day) {
+    List<DiaryData> event = [];
+    for (DiaryData data in _dataProvider.allDiaryData) {
+      if (data.time.year == day.year &&
+          data.time.month == day.month &&
+          data.time.day == day.day) {
+        event.add(data);
+      }
+    }
+
+    return event;
   }
 }
