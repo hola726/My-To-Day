@@ -19,14 +19,14 @@ class DiaryScreen extends StatelessWidget {
   static const id = '/DiaryScreen';
   const DiaryScreen._({
     Key? key,
-    required DiaryProvider diaryProvider,
     required DataProvider dataProvider,
-  })  : _diaryProvider = diaryProvider,
-        _dataProvider = dataProvider,
+    required DiaryProvider diaryProvider,
+  })  : _dataProvider = dataProvider,
+        _diaryProvider = diaryProvider,
         super(key: key);
 
-  final DiaryProvider _diaryProvider;
   final DataProvider _dataProvider;
+  final DiaryProvider _diaryProvider;
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
@@ -47,132 +47,133 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSearchPage() {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: _dataProvider.filteredReversedData.length,
+            itemBuilder: (context, index) {
+              DiaryData? data = _dataProvider.filteredReversedData[index];
+              DiaryData? previousData = 0 <= index - 1
+                  ? _dataProvider.filteredReversedData[index - 1]
+                  : null;
+
+              return data == null
+                  ? Container()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_dataProvider.isSameDay(data, previousData) ==
+                            false)
+                          SubTitleData(data: data),
+                        DiaryItem(
+                          data: data,
+                          dataProvider: _dataProvider,
+                          onTap: () {
+                            _dataProvider.targetDataIndex = index;
+
+                            _dataProvider.diaryData = data;
+                            ModalHelper.openDiaryDetailModal(
+                              dataProvider: _dataProvider,
+                              context: context,
+                            );
+                          },
+                        ),
+                      ],
+                    );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDiaryPage() {
+    return Column(
+      children: [
+        DiaryTextFormField(
+          diaryProvider: _diaryProvider,
+          controller: _diaryProvider.diaryTextFormController,
+          height: _diaryProvider.isLargeTextForm
+              ? MediaQuery.of(_diaryProvider.context).size.height -
+                  MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
+                  _dataProvider.handleFillImageHeight()
+              : 100.h,
+          hintText: "오늘은...",
+          initialImage: _dataProvider.tmpDiaryData?.cameraImage,
+          initialPickerImages: _dataProvider.tmpDiaryData?.pickerImages,
+          handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
+          isDisableIcon: _diaryProvider.isLargeTextForm,
+          suffixIcon: IconButton(
+            padding: EdgeInsets.all(10.w),
+            onPressed: () async {
+              if (_diaryProvider.diaryTextFormController.text == "") return;
+              await _diaryProvider.setDiaryData(
+                contents: _diaryProvider.diaryTextFormController.text,
+                cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
+                pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
+                locate: _dataProvider.tmpDiaryData?.locate,
+              );
+              _dataProvider.tmpDiaryData = null;
+              _dataProvider.getAllDiaryData();
+              _diaryProvider.diaryTextFormController.clear();
+            },
+            iconSize: 55.w,
+            icon: Icon(
+              Icons.check_box,
+              color: _diaryProvider.diaryTextFormController.text.isNotEmpty
+                  ? AppTheme.errorColor
+                  : AppTheme.backdropOverlay_65,
+            ),
+          ),
+          textFocusNode: _diaryProvider.diaryTextFormFocusNode,
+        ),
+        DiaryTextFormOption(
+          diaryProvider: _diaryProvider,
+          dataProvider: _dataProvider,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _dataProvider.allDiaryData.length,
+            itemBuilder: (context, index) {
+              DiaryData data = _dataProvider.reversedData[index];
+              DiaryData? previousData =
+                  0 <= index - 1 ? _dataProvider.reversedData[index - 1] : null;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_dataProvider.isSameDay(data, previousData) == false)
+                    SubTitleData(data: data),
+                  DiaryItem(
+                    data: data,
+                    dataProvider: _dataProvider,
+                    onTap: () {
+                      _dataProvider.targetDataIndex = index;
+
+                      _dataProvider.diaryData = data;
+                      ModalHelper.openDiaryDetailModal(
+                        context: context,
+                        dataProvider: _dataProvider,
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMain() {
     return Container(
       color: Colors.black,
       child: _diaryProvider.isSearchState == true
-          ? Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _dataProvider.filteredReversedData.length,
-                    itemBuilder: (context, index) {
-                      DiaryData? data =
-                          _dataProvider.filteredReversedData[index];
-                      DiaryData? previousData = 0 <= index - 1
-                          ? _dataProvider.filteredReversedData[index - 1]
-                          : null;
-
-                      return data == null
-                          ? Container()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (_dataProvider.isSameDay(
-                                        data, previousData) ==
-                                    false)
-                                  SubTitleData(data: data),
-                                DiaryItem(
-                                  data: data,
-                                  dataProvider: _dataProvider,
-                                  onTap: () {
-                                    _dataProvider.targetDataIndex = index;
-
-                                    _dataProvider.diaryData = data;
-                                    ModalHelper.openDiaryDetailModal(
-                                      dataProvider: _dataProvider,
-                                      context: context,
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                    },
-                  ),
-                ),
-              ],
-            )
-          : Column(
-              children: [
-                DiaryTextFormField(
-                  diaryProvider: _diaryProvider,
-                  controller: _diaryProvider.diaryTextFormController,
-                  height: _diaryProvider.isLargeTextForm
-                      ? MediaQuery.of(_diaryProvider.context).size.height -
-                          MediaQuery.of(_diaryProvider.context)
-                              .viewInsets
-                              .bottom -
-                          _dataProvider.handleFillImageHeight()
-                      : 100.h,
-                  hintText: "오늘은...",
-                  initialImage: _dataProvider.tmpDiaryData?.cameraImage,
-                  initialPickerImages: _dataProvider.tmpDiaryData?.pickerImages,
-                  handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
-                  isDisableIcon: _diaryProvider.isLargeTextForm,
-                  suffixIcon: IconButton(
-                    padding: EdgeInsets.all(10.w),
-                    onPressed: () async {
-                      if (_diaryProvider.diaryTextFormController.text == "" ) return;
-                      await _diaryProvider.setDiaryData(
-                        contents: _diaryProvider.diaryTextFormController.text,
-                        cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
-                        pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
-                        locate: _dataProvider.tmpDiaryData?.locate,
-                      );
-                      _dataProvider.tmpDiaryData = null;
-                      _dataProvider.getAllDiaryData();
-                      _diaryProvider.diaryTextFormController.clear();
-                    },
-                    iconSize: 55.w,
-                    icon: Icon(
-                      Icons.check_box,
-                      color:
-                          _diaryProvider.diaryTextFormController.text.isNotEmpty
-                              ? AppTheme.errorColor
-                              : AppTheme.backdropOverlay_65,
-                    ),
-                  ),
-                  textFocusNode: _diaryProvider.diaryTextFormFocusNode,
-                ),
-                DiaryTextFormOption(
-                  diaryProvider: _diaryProvider,
-                  dataProvider: _dataProvider,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _dataProvider.allDiaryData.length,
-                    itemBuilder: (context, index) {
-                      DiaryData data = _dataProvider.reversedData[index];
-                      DiaryData? previousData = 0 <= index - 1
-                          ? _dataProvider.reversedData[index - 1]
-                          : null;
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (_dataProvider.isSameDay(data, previousData) ==
-                              false)
-                            SubTitleData(data: data),
-                          DiaryItem(
-                            data: data,
-                            dataProvider: _dataProvider,
-                            onTap: () {
-                              _dataProvider.targetDataIndex = index;
-
-                              _dataProvider.diaryData = data;
-                              ModalHelper.openDiaryDetailModal(
-                                context: context,
-                                dataProvider: _dataProvider,
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+          ? _buildSearchPage()
+          : _buildDiaryPage(),
     );
   }
 
