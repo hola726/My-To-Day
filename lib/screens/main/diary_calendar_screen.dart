@@ -139,5 +139,3 @@ class DiaryCalendarScreen extends StatelessWidget {
     );
   }
 }
-
-class Message {}
