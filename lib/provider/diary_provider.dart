@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
@@ -125,5 +126,26 @@ class DiaryProvider extends ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
+
+  void onCheckBoxIconPressed() async {
+    if (diaryTextFormController.text == "") return;
+    await setDiaryData(
+      contents: diaryTextFormController.text,
+      cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
+      pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
+      locate: _dataProvider.tmpDiaryData?.locate,
+    );
+    _dataProvider.tmpDiaryData = null;
+    _dataProvider.getAllDiaryData();
+    diaryTextFormController.clear();
+  }
+
+  double handleDiaryTextFormFieldHeight() {
+    if (!isLargeTextForm) return 100.h;
+
+    return MediaQuery.of(context).size.height -
+        MediaQuery.of(context).viewInsets.bottom -
+        _dataProvider.handleFillImageHeight();
   }
 }
