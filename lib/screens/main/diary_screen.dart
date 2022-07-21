@@ -89,44 +89,33 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCheckBoxIcon() {
+    return IconButton(
+      padding: EdgeInsets.all(10.w),
+      onPressed: _diaryProvider.onCheckBoxIconPressed,
+      iconSize: 55.w,
+      icon: Icon(
+        Icons.check_box,
+        color: _diaryProvider.diaryTextFormController.text.isNotEmpty
+            ? AppTheme.errorColor
+            : AppTheme.backdropOverlay_65,
+      ),
+    );
+  }
+
   Widget _buildDiaryPage() {
     return Column(
       children: [
         DiaryTextFormField(
           diaryProvider: _diaryProvider,
           controller: _diaryProvider.diaryTextFormController,
-          height: _diaryProvider.isLargeTextForm
-              ? MediaQuery.of(_diaryProvider.context).size.height -
-                  MediaQuery.of(_diaryProvider.context).viewInsets.bottom -
-                  _dataProvider.handleFillImageHeight()
-              : 100.h,
+          height: _diaryProvider.handleDiaryTextFormFieldHeight(),
           hintText: "오늘은...",
           initialImage: _dataProvider.tmpDiaryData?.cameraImage,
           initialPickerImages: _dataProvider.tmpDiaryData?.pickerImages,
           handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
           isDisableIcon: _diaryProvider.isLargeTextForm,
-          suffixIcon: IconButton(
-            padding: EdgeInsets.all(10.w),
-            onPressed: () async {
-              if (_diaryProvider.diaryTextFormController.text == "") return;
-              await _diaryProvider.setDiaryData(
-                contents: _diaryProvider.diaryTextFormController.text,
-                cameraImage: _dataProvider.tmpDiaryData?.cameraImage,
-                pickerImage: _dataProvider.tmpDiaryData?.pickerImages,
-                locate: _dataProvider.tmpDiaryData?.locate,
-              );
-              _dataProvider.tmpDiaryData = null;
-              _dataProvider.getAllDiaryData();
-              _diaryProvider.diaryTextFormController.clear();
-            },
-            iconSize: 55.w,
-            icon: Icon(
-              Icons.check_box,
-              color: _diaryProvider.diaryTextFormController.text.isNotEmpty
-                  ? AppTheme.errorColor
-                  : AppTheme.backdropOverlay_65,
-            ),
-          ),
+          suffixIcon: _buildCheckBoxIcon(),
           textFocusNode: _diaryProvider.diaryTextFormFocusNode,
         ),
         DiaryTextFormOption(
