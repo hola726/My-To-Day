@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../app_theme.dart';
+import '../../constants/constant_strings.dart';
 import '../../model/data/diary_data.dart';
 import '../../provider/calendar_provider.dart';
 import '../../widgets/common/diary_item.dart';
@@ -129,7 +130,7 @@ class DiaryCalendarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-        title: 'Calendar',
+        title: CALENDAR,
         // rightTopWidget: ,
         bottomShadow: true,
         titleColor: AppTheme.primaryContrastColor,
