@@ -9,6 +9,7 @@ import 'package:my_to_day/widgets/diary_text_form_option.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_theme.dart';
+import '../../constants/constant_strings.dart';
 
 class DiaryEditScreen extends StatelessWidget {
   static const id = '/DiaryEditScreen';
@@ -56,7 +57,7 @@ class DiaryEditScreen extends StatelessWidget {
             height: MediaQuery.of(_diaryProvider.context).size.height -
                 _bottom -
                 _dataProvider.handleEditImageHeight(),
-            hintText: "오늘은...",
+            hintText: TODAY_IS,
             initialText: _dataProvider.diaryData?.contents,
             initialImage: _dataProvider.diaryData?.cameraImage,
             initialPickerImages: _dataProvider.diaryData?.pickerImages,
@@ -80,7 +81,7 @@ class DiaryEditScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: MainAppBar(
-        title: 'EDIT',
+        title: EDIT,
         bottomShadow: true,
         titleColor: AppTheme.primaryContrastColor,
         backgroundColors: AppTheme.textPrimaryColor,

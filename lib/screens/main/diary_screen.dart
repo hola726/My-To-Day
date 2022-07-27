@@ -15,6 +15,8 @@ import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:my_to_day/widgets/diary_text_form_option.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/constant_strings.dart';
+
 class DiaryScreen extends StatelessWidget {
   static const id = '/DiaryScreen';
   const DiaryScreen._({
@@ -110,7 +112,7 @@ class DiaryScreen extends StatelessWidget {
           diaryProvider: _diaryProvider,
           controller: _diaryProvider.diaryTextFormController,
           height: _diaryProvider.handleDiaryTextFormFieldHeight(),
-          hintText: "오늘은...",
+          hintText: TODAY_IS,
           initialImage: _dataProvider.tmpDiaryData?.cameraImage,
           initialPickerImages: _dataProvider.tmpDiaryData?.pickerImages,
           handleOnChanged: _diaryProvider.handleDiaryTextFormChanged,
@@ -303,7 +305,7 @@ class DiaryScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
-          title: _diaryProvider.isLargeTextForm ? "WRITE" : "MYTODAY",
+          title: _diaryProvider.isLargeTextForm ? WRITE : MY_TO_DAY,
           leadingWidth: _diaryProvider.isLargeTextForm == true ? null : 200.w,
           leading: buildLeading(),
           appBarWidgets: buildSearchWidgets(),
