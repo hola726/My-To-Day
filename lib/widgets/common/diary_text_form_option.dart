@@ -7,8 +7,8 @@ import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 
-import '../app_theme.dart';
-import 'common/contour.dart';
+import '../../app_theme.dart';
+import 'contour.dart';
 
 class DiaryTextFormOption extends StatefulWidget {
   const DiaryTextFormOption({
