@@ -6,16 +6,16 @@ import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/screens/main/diary_calendar_screen.dart';
-import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
+import 'package:my_to_day/widgets/common/diary_text_form_option.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
-import 'package:my_to_day/widgets/diary_text_form_option.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/constant_strings.dart';
+import '../../widgets/common/subtitle_date.dart';
 
 class DiaryScreen extends StatelessWidget {
   static const id = '/DiaryScreen';
@@ -68,7 +68,7 @@ class DiaryScreen extends StatelessWidget {
                       children: [
                         if (_dataProvider.isSameDay(data, previousData) ==
                             false)
-                          SubTitleData(data: data),
+                          SubTitleDate(data: data),
                         DiaryItem(
                           data: data,
                           dataProvider: _dataProvider,
@@ -136,7 +136,7 @@ class DiaryScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_dataProvider.isSameDay(data, previousData) == false)
-                    SubTitleData(data: data),
+                    SubTitleDate(data: data),
                   DiaryItem(
                     data: data,
                     dataProvider: _dataProvider,
@@ -315,29 +315,6 @@ class DiaryScreen extends StatelessWidget {
           backgroundColors: AppTheme.textPrimaryColor,
         ),
         body: _buildMain(),
-      ),
-    );
-  }
-}
-
-class SubTitleData extends StatelessWidget {
-  const SubTitleData({
-    Key? key,
-    required this.data,
-  }) : super(key: key);
-
-  final DiaryData data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 15.h),
-      child: Text(
-        DateHelper.convertDateMonth(data.time),
-        style: AppTheme.button_small.copyWith(
-          color: AppTheme.grey400,
-          fontSize: 11.sp,
-        ),
       ),
     );
   }
