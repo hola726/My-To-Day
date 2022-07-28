@@ -4,8 +4,8 @@ import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
+import 'package:my_to_day/widgets/common/diary_text_form_option.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
-import 'package:my_to_day/widgets/diary_text_form_option.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_theme.dart';
@@ -75,6 +75,33 @@ class DiaryEditScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: Navigator.of(context).pop,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      icon: Icon(
+        Icons.clear,
+        size: 27.w,
+      ),
+    );
+  }
+
+  Widget _buildRightTop(BuildContext context) {
+    return IconButton(
+      onPressed: _diaryProvider.onEditPressed,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      color: _diaryProvider.diaryTextFormController.text.isNotEmpty
+          ? Colors.red
+          : null,
+      icon: Icon(
+        Icons.check,
+        size: 27.w,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _bottom = MediaQuery.of(context).viewInsets.bottom;
@@ -85,38 +112,8 @@ class DiaryEditScreen extends StatelessWidget {
         bottomShadow: true,
         titleColor: AppTheme.primaryContrastColor,
         backgroundColors: AppTheme.textPrimaryColor,
-        leading: IconButton(
-          onPressed: Navigator.of(context).pop,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          icon: Icon(
-            Icons.clear,
-            size: 27.w,
-          ),
-        ),
-        rightTopWidget: IconButton(
-          onPressed: () async {
-            await _diaryProvider.editDiaryData(
-              contents: _diaryProvider.diaryTextFormController.text,
-              date: _dataProvider.diaryData!.time,
-              cameraImage: _dataProvider.diaryData?.cameraImage,
-              pickerImage: _dataProvider.diaryData?.pickerImages,
-              locate: _dataProvider.diaryData?.locate,
-            );
-            _dataProvider.getAllDiaryData();
-            _diaryProvider.diaryTextFormController.clear();
-            Navigator.of(context).pop();
-          },
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          color: _diaryProvider.diaryTextFormController.text.isNotEmpty
-              ? Colors.red
-              : null,
-          icon: Icon(
-            Icons.check,
-            size: 27.w,
-          ),
-        ),
+        leading: _buildLeading(context),
+        rightTopWidget: _buildRightTop(context),
       ),
       body: _buildMain(),
     );
