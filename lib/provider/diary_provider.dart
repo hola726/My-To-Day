@@ -148,4 +148,17 @@ class DiaryProvider extends ChangeNotifier {
         MediaQuery.of(context).viewInsets.bottom -
         _dataProvider.handleFillImageHeight();
   }
+
+  void onEditPressed() async {
+    await editDiaryData(
+      contents: diaryTextFormController.text,
+      date: _dataProvider.diaryData!.time,
+      cameraImage: _dataProvider.diaryData?.cameraImage,
+      pickerImage: _dataProvider.diaryData?.pickerImages,
+      locate: _dataProvider.diaryData?.locate,
+    );
+    _dataProvider.getAllDiaryData();
+    diaryTextFormController.clear();
+    Navigator.of(context).pop();
+  }
 }

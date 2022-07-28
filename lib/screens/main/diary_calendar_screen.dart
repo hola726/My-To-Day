@@ -11,7 +11,7 @@ import '../../constants/constant_strings.dart';
 import '../../model/data/diary_data.dart';
 import '../../provider/calendar_provider.dart';
 import '../../widgets/common/diary_item.dart';
-import 'diary_screen.dart';
+import '../../widgets/common/subtitle_date.dart';
 
 class DiaryCalendarScreen extends StatelessWidget {
   static const id = '/DiaryCalendarScreen';
@@ -102,7 +102,7 @@ class DiaryCalendarScreen extends StatelessWidget {
                         children: [
                           if (_dataProvider.isSameDay(data, previousData) ==
                               false)
-                            SubTitleData(data: data),
+                            SubTitleDate(data: data),
                           DiaryItem(
                             data: data,
                             dataProvider: _dataProvider,
@@ -131,7 +131,6 @@ class DiaryCalendarScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(
         title: CALENDAR,
-        // rightTopWidget: ,
         bottomShadow: true,
         titleColor: AppTheme.primaryContrastColor,
         backgroundColors: AppTheme.textPrimaryColor,
