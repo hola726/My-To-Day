@@ -9,18 +9,7 @@ class CalendarProvider extends ChangeNotifier {
     required DataProvider dataProvider,
   })  : _context = context,
         _dataProvider = dataProvider {
-    _dataProvider.selectDateReversedData = _dataProvider.allDiaryData
-        .map((diaryData) {
-          if (diaryData.time.year == DateTime.now().year &&
-              diaryData.time.month == DateTime.now().month &&
-              diaryData.time.day == DateTime.now().day) {
-            return diaryData;
-          }
-        })
-        .toList()
-        .reversed
-        .map((data) => data)
-        .toList();
+    _dataProvider.selectDateReversedData = _getSelectDateReversedData();
   }
   final BuildContext _context;
   final DataProvider _dataProvider;
@@ -57,4 +46,28 @@ class CalendarProvider extends ChangeNotifier {
 
     return event;
   }
+
+  List<DiaryData?> _getSelectDateReversedData() {
+    List<DiaryData?> result = [];
+    for (DiaryData data in _dataProvider.allDiaryData) {
+      if (data.time.year == DateTime.now().year &&
+          data.time.month == DateTime.now().month &&
+          data.time.day == DateTime.now().day) {
+        result.add(data);
+      }
+    }
+    return result.reversed.map((data) => data).toList();
+  //   return _dataProvider.allDiaryData
+  //       .map((diaryData) {
+  //         if (diaryData.time.year == DateTime.now().year &&
+  //             diaryData.time.month == DateTime.now().month &&
+  //             diaryData.time.day == DateTime.now().day) {
+  //           return diaryData;
+  //         }
+  //       })
+  //       .toList()
+  //       .reversed
+  //       .map((data) => data)
+  //       .toList();
+  // }
 }
