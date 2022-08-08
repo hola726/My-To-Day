@@ -11,13 +11,16 @@ class CalendarProvider extends ChangeNotifier {
         _dataProvider = dataProvider {
     _dataProvider.selectDateReversedData = _getSelectDateReversedData();
   }
+
   final BuildContext _context;
   final DataProvider _dataProvider;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
   DateTime get selectedDay => _selectedDay;
+
   DateTime get focusedDay => _focusedDay;
+
   BuildContext get context => _context;
 
   set selectedDay(DateTime selectedDay) {
@@ -57,17 +60,18 @@ class CalendarProvider extends ChangeNotifier {
       }
     }
     return result.reversed.map((data) => data).toList();
-  //   return _dataProvider.allDiaryData
-  //       .map((diaryData) {
-  //         if (diaryData.time.year == DateTime.now().year &&
-  //             diaryData.time.month == DateTime.now().month &&
-  //             diaryData.time.day == DateTime.now().day) {
-  //           return diaryData;
-  //         }
-  //       })
-  //       .toList()
-  //       .reversed
-  //       .map((data) => data)
-  //       .toList();
-  // }
+    //   return _dataProvider.allDiaryData
+    //       .map((diaryData) {
+    //         if (diaryData.time.year == DateTime.now().year &&
+    //             diaryData.time.month == DateTime.now().month &&
+    //             diaryData.time.day == DateTime.now().day) {
+    //           return diaryData;
+    //         }
+    //       })
+    //       .toList()
+    //       .reversed
+    //       .map((data) => data)
+    //       .toList();
+    // }
+  }
 }
