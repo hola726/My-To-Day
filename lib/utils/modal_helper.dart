@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 
 import '../app_theme.dart';
@@ -181,6 +182,37 @@ class ModalHelper {
               );
             }),
           );
+        });
+  }
+
+  static Future<void> openMapsModal({
+    required BuildContext context,
+  }) async {
+    await showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter modalSetState) {
+            return Container(
+              color: Colors.black,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GoogleMap(
+                      onMapCreated: (GoogleMapController controller) {
+                        // mapController = controller;
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: const LatLng(45.521563, -122.677433),
+                        zoom: 11.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
         });
   }
 }

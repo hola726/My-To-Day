@@ -6,6 +6,7 @@ import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
+import 'package:my_to_day/utils/modal_helper.dart';
 
 import '../../app_theme.dart';
 import 'contour.dart';
@@ -149,7 +150,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
             ),
           ),
           IconButton(
-            onPressed: () => {},
+            onPressed: () => ModalHelper.openMapsModal(context: context),
             icon: const Icon(
               Icons.location_on_outlined,
               color: Colors.white,
