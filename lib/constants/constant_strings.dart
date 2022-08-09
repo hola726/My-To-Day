@@ -9,3 +9,4 @@ const TODAY_IS = '오늘은...';
 const WRITE = 'WRITE';
 const MY_TO_DAY = 'MYTODAY';
 const CALENDAR = 'Calendar';
+const SELECT_LOCATION = '위치 선택';

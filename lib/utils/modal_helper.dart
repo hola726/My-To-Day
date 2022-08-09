@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_to_day/constants/constant_strings.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 
 import '../app_theme.dart';
@@ -189,20 +190,66 @@ class ModalHelper {
     required BuildContext context,
   }) async {
     await showModalBottomSheet(
+        backgroundColor: Colors.transparent,
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter modalSetState) {
             return Container(
-              color: Colors.black,
+              height: MediaQuery.of(context).size.height * 0.9,
+              decoration: BoxDecoration(
+                color: AppTheme.textPrimaryColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
               child: Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15.h,
+                      horizontal: 15.w,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: Navigator.of(context).pop,
+                          child: Text(
+                            CANCEL,
+                            style: AppTheme.button_medium_KR.copyWith(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          SELECT_LOCATION,
+                          style: AppTheme.button_medium_KR.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          SEARCH,
+                          style: AppTheme.button_medium_KR.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: GoogleMap(
                       onMapCreated: (GoogleMapController controller) {
                         // mapController = controller;
                       },
+                      myLocationButtonEnabled: true,
+                      myLocationEnabled: true,
+                      zoomGesturesEnabled: true,
+                      onCameraMoveStarted: () => {},
+                      onCameraMove: (_) => {},
+                      onCameraIdle: () => {},
                       initialCameraPosition: CameraPosition(
                         target: const LatLng(45.521563, -122.677433),
                         zoom: 11.0,
