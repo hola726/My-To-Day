@@ -192,74 +192,84 @@ class ModalHelper {
     await showModalBottomSheet(
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
+        isDismissible: true,
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter modalSetState) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.9,
-              decoration: BoxDecoration(
-                color: AppTheme.textPrimaryColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                ),
+          late GoogleMapController mapController;
+
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.9,
+            decoration: BoxDecoration(
+              color: AppTheme.textPrimaryColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
               ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 15.h,
-                      horizontal: 15.w,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: Navigator.of(context).pop,
-                          child: Text(
-                            CANCEL,
-                            style: AppTheme.button_medium_KR.copyWith(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          SELECT_LOCATION,
-                          style: AppTheme.button_medium_KR.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          SEARCH,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 15.h,
+                    horizontal: 15.w,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: Navigator.of(context).pop,
+                        child: Text(
+                          CANCEL,
                           style: AppTheme.button_medium_KR.copyWith(
                             color: Colors.blue,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        SELECT_LOCATION,
+                        style: AppTheme.button_medium_KR.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        SEARCH,
+                        style: AppTheme.button_medium_KR.copyWith(
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: GoogleMap(
-                      onMapCreated: (GoogleMapController controller) {
-                        // mapController = controller;
-                      },
-                      myLocationButtonEnabled: true,
-                      myLocationEnabled: true,
-                      zoomGesturesEnabled: true,
-                      onCameraMoveStarted: () => {},
-                      onCameraMove: (_) => {},
-                      onCameraIdle: () => {},
-                      initialCameraPosition: CameraPosition(
-                        target: const LatLng(45.521563, -122.677433),
-                        zoom: 11.0,
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      height: 300.h,
+                      child: GoogleMap(
+                        onMapCreated: (GoogleMapController controller) {
+                          mapController = controller;
+                        },
+                        // myLocationButtonEnabled: true,
+                        // myLocationEnabled: true,
+                        // zoomGesturesEnabled: true,
+                        onCameraMoveStarted: () => {},
+                        onCameraMove: (CameraPosition position) {
+                          print("position");
+                          print(position);
+                          mapController.moveCamera(
+                              CameraUpdate.newCameraPosition(position));
+                        },
+                        onCameraIdle: () => {},
+                        initialCameraPosition: CameraPosition(
+                          target: const LatLng(45.521563, -122.677433),
+                          zoom: 11.0,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          });
+                  ],
+                ),
+              ],
+            ),
+          );
         });
   }
 }
