@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/model/data/diary_data.dart';
@@ -19,7 +20,7 @@ import '../../widgets/common/subtitle_date.dart';
 
 class DiaryScreen extends StatelessWidget {
   static const id = '/DiaryScreen';
-  const DiaryScreen._({
+  DiaryScreen._({
     Key? key,
     required DataProvider dataProvider,
     required DiaryProvider diaryProvider,
@@ -29,6 +30,7 @@ class DiaryScreen extends StatelessWidget {
 
   final DataProvider _dataProvider;
   final DiaryProvider _diaryProvider;
+  late final GoogleMapController mapController;
 
   static Widget setProviderRoute() {
     return ChangeNotifierProvider<DiaryProvider>(
@@ -108,6 +110,32 @@ class DiaryScreen extends StatelessWidget {
   Widget _buildDiaryPage() {
     return Column(
       children: [
+        Container(
+          height: 300.h,
+          child: GoogleMap(
+            onMapCreated: (GoogleMapController controller) async {
+              mapController = controller;
+            },
+
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            // zoomGesturesEnabled: true,
+
+            onCameraMoveStarted: () => {},
+            onCameraMove: (CameraPosition position) {
+              print("position");
+              print(position);
+
+              // mapController
+              //     .moveCamera(CameraUpdate.newCameraPosition(position));
+            },
+            onCameraIdle: () => {},
+            initialCameraPosition: CameraPosition(
+              target: const LatLng(45.521563, -122.677433),
+              zoom: 11.0,
+            ),
+          ),
+        ),
         DiaryTextFormField(
           diaryProvider: _diaryProvider,
           controller: _diaryProvider.diaryTextFormController,
