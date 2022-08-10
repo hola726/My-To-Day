@@ -23,6 +23,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-2.1.8" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/share_plus_windows-3.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/geolocator_android-4.0.2" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/geolocator-9.0.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/geolocator_apple-2.2.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/geolocator_web-2.1.6" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
