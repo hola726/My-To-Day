@@ -1,4 +1,4 @@
-# My To Day Diary App
+# MY-TO-DAY
 
 ## Overview
 
