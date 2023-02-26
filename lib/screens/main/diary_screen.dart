@@ -110,32 +110,32 @@ class DiaryScreen extends StatelessWidget {
   Widget _buildDiaryPage() {
     return Column(
       children: [
-        Container(
-          height: 300.h,
-          child: GoogleMap(
-            onMapCreated: (GoogleMapController controller) async {
-              mapController = controller;
-            },
-
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            // zoomGesturesEnabled: true,
-
-            onCameraMoveStarted: () => {},
-            onCameraMove: (CameraPosition position) {
-              print("position");
-              print(position);
-
-              // mapController
-              //     .moveCamera(CameraUpdate.newCameraPosition(position));
-            },
-            onCameraIdle: () => {},
-            initialCameraPosition: CameraPosition(
-              target: const LatLng(45.521563, -122.677433),
-              zoom: 11.0,
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 300.h,
+        //   child: GoogleMap(
+        //     onMapCreated: (GoogleMapController controller) async {
+        //       mapController = controller;
+        //     },
+        //
+        //     myLocationButtonEnabled: true,
+        //     myLocationEnabled: true,
+        //     // zoomGesturesEnabled: true,
+        //
+        //     onCameraMoveStarted: () => {},
+        //     onCameraMove: (CameraPosition position) {
+        //       print("position");
+        //       print(position);
+        //
+        //       // mapController
+        //       //     .moveCamera(CameraUpdate.newCameraPosition(position));
+        //     },
+        //     onCameraIdle: () => {},
+        //     initialCameraPosition: CameraPosition(
+        //       target: const LatLng(45.521563, -122.677433),
+        //       zoom: 11.0,
+        //     ),
+        //   ),
+        // ),
         DiaryTextFormField(
           diaryProvider: _diaryProvider,
           controller: _diaryProvider.diaryTextFormController,
