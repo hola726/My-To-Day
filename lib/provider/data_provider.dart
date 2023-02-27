@@ -236,6 +236,14 @@ class DataProvider extends ChangeNotifier {
   void getPickerImages(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? images = await _picker.pickMultiImage();
+
+    // final String path = await getApplicationDocumentsDirectory().path;
+    //
+    // final File newImage = await image.copy('$path/image1.png');
+
+    print(images!.first.name);
+    print(File(images!.first.path).path);
+
     List<String>? imageStrings = images?.map((image) => image.path).toList();
 
     if (isEdit == true) {
