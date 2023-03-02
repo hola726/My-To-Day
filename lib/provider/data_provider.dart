@@ -13,7 +13,7 @@ class DataProvider extends ChangeNotifier {
   DataProvider({
     required LocalStorageHelper localStorageHelper,
   }) : _localStorageHelper = localStorageHelper {
-    getAllDiaryData();
+    init();
   }
 
   final LocalStorageHelper _localStorageHelper;
@@ -38,6 +38,7 @@ class DataProvider extends ChangeNotifier {
   int _targetDataIndex = 0;
   String? _filteredValue;
   DateTime _selectDate = DateTime.now();
+  String? _localPath;
 
   DiaryData? get diaryData => _diaryData;
 
@@ -76,6 +77,11 @@ class DataProvider extends ChangeNotifier {
   set allDiaryData(List<DiaryData> allDiaryData) {
     _allDiaryData = allDiaryData;
     notifyListeners();
+  }
+
+  void init() async {
+    getAllDiaryData();
+    _localPath = (await getApplicationDocumentsDirectory()).path;
   }
 
   void getAllDiaryData() {
@@ -307,13 +313,13 @@ class DataProvider extends ChangeNotifier {
     if (isExistCameraImage && index == 0) {
       return Image.file(
         File(
-          _diaryData!.cameraImage!,
+          "$_localPath/${_diaryData!.cameraImage!}",
         ),
       );
     }
     return Image.file(
       File(
-        _diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
+        "$_localPath/${_diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)]}",
       ),
     );
   }
