@@ -6,6 +6,7 @@ import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../app_theme.dart';
 
@@ -27,7 +28,27 @@ class DiaryItem extends StatefulWidget {
 
 class _DiaryItemState extends State<DiaryItem> {
   bool _isViewMore = false;
+  String? _localPath;
+
   late final bool _isLongLineContents = widget.data.contents.length > 93;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    _localPath = (await getApplicationDocumentsDirectory()).path;
+  }
+
+  String _getPath() {
+    if (widget.data.cameraImage != null) {
+      return "$_localPath/${widget.data.cameraImage}";
+    }
+
+    return "$_localPath/${widget.data.pickerImages![0]}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +106,17 @@ class _DiaryItemState extends State<DiaryItem> {
                   ),
                 ),
                 SizedBox(width: 10.w),
-                if (widget.data.cameraImage != null ||
-                    widget.data.pickerImages != null)
+                if ((widget.data.cameraImage != null ||
+                        widget.data.pickerImages != null) &&
+                    _localPath != null)
                   SizedBox(
                     width: 40.w,
                     height: 40.h,
                     child: InstaImageViewer(
                       child: Image.file(
-                        File(widget.data.cameraImage ??
-                            widget.data.pickerImages![0]),
+                        File(
+                          _getPath(),
+                        ),
                       ),
                     ),
                   ),
