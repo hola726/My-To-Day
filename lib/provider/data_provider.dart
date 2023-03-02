@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DataProvider extends ChangeNotifier {
@@ -237,14 +238,30 @@ class DataProvider extends ChangeNotifier {
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? images = await _picker.pickMultiImage();
 
-    // final String path = await getApplicationDocumentsDirectory().path;
-    //
-    // final File newImage = await image.copy('$path/image1.png');
+    final String path = (await getApplicationDocumentsDirectory()).path;
 
     print(images!.first.name);
-    print(File(images!.first.path).path);
+    print(File(images.first.path).path);
 
-    List<String>? imageStrings = images?.map((image) => image.path).toList();
+    List<String>? imageStrings;
+
+    for (XFile image in images) {
+      String localPath = "$path/${image.name}";
+
+      print("test");
+      print(localPath);
+
+      await File(image.path).copy(localPath);
+      // await image.saveTo(localPath);
+
+      print(File(localPath));
+
+      if (imageStrings == null) {
+        imageStrings = [image.name];
+      } else {
+        imageStrings.add(image.name);
+      }
+    }
 
     if (isEdit == true) {
       _editPickerImages(imageStrings);
