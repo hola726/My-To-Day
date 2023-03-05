@@ -41,6 +41,7 @@ class DataProvider extends ChangeNotifier {
   String? _localPath;
 
   DiaryData? get diaryData => _diaryData;
+  String? get localPath => _localPath;
 
   DiaryData? get tmpDiaryData => _tmpDiaryData;
 
@@ -100,9 +101,14 @@ class DataProvider extends ChangeNotifier {
   }
 
   void _getFilteredReversedData() {
+    if (_filteredValue == null) {
+      _filteredReversedData = [];
+      return;
+    }
+
     _filteredReversedData = _allDiaryData
         .map((diaryData) {
-          if (diaryData.contents.contains(_filteredValue ?? '')) {
+          if (diaryData.contents.contains(_filteredValue!)) {
             return diaryData;
           }
         })
