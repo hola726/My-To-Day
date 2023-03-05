@@ -5,7 +5,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/provider/diary_provider.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DiaryTextFormField extends StatefulWidget {
   const DiaryTextFormField({
@@ -46,8 +45,6 @@ class DiaryTextFormField extends StatefulWidget {
 }
 
 class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
-  String? _localPath;
-
   @override
   void initState() {
     super.initState();
@@ -55,8 +52,6 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   }
 
   void init() async {
-    _localPath = (await getApplicationDocumentsDirectory()).path;
-
     if (widget.initialText != null) {
       widget.controller.text = widget.initialText!;
     }
@@ -113,22 +108,25 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      if (widget.initialImage != null && _localPath != null)
+                      if (widget.initialImage != null &&
+                          widget.diaryProvider.dataProvider.localPath != null)
                         Container(
                           child: Image.file(
-                            File("$_localPath/${widget.initialImage!}"),
+                            File(
+                                "${widget.diaryProvider.dataProvider.localPath}/${widget.initialImage!}"),
                             height: 50.h,
                             width: 50.w,
                           ),
                         ),
                       if (widget.initialPickerImages != null &&
-                          _localPath != null)
+                          widget.diaryProvider.dataProvider.localPath != null)
                         Row(
                           children:
                               widget.initialPickerImages!.map<Widget>((image) {
                             return Container(
                               child: Image.file(
-                                File("$_localPath/$image"),
+                                File(
+                                    "${widget.diaryProvider.dataProvider.localPath}/$image"),
                                 height: 50.h,
                                 width: 50.w,
                               ),

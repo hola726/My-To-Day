@@ -44,10 +44,10 @@ class _DiaryItemState extends State<DiaryItem> {
 
   String _getPath() {
     if (widget.data.cameraImage != null) {
-      return "$_localPath/${widget.data.cameraImage}";
+      return "${widget.dataProvider.localPath}/${widget.data.cameraImage}";
     }
 
-    return "$_localPath/${widget.data.pickerImages![0]}";
+    return "${widget.dataProvider.localPath}/${widget.data.pickerImages![0]}";
   }
 
   @override
@@ -108,7 +108,7 @@ class _DiaryItemState extends State<DiaryItem> {
                 SizedBox(width: 10.w),
                 if ((widget.data.cameraImage != null ||
                         widget.data.pickerImages != null) &&
-                    _localPath != null)
+                    widget.dataProvider.localPath != null)
                   SizedBox(
                     width: 40.w,
                     height: 40.h,

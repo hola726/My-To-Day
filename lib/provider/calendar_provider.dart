@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 
 import '../model/data/diary_data.dart';
@@ -9,7 +10,7 @@ class CalendarProvider extends ChangeNotifier {
     required DataProvider dataProvider,
   })  : _context = context,
         _dataProvider = dataProvider {
-    _dataProvider.selectDateReversedData = _getSelectDateReversedData();
+    init();
   }
 
   final BuildContext _context;
@@ -31,6 +32,11 @@ class CalendarProvider extends ChangeNotifier {
   set focusedDay(DateTime focusedDay) {
     _focusedDay = focusedDay;
     notifyListeners();
+  }
+
+  void init() {
+    SchedulerBinding.instance.addPostFrameCallback((_) =>
+        _dataProvider.selectDateReversedData = _getSelectDateReversedData());
   }
 
   bool isSameDay(DateTime firstDay, DateTime secondDay) {
