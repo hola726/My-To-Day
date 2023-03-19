@@ -6,13 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/utils/local_storage_helper.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DataProvider extends ChangeNotifier {
   DataProvider({
     required LocalStorageHelper localStorageHelper,
   }) : _localStorageHelper = localStorageHelper {
-    getAllDiaryData();
+    init();
   }
 
   final LocalStorageHelper _localStorageHelper;
@@ -37,8 +38,10 @@ class DataProvider extends ChangeNotifier {
   int _targetDataIndex = 0;
   String? _filteredValue;
   DateTime _selectDate = DateTime.now();
+  String? _localPath;
 
   DiaryData? get diaryData => _diaryData;
+  String? get localPath => _localPath;
 
   DiaryData? get tmpDiaryData => _tmpDiaryData;
 
@@ -77,6 +80,11 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void init() async {
+    getAllDiaryData();
+    _localPath = (await getApplicationDocumentsDirectory()).path;
+  }
+
   void getAllDiaryData() {
     _allDiaryData = _localStorageHelper.getAllDiaryData();
     getReversedData();
@@ -93,9 +101,14 @@ class DataProvider extends ChangeNotifier {
   }
 
   void _getFilteredReversedData() {
+    if (_filteredValue == null) {
+      _filteredReversedData = [];
+      return;
+    }
+
     _filteredReversedData = _allDiaryData
         .map((diaryData) {
-          if (diaryData.contents.contains(_filteredValue ?? '')) {
+          if (diaryData.contents.contains(_filteredValue!)) {
             return diaryData;
           }
         })
@@ -236,7 +249,23 @@ class DataProvider extends ChangeNotifier {
   void getPickerImages(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? images = await _picker.pickMultiImage();
-    List<String>? imageStrings = images?.map((image) => image.path).toList();
+    if (images == null) return;
+
+    final String path = (await getApplicationDocumentsDirectory()).path;
+
+    List<String>? imageStrings;
+
+    for (XFile image in images) {
+      String localPath = "$path/${image.name}";
+
+      await File(image.path).copy(localPath);
+
+      if (imageStrings == null) {
+        imageStrings = [image.name];
+      } else {
+        imageStrings.add(image.name);
+      }
+    }
 
     if (isEdit == true) {
       _editPickerImages(imageStrings);
@@ -256,7 +285,6 @@ class DataProvider extends ChangeNotifier {
   }
 
   Color setPickerImageColor(bool? isEdit) {
-    print(_tmpDiaryData?.pickerImages);
     return isEdit == true
         ? _diaryData?.pickerImages != null
             ? Colors.red
@@ -282,13 +310,13 @@ class DataProvider extends ChangeNotifier {
     if (isExistCameraImage && index == 0) {
       return Image.file(
         File(
-          _diaryData!.cameraImage!,
+          "$_localPath/${_diaryData!.cameraImage!}",
         ),
       );
     }
     return Image.file(
       File(
-        _diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)],
+        "$_localPath/${_diaryData!.pickerImages![index - (isExistCameraImage ? 1 : 0)]}",
       ),
     );
   }

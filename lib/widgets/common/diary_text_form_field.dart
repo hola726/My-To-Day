@@ -48,10 +48,14 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init() async {
     if (widget.initialText != null) {
       widget.controller.text = widget.initialText!;
-      setState(() {});
     }
+    setState(() {});
   }
 
   SizedBox buildTextFormField() {
@@ -104,21 +108,25 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      if (widget.initialImage != null)
+                      if (widget.initialImage != null &&
+                          widget.diaryProvider.dataProvider.localPath != null)
                         Container(
                           child: Image.file(
-                            File(widget.initialImage!),
+                            File(
+                                "${widget.diaryProvider.dataProvider.localPath}/${widget.initialImage!}"),
                             height: 50.h,
                             width: 50.w,
                           ),
                         ),
-                      if (widget.initialPickerImages != null)
+                      if (widget.initialPickerImages != null &&
+                          widget.diaryProvider.dataProvider.localPath != null)
                         Row(
                           children:
                               widget.initialPickerImages!.map<Widget>((image) {
                             return Container(
                               child: Image.file(
-                                File(image),
+                                File(
+                                    "${widget.diaryProvider.dataProvider.localPath}/$image"),
                                 height: 50.h,
                                 width: 50.w,
                               ),
