@@ -249,24 +249,16 @@ class DataProvider extends ChangeNotifier {
   void getPickerImages(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? images = await _picker.pickMultiImage();
+    if (images == null) return;
 
     final String path = (await getApplicationDocumentsDirectory()).path;
-
-    print(images!.first.name);
-    print(File(images.first.path).path);
 
     List<String>? imageStrings;
 
     for (XFile image in images) {
       String localPath = "$path/${image.name}";
 
-      print("test");
-      print(localPath);
-
       await File(image.path).copy(localPath);
-      // await image.saveTo(localPath);
-
-      print(File(localPath));
 
       if (imageStrings == null) {
         imageStrings = [image.name];
@@ -293,7 +285,6 @@ class DataProvider extends ChangeNotifier {
   }
 
   Color setPickerImageColor(bool? isEdit) {
-    print(_tmpDiaryData?.pickerImages);
     return isEdit == true
         ? _diaryData?.pickerImages != null
             ? Colors.red
