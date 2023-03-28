@@ -11,7 +11,7 @@
 
 |    NAME     | VERSION |
 | :---------: | :-----: |
-| Flutter SDK |  3.0.1  |
+| Flutter SDK |  3.7.7  |
 
 
 
