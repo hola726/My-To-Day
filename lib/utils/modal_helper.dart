@@ -7,7 +7,6 @@ import 'package:my_to_day/provider/data_provider.dart';
 
 import '../app_theme.dart';
 import '../routes.dart';
-import '../screens/main/diary_edit_screen.dart';
 import 'date_helper.dart';
 
 class ModalHelper {
