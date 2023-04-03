@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
-import 'package:my_to_day/provider/diary_provider.dart';
+import 'package:my_to_day/provider/data_provider.dart';
 
 class DiaryTextFormField extends StatefulWidget {
   const DiaryTextFormField({
     Key? key,
     required this.controller,
-    required this.diaryProvider,
+    required this.dataProvider,
     this.hintText,
     this.hintStyle,
     this.textStyle,
@@ -21,6 +21,7 @@ class DiaryTextFormField extends StatefulWidget {
     this.initialText,
     this.initialImage,
     this.initialPickerImages,
+    this.isLargeTextForm,
     this.handleOnChanged,
     this.isEditTextFormOption,
   }) : super(key: key);
@@ -34,11 +35,12 @@ class DiaryTextFormField extends StatefulWidget {
   final Widget? suffixIcon;
   final FocusNode? textFocusNode;
   final bool? isDisableIcon;
-  final DiaryProvider diaryProvider;
+  final DataProvider dataProvider;
   final void Function(String)? handleOnChanged;
   final String? initialImage;
   final List<String>? initialPickerImages;
   final bool? isEditTextFormOption;
+  final bool? isLargeTextForm;
 
   @override
   _DiaryTextFormFieldState createState() => _DiaryTextFormFieldState();
@@ -92,8 +94,7 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
   bool isImageTextFormField() {
     return (widget.initialImage != null ||
             widget.initialPickerImages != null) &&
-        (widget.diaryProvider.isLargeTextForm == true ||
-            widget.isEditTextFormOption == true);
+        (widget.isLargeTextForm == true || widget.isEditTextFormOption == true);
   }
 
   @override
@@ -109,24 +110,23 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                   child: Row(
                     children: [
                       if (widget.initialImage != null &&
-                          widget.diaryProvider.dataProvider.localPath != null)
+                          widget.dataProvider.localPath != null)
                         Container(
                           child: Image.file(
                             File(
-                                "${widget.diaryProvider.dataProvider.localPath}/${widget.initialImage!}"),
+                                "${widget.dataProvider.localPath}/${widget.initialImage!}"),
                             height: 50.h,
                             width: 50.w,
                           ),
                         ),
                       if (widget.initialPickerImages != null &&
-                          widget.diaryProvider.dataProvider.localPath != null)
+                          widget.dataProvider.localPath != null)
                         Row(
                           children:
                               widget.initialPickerImages!.map<Widget>((image) {
                             return Container(
                               child: Image.file(
-                                File(
-                                    "${widget.diaryProvider.dataProvider.localPath}/$image"),
+                                File("${widget.dataProvider.localPath}/$image"),
                                 height: 50.h,
                                 width: 50.w,
                               ),
