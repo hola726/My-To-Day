@@ -4,7 +4,6 @@ import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/feature/diary/page_model/diary_page_model.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
-import 'package:my_to_day/screens/main/diary_calendar_screen.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
@@ -79,7 +78,7 @@ class DiaryPage extends StatelessWidget {
     return Column(
       children: [
         DiaryTextFormField(
-          diaryPageModel: model,
+          dataProvider: model.dataProvider,
           controller: model.diaryTextFormController,
           height: model.handleDiaryTextFormFieldHeight(),
           hintText: TODAY_IS,
@@ -89,10 +88,14 @@ class DiaryPage extends StatelessWidget {
           isDisableIcon: model.isLargeTextForm,
           suffixIcon: _buildCheckBoxIcon(model),
           textFocusNode: model.diaryTextFormFocusNode,
+          isLargeTextForm: model.isLargeTextForm,
         ),
         DiaryTextFormOption(
-          diaryPageModel: model,
           dataProvider: model.dataProvider,
+          context: model.context,
+          diaryTextFormController: model.diaryTextFormController,
+          isLargeTextForm: model.isLargeTextForm,
+          reSizedDiaryTextFormField: model.reSizedDiaryTextFormField,
         ),
         Expanded(
           child: ListView.builder(
@@ -202,8 +205,9 @@ class DiaryPage extends StatelessWidget {
         width: 267.w,
         child: DiaryTextFormField(
           controller: model.searchTextFormController,
-          diaryPageModel: model,
+          dataProvider: model.dataProvider,
           hintText: CS.SEARCH,
+          isLargeTextForm: model.isLargeTextForm,
           handleOnChanged: model.dataProvider.handleFilteredDataChanged,
           hintStyle: AppTheme.button_large_KR.copyWith(
             color: AppTheme.grey800,
@@ -256,8 +260,7 @@ class DiaryPage extends StatelessWidget {
       );
     } else {
       return IconButton(
-        onPressed: () =>
-            Navigator.of(model.context).pushNamed(DiaryCalendarScreen.id),
+        onPressed: model.onCalendarPressed,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         icon: Icon(

@@ -21,7 +21,7 @@ class DiaryEditPage extends StatelessWidget {
       child: Column(
         children: [
           DiaryTextFormField(
-            diaryPageModel: model,
+            dataProvider: model.dataProvider,
             controller: model.diaryTextFormController,
             height: double.infinity -
                 model.bottom -
@@ -35,9 +35,12 @@ class DiaryEditPage extends StatelessWidget {
             isEditTextFormOption: true,
           ),
           DiaryTextFormOption(
-            diaryPageModel: _diaryProvider,
             dataProvider: model.dataProvider,
             isEditTextFormOption: true,
+            context: model.context,
+            diaryTextFormController: model.diaryTextFormController,
+            isLargeTextForm: false,
+            reSizedDiaryTextFormField: () {},
           ),
         ],
       ),

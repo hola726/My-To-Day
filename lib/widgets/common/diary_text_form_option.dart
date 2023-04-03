@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/provider/data_provider.dart';
-import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
 
@@ -14,46 +13,49 @@ import 'contour.dart';
 class DiaryTextFormOption extends StatefulWidget {
   const DiaryTextFormOption({
     Key? key,
-    required DiaryProvider diaryProvider,
-    required DataProvider dataProvider,
-    bool? isEditTextFormOption,
-  })  : _isEditTextFormOption = isEditTextFormOption,
-        _diaryProvider = diaryProvider,
-        _dataProvider = dataProvider,
-        super(key: key);
+    required this.diaryTextFormController,
+    required this.reSizedDiaryTextFormField,
+    required this.dataProvider,
+    required this.context,
+    required this.isLargeTextForm,
+    bool? this.isEditTextFormOption,
+  }) : super(key: key);
 
-  final DiaryProvider _diaryProvider;
-  final DataProvider _dataProvider;
-  final bool? _isEditTextFormOption;
+  final DataProvider dataProvider;
+  final bool? isEditTextFormOption;
+  final BuildContext context;
+  final TextEditingController diaryTextFormController;
+  final Function() reSizedDiaryTextFormField;
+  final bool isLargeTextForm;
 
   @override
   State createState() => _DiaryTextFormOptionState();
 }
 
 class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
-  DateTime nowTime = DateTime.now();
-  Timer? timer;
+  DateTime _nowTime = DateTime.now();
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
 
-    timer = Timer.periodic(
+    _timer = Timer.periodic(
         Duration(seconds: 1),
         (Timer t) => setState(() {
-              nowTime = DateTime.now();
+              _nowTime = DateTime.now();
             }));
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   Future<void> openDeleteTextModal() async {
     await showModalBottomSheet(
-        context: widget._diaryProvider.context,
+        context: widget.context,
         backgroundColor: AppTheme.textSecondary2Color,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -83,7 +85,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
                   padding: EdgeInsets.all(10.h),
                   child: InkWell(
                     onTap: () {
-                      widget._diaryProvider.diaryTextFormController.clear();
+                      widget.diaryTextFormController.clear();
                       Navigator.of(context).pop();
                     },
                     splashColor: Colors.transparent,
@@ -133,20 +135,20 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
         children: [
           IconButton(
             onPressed: () =>
-                widget._dataProvider.getPhoto(widget._isEditTextFormOption),
+                widget.dataProvider.getPhoto(widget.isEditTextFormOption),
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: widget._dataProvider
-                  .setPhotoColor(widget._isEditTextFormOption),
+              color: widget.dataProvider
+                  .setPhotoColor(widget.isEditTextFormOption),
             ),
           ),
           IconButton(
-            onPressed: () => widget._dataProvider
-                .getPickerImages(widget._isEditTextFormOption),
+            onPressed: () => widget.dataProvider
+                .getPickerImages(widget.isEditTextFormOption),
             icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: widget._dataProvider
-                  .setPickerImageColor(widget._isEditTextFormOption),
+              color: widget.dataProvider
+                  .setPickerImageColor(widget.isEditTextFormOption),
             ),
           ),
           IconButton(
@@ -157,19 +159,18 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
             ),
           ),
           IconButton(
-            onPressed: widget._diaryProvider.reSizedDiaryTextFormField,
+            onPressed: widget.reSizedDiaryTextFormField,
             icon: Icon(
-              widget._diaryProvider.isLargeTextForm
+              widget.isLargeTextForm
                   ? Icons.zoom_in
                   : Icons.zoom_out_map_outlined,
               color: Colors.white,
             ),
           ),
           IconButton(
-            onPressed:
-                widget._diaryProvider.diaryTextFormController.text.isNotEmpty
-                    ? openDeleteTextModal
-                    : null,
+            onPressed: widget.diaryTextFormController.text.isNotEmpty
+                ? openDeleteTextModal
+                : null,
             icon: const Icon(
               Icons.restore_from_trash_outlined,
               color: Colors.white,
@@ -178,7 +179,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           InkWell(
             onTap: () => {},
             child: Text(
-              DateHelper.convertDate(nowTime),
+              DateHelper.convertDate(_nowTime),
               style: AppTheme.subtitle1.copyWith(
                 color: Colors.white,
                 fontSize: 15.sp,
