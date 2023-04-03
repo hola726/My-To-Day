@@ -26,8 +26,15 @@ class CalendarPageModel extends ChangeNotifier {
         _dataProvider.selectDateReversedData = _getSelectDateReversedData());
   }
 
-  bool isSameDay(DateTime firstDay, DateTime secondDay) {
-    return firstDay == secondDay;
+  bool isSameDay(DateTime day) {
+    return selectedDay == day;
+  }
+
+  void onDaySelected(DateTime select, DateTime focused) {
+    selectedDay = select;
+    focusedDay = focused;
+    dataProvider.handleSelectDateDataChanged(select);
+    notifyListeners();
   }
 
   List<DiaryData> eventHandler(DateTime day) {

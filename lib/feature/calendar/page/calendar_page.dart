@@ -46,14 +46,8 @@ class CalendarPage extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            selectedDayPredicate: (day) {
-              return isSameDay(model.selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              model.selectedDay = selectedDay;
-              model.focusedDay = focusedDay;
-              model.dataProvider.handleSelectDateDataChanged(selectedDay);
-            },
+            selectedDayPredicate: model.isSameDay,
+            onDaySelected: model.onDaySelected,
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
             eventLoader: model.eventHandler,
