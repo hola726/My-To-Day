@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
 
 import '../../../model/data/diary_data.dart';
 import '../../../provider/data_provider.dart';
+import '../../calendar/page/calendar_page.dart';
 
 class DiaryPageModel extends ChangeNotifier {
   DiaryPageModel({
@@ -119,6 +121,7 @@ class DiaryPageModel extends ChangeNotifier {
     _dataProvider.tmpDiaryData = null;
     _dataProvider.getAllDiaryData();
     _diaryTextFormController.clear();
+    notifyListeners();
   }
 
   void handleSearchTextFormChanged(String value) {
@@ -160,5 +163,9 @@ class DiaryPageModel extends ChangeNotifier {
     if (!currentFocus.hasPrimaryFocus && _isLargeTextForm == false) {
       currentFocus.unfocus();
     }
+  }
+
+  void onCalendarPressed() {
+    context.go(CalendarPage.id);
   }
 }

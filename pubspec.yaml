@@ -25,6 +25,8 @@ dependencies:
   table_calendar: ^3.0.6
   google_maps_flutter: ^2.1.10
   path_provider: ^2.0.13
+  go_router: ^6.2.0
+
 
 
 

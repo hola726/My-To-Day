@@ -1,12 +1,13 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/constants/constant_strings.dart';
+import 'package:my_to_day/feature/diary/page/diary_edit_page.dart';
 import 'package:my_to_day/provider/data_provider.dart';
 
 import '../app_theme.dart';
-import '../routes.dart';
 import 'date_helper.dart';
 
 class ModalHelper {
@@ -31,10 +32,8 @@ class ModalHelper {
               children: [
                 IconButton(
                   onPressed: () async {
-                    await Navigator.of(context).push(
-                      routeWithFullScreenDialog(DiaryEditScreen.id),
-                    );
-                    Navigator.of(context).pop();
+                    context.go(DiaryEditPage.id);
+                    context.pop();
                   },
                   iconSize: 20.h,
                   splashColor: Colors.transparent,
