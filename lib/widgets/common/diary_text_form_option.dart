@@ -86,6 +86,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
                   child: InkWell(
                     onTap: () {
                       widget.diaryTextFormController.clear();
+                      widget.dataProvider.tmpDiaryData = null;
                       Navigator.of(context).pop();
                     },
                     splashColor: Colors.transparent,
@@ -168,7 +169,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
             ),
           ),
           IconButton(
-            onPressed: widget.diaryTextFormController.text.isNotEmpty
+            onPressed: widget.dataProvider.tmpDiaryData != null
                 ? openDeleteTextModal
                 : null,
             icon: const Icon(
