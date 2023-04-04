@@ -15,7 +15,7 @@ class DiaryEditPage extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  Widget _buildMain(DiaryEditPageModel model) {
+  Widget _buildMain(DiaryEditPageModel model, BuildContext context) {
     return Container(
       color: Colors.black,
       child: Column(
@@ -23,8 +23,8 @@ class DiaryEditPage extends StatelessWidget {
           DiaryTextFormField(
             dataProvider: model.dataProvider,
             controller: model.diaryTextFormController,
-            height: double.infinity -
-                model.bottom -
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).viewInsets.bottom -
                 model.dataProvider.handleEditImageHeight(),
             hintText: TODAY_IS,
             initialText: model.dataProvider.diaryData?.contents,
@@ -86,7 +86,7 @@ class DiaryEditPage extends StatelessWidget {
         leading: _buildLeading(model),
         rightTopWidget: _buildRightTop(model),
       ),
-      body: _buildMain(model),
+      body: _buildMain(model, context),
     );
   }
 }

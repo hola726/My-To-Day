@@ -26,9 +26,6 @@ class DiaryEditPageModel extends ChangeNotifier {
   final DiaryLocalService _diaryLocalService;
   final TextEditingController _diaryTextFormController;
 
-  double _bottom = 0;
-
-  double get bottom => _bottom;
   BuildContext get context => _context;
   DataProvider get dataProvider => _dataProvider;
   TextEditingController get diaryTextFormController => _diaryTextFormController;
@@ -36,7 +33,6 @@ class DiaryEditPageModel extends ChangeNotifier {
 
   void init() {
     _diaryTextFormFocusNode.requestFocus();
-    _bottom = MediaQuery.of(_context).viewInsets.bottom;
   }
 
   Future<void> editDiaryData({

@@ -281,7 +281,7 @@ class DiaryPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(
           title: model.isLargeTextForm ? WRITE : MY_TO_DAY,
-          leadingWidth: model.isLargeTextForm == true ? null : 200.w,
+          leadingWidth: model.isLargeTextForm == true ? null : 100.w,
           leading: buildLeading(model),
           appBarWidgets: buildSearchWidgets(model),
           rightTopWidget: buildRightTopWidget(model),
