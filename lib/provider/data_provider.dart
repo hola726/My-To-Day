@@ -181,7 +181,7 @@ class DataProvider extends ChangeNotifier {
     return (tmpDiaryData?.cameraImage != null ||
             tmpDiaryData?.pickerImages != null)
         ? 166.h
-        : 116.h;
+        : 100.h;
   }
 
   double handleEditImageHeight() {
@@ -215,11 +215,20 @@ class DataProvider extends ChangeNotifier {
   void getPhoto(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    final String? photoString = photo != null ? photo.path : null;
-    if (isEdit == true) {
-      _editPhoto(photoString);
-    } else {
-      _setPhoto(photoString);
+
+    if (photo != null) {
+      final String path = (await getApplicationDocumentsDirectory()).path;
+
+      String localPath = "$path/${photo.name}";
+      await File(photo.path).copy(localPath);
+
+      String photoString = photo.name;
+
+      if (isEdit == true) {
+        _editPhoto(photoString);
+      } else {
+        _setPhoto(photoString);
+      }
     }
   }
 
