@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
-import 'package:my_to_day/provider/data_provider.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DiaryTextFormField extends StatefulWidget {
   const DiaryTextFormField({
     Key? key,
     required this.controller,
-    required this.dataProvider,
     this.hintText,
     this.hintStyle,
     this.textStyle,
@@ -35,7 +34,6 @@ class DiaryTextFormField extends StatefulWidget {
   final Widget? suffixIcon;
   final FocusNode? textFocusNode;
   final bool? isDisableIcon;
-  final DataProvider dataProvider;
   final void Function(String)? handleOnChanged;
   final String? initialImage;
   final List<String>? initialPickerImages;
@@ -47,6 +45,8 @@ class DiaryTextFormField extends StatefulWidget {
 }
 
 class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
+  String _localPath = "";
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +57,8 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
     if (widget.initialText != null) {
       widget.controller.text = widget.initialText!;
     }
+    _localPath = (await getApplicationDocumentsDirectory()).path;
+
     setState(() {});
   }
 
@@ -109,24 +111,22 @@ class _DiaryTextFormFieldState extends State<DiaryTextFormField> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      if (widget.initialImage != null &&
-                          widget.dataProvider.localPath != null)
+                      if (widget.initialImage != null && _localPath.isNotEmpty)
                         Container(
                           child: Image.file(
-                            File(
-                                "${widget.dataProvider.localPath}/${widget.initialImage!}"),
+                            File("$_localPath/${widget.initialImage!}"),
                             height: 50.h,
                             width: 50.w,
                           ),
                         ),
                       if (widget.initialPickerImages != null &&
-                          widget.dataProvider.localPath != null)
+                          _localPath.isNotEmpty)
                         Row(
                           children:
                               widget.initialPickerImages!.map<Widget>((image) {
                             return Container(
                               child: Image.file(
-                                File("${widget.dataProvider.localPath}/$image"),
+                                File("$_localPath/$image"),
                                 height: 50.h,
                                 width: 50.w,
                               ),
