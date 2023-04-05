@@ -39,7 +39,7 @@ Widget diaryPage(_, __) {
       diaryTextFormController: TextEditingController(),
       searchTextFormController: TextEditingController(),
       diaryTextFormFocusNode: FocusNode(),
-      diaryLocalService: DiaryLocalService(localService: LocalService()),
+      localService: DiaryLocalService(localService: LocalService()),
     ),
     child: DiaryPage(),
   );

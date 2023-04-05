@@ -5,15 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/constants/constant_strings.dart';
 import 'package:my_to_day/feature/diary/page/diary_edit_page.dart';
-import 'package:my_to_day/provider/data_provider.dart';
+import 'package:my_to_day/model/data/diary_data.dart';
 
 import '../app_theme.dart';
 import 'date_helper.dart';
 
 class ModalHelper {
   static Future<void> openEditBottomModal({
-    required DataProvider dataProvider,
     required BuildContext context,
+    required Function() onSharePressed,
   }) async {
     await showModalBottomSheet(
         context: context,
@@ -47,7 +47,7 @@ class ModalHelper {
                   width: 40.w,
                 ),
                 IconButton(
-                  onPressed: dataProvider.onShareButtonPressed,
+                  onPressed: onSharePressed,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   iconSize: 20.h,
@@ -63,8 +63,11 @@ class ModalHelper {
   }
 
   static Future<void> openDiaryDetailModal({
-    required DataProvider dataProvider,
     required BuildContext context,
+    required DiaryData? diaryData,
+    required Function() onOptionPressed,
+    required int imageItemCount,
+    required Widget Function(BuildContext, int) imageItemBuilder,
   }) async {
     await showModalBottomSheet(
         isScrollControlled: true,
@@ -86,15 +89,13 @@ class ModalHelper {
                     children: [
                       Stack(
                         children: [
-                          dataProvider.diaryData?.cameraImage != null ||
-                                  dataProvider.diaryData?.pickerImages != null
+                          diaryData?.cameraImage != null ||
+                                  diaryData?.pickerImages != null
                               ? Container(
                                   height: 300.h,
                                   child: Swiper(
-                                    itemCount:
-                                        dataProvider.handleSwipeItemCount(),
-                                    itemBuilder:
-                                        dataProvider.handleSwipeItemBuilder,
+                                    itemCount: imageItemCount,
+                                    itemBuilder: imageItemBuilder,
                                     scrollDirection: Axis.horizontal,
                                     pagination: SwiperPagination(
                                       builder: DotSwiperPaginationBuilder(
@@ -129,22 +130,14 @@ class ModalHelper {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  DateHelper.convertDateMonth(
-                                      dataProvider.diaryData!.time),
+                                  DateHelper.convertDateMonth(diaryData!.time),
                                   style: AppTheme.button_small.copyWith(
                                     color: AppTheme.grey400,
                                     fontSize: 11.sp,
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () async {
-                                    await openEditBottomModal(
-                                      context: context,
-                                      dataProvider: dataProvider,
-                                    );
-                                    dataProvider.getDiaryData();
-                                    modalSetState(() {});
-                                  },
+                                  onPressed: onOptionPressed,
                                   icon: const Icon(
                                     Icons.more_horiz_outlined,
                                     color: Colors.white,
@@ -156,7 +149,7 @@ class ModalHelper {
                               height: 12.h,
                             ),
                             Text(
-                              dataProvider.diaryData!.contents,
+                              diaryData.contents,
                               style: AppTheme.button_small_KR.copyWith(
                                 color: Colors.white,
                               ),
@@ -165,8 +158,7 @@ class ModalHelper {
                               height: 12.h,
                             ),
                             Text(
-                              DateHelper.convertDateAmPm(
-                                  dataProvider.diaryData!.time),
+                              DateHelper.convertDateAmPm(diaryData.time),
                               style: AppTheme.button_small.copyWith(
                                 color: AppTheme.grey400,
                                 fontSize: 11.sp,
@@ -246,9 +238,6 @@ class ModalHelper {
                         onMapCreated: (GoogleMapController controller) {
                           mapController = controller;
                         },
-                        // myLocationButtonEnabled: true,
-                        // myLocationEnabled: true,
-                        // zoomGesturesEnabled: true,
                         onCameraMoveStarted: () => {},
                         onCameraMove: (CameraPosition position) {
                           print("position");
