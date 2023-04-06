@@ -35,7 +35,6 @@ Widget diaryPage(_, __) {
   return ChangeNotifierProvider(
     create: (context) => DiaryPageModel(
       context: context,
-      dataProvider: context.read<DataProvider>(),
       diaryTextFormController: TextEditingController(),
       searchTextFormController: TextEditingController(),
       diaryTextFormFocusNode: FocusNode(),
