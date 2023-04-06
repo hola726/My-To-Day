@@ -4,7 +4,6 @@ import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/feature/diary/page_model/diary_page_model.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
-import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_option.dart';
@@ -23,33 +22,22 @@ class DiaryPage extends StatelessWidget {
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: model.dataProvider.filteredReversedData.length,
+            itemCount: model.filteredReversedData.length,
             itemBuilder: (context, index) {
-              DiaryData? data = model.dataProvider.filteredReversedData[index];
-              DiaryData? previousData = 0 <= index - 1
-                  ? model.dataProvider.filteredReversedData[index - 1]
-                  : null;
+              DiaryData? data = model.filteredReversedData[index];
+              DiaryData? previousData =
+                  0 <= index - 1 ? model.filteredReversedData[index - 1] : null;
 
               return data == null
                   ? Container()
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (model.dataProvider.isSameDay(data, previousData) ==
-                            false)
+                        if (model.isSameDay(data, previousData) == false)
                           SubTitleDate(data: data),
                         DiaryItem(
                           data: data,
-                          dataProvider: model.dataProvider,
-                          onTap: () {
-                            model.dataProvider.targetDataIndex = index;
-
-                            model.dataProvider.diaryData = data;
-                            ModalHelper.openDiaryDetailModal(
-                              dataProvider: model.dataProvider,
-                              context: context,
-                            );
-                          },
+                          onTap: () => model.onItemPressed(data),
                         ),
                       ],
                     );
@@ -78,12 +66,11 @@ class DiaryPage extends StatelessWidget {
     return Column(
       children: [
         DiaryTextFormField(
-          dataProvider: model.dataProvider,
           controller: model.diaryTextFormController,
           height: model.handleDiaryTextFormFieldHeight(),
           hintText: TODAY_IS,
-          initialImage: model.dataProvider.tmpDiaryData?.cameraImage,
-          initialPickerImages: model.dataProvider.tmpDiaryData?.pickerImages,
+          initialImage: model.diaryData?.cameraImage,
+          initialPickerImages: model.diaryData?.pickerImages,
           handleOnChanged: model.handleDiaryTextFormChanged,
           isDisableIcon: model.isLargeTextForm,
           suffixIcon: _buildCheckBoxIcon(model),
@@ -91,38 +78,31 @@ class DiaryPage extends StatelessWidget {
           isLargeTextForm: model.isLargeTextForm,
         ),
         DiaryTextFormOption(
-          dataProvider: model.dataProvider,
           context: model.context,
           diaryTextFormController: model.diaryTextFormController,
           isLargeTextForm: model.isLargeTextForm,
           reSizedDiaryTextFormField: model.reSizedDiaryTextFormField,
+          diaryData: model.diaryData,
+          onCameraPressed: model.onCameraPressed,
+          onImagesPressed: model.onImagesPressed,
+          onDeletePressed: model.onDeletePressed,
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: model.dataProvider.allDiaryData.length,
+            itemCount: model.allDiaryData.length,
             itemBuilder: (context, index) {
-              DiaryData data = model.dataProvider.reversedData[index];
-              DiaryData? previousData = 0 <= index - 1
-                  ? model.dataProvider.reversedData[index - 1]
-                  : null;
+              DiaryData data = model.reversedData[index];
+              DiaryData? previousData =
+                  0 <= index - 1 ? model.reversedData[index - 1] : null;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (model.dataProvider.isSameDay(data, previousData) == false)
+                  if (model.isSameDay(data, previousData) == false)
                     SubTitleDate(data: data),
                   DiaryItem(
                     data: data,
-                    dataProvider: model.dataProvider,
-                    onTap: () {
-                      model.dataProvider.targetDataIndex = index;
-
-                      model.dataProvider.diaryData = data;
-                      ModalHelper.openDiaryDetailModal(
-                        context: context,
-                        dataProvider: model.dataProvider,
-                      );
-                    },
+                    onTap: () => model.onDiaryItemTap(data),
                   ),
                 ],
               );
@@ -205,10 +185,9 @@ class DiaryPage extends StatelessWidget {
         width: 267.w,
         child: DiaryTextFormField(
           controller: model.searchTextFormController,
-          dataProvider: model.dataProvider,
           hintText: CS.SEARCH,
           isLargeTextForm: model.isLargeTextForm,
-          handleOnChanged: model.dataProvider.handleFilteredDataChanged,
+          handleOnChanged: model.handleFilteredDataChanged,
           hintStyle: AppTheme.button_large_KR.copyWith(
             color: AppTheme.grey800,
           ),
@@ -218,7 +197,7 @@ class DiaryPage extends StatelessWidget {
           suffixIcon: IconButton(
             onPressed: () {
               model.searchTextFormController.clear();
-              model.dataProvider.handleFilteredDataChanged(
+              model.handleFilteredDataChanged(
                   model.searchTextFormController.text);
             },
             splashColor: Colors.transparent,
@@ -237,18 +216,7 @@ class DiaryPage extends StatelessWidget {
     if (model.isSearchState == true) return null;
     if (model.isLargeTextForm == true) {
       return IconButton(
-        onPressed: () async {
-          await model.setDiaryData(
-            contents: model.diaryTextFormController.text,
-            cameraImage: model.dataProvider.tmpDiaryData?.cameraImage,
-            pickerImage: model.dataProvider.tmpDiaryData?.pickerImages,
-            locate: model.dataProvider.tmpDiaryData?.locate,
-          );
-          model.dataProvider.tmpDiaryData = null;
-          model.dataProvider.getAllDiaryData();
-          model.reSizedDiaryTextFormField();
-          model.diaryTextFormController.clear();
-        },
+        onPressed: model.onSavePressed,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         color:
