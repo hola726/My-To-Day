@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
-import 'package:my_to_day/provider/data_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
 
 import '../../app_theme.dart';
+import '../../model/data/diary_data.dart';
 import 'contour.dart';
 
 class DiaryTextFormOption extends StatefulWidget {
@@ -15,18 +15,22 @@ class DiaryTextFormOption extends StatefulWidget {
     Key? key,
     required this.diaryTextFormController,
     required this.reSizedDiaryTextFormField,
-    required this.dataProvider,
     required this.context,
     required this.isLargeTextForm,
-    bool? this.isEditTextFormOption,
+    required this.diaryData,
+    required this.onCameraPressed,
+    required this.onImagesPressed,
+    required this.onDeletePressed,
   }) : super(key: key);
 
-  final DataProvider dataProvider;
-  final bool? isEditTextFormOption;
   final BuildContext context;
   final TextEditingController diaryTextFormController;
   final Function() reSizedDiaryTextFormField;
   final bool isLargeTextForm;
+  final Function() onCameraPressed;
+  final Function() onImagesPressed;
+  final Function() onDeletePressed;
+  final DiaryData? diaryData;
 
   @override
   State createState() => _DiaryTextFormOptionState();
@@ -84,11 +88,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
                 Padding(
                   padding: EdgeInsets.all(10.h),
                   child: InkWell(
-                    onTap: () {
-                      widget.diaryTextFormController.clear();
-                      widget.dataProvider.tmpDiaryData = null;
-                      Navigator.of(context).pop();
-                    },
+                    onTap: widget.onDeletePressed,
                     splashColor: Colors.transparent,
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -135,21 +135,21 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            onPressed: () =>
-                widget.dataProvider.getPhoto(widget.isEditTextFormOption),
+            onPressed: widget.onCameraPressed,
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: widget.dataProvider
-                  .setPhotoColor(widget.isEditTextFormOption),
+              color: widget.diaryData?.cameraImage != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
-            onPressed: () => widget.dataProvider
-                .getPickerImages(widget.isEditTextFormOption),
+            onPressed: widget.onImagesPressed,
             icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: widget.dataProvider
-                  .setPickerImageColor(widget.isEditTextFormOption),
+              color: widget.diaryData?.pickerImages != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
@@ -169,9 +169,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
             ),
           ),
           IconButton(
-            onPressed: widget.dataProvider.tmpDiaryData != null
-                ? openDeleteTextModal
-                : null,
+            onPressed: widget.diaryData != null ? openDeleteTextModal : null,
             icon: const Icon(
               Icons.restore_from_trash_outlined,
               color: Colors.white,
