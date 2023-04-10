@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/feature/diary/page_model/diary_edit_page_model.dart';
-import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
-import 'package:my_to_day/widgets/common/diary_text_form_option.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app_theme.dart';
 import '../../../constants/constant_strings.dart';
+import '../../../widgets/common/diary_text_form_field.dart';
+import '../../../widgets/common/diary_text_form_option.dart';
 
 class DiaryEditPage extends StatelessWidget {
   static const id = '/diaryEditPage';
@@ -21,22 +21,23 @@ class DiaryEditPage extends StatelessWidget {
       child: Column(
         children: [
           DiaryTextFormField(
-            dataProvider: model.dataProvider,
             controller: model.diaryTextFormController,
             height: MediaQuery.of(context).size.height -
                 MediaQuery.of(context).viewInsets.bottom -
-                model.dataProvider.handleEditImageHeight(),
+                model.handleEditImageHeight(),
             hintText: TODAY_IS,
-            initialText: model.dataProvider.diaryData?.contents,
-            initialImage: model.dataProvider.diaryData?.cameraImage,
-            initialPickerImages: model.dataProvider.diaryData?.pickerImages,
+            initialText: model.diaryData.contents,
+            initialImage: model.diaryData.cameraImage,
+            initialPickerImages: model.diaryData.pickerImages,
             isDisableIcon: true,
             textFocusNode: model.diaryTextFormFocusNode,
             isEditTextFormOption: true,
           ),
           DiaryTextFormOption(
-            dataProvider: model.dataProvider,
-            isEditTextFormOption: true,
+            diaryData: model.diaryData,
+            onCameraPressed: model.onCameraPressed,
+            onDeletePressed: model.onDeletePressed,
+            onImagesPressed: model.onImagesPressed,
             context: model.context,
             diaryTextFormController: model.diaryTextFormController,
             isLargeTextForm: false,
