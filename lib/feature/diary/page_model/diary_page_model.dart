@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../model/data/diary_data.dart';
 import '../../../utils/modal_helper.dart';
 import '../../calendar/page/calendar_page.dart';
+import '../page/diary_edit_page.dart';
 
 class DiaryPageModel extends ChangeNotifier {
   DiaryPageModel({
@@ -77,6 +78,7 @@ class DiaryPageModel extends ChangeNotifier {
 
   void init() async {
     _localPath = (await getApplicationDocumentsDirectory()).path;
+    getAllDiaryData();
   }
 
   Future<void> editDiaryData({
@@ -368,10 +370,17 @@ class DiaryPageModel extends ChangeNotifier {
     );
   }
 
+  void onEditPressed(DiaryData data) {
+    context.go(DiaryEditPage.id, extra: data);
+    context.pop();
+    notifyListeners();
+  }
+
   void onOptionPressed(DiaryData data) async {
     await ModalHelper.openEditBottomModal(
       context: _context,
       onSharePressed: () => onSharePressed(data),
+      onEditPressed: () => onEditPressed(data),
     );
     // dataProvider.getDiaryData();
   }

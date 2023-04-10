@@ -1,10 +1,8 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/constants/constant_strings.dart';
-import 'package:my_to_day/feature/diary/page/diary_edit_page.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
 
 import '../app_theme.dart';
@@ -14,6 +12,7 @@ class ModalHelper {
   static Future<void> openEditBottomModal({
     required BuildContext context,
     required Function() onSharePressed,
+    required Function() onEditPressed,
   }) async {
     await showModalBottomSheet(
         context: context,
@@ -31,10 +30,7 @@ class ModalHelper {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () async {
-                    context.go(DiaryEditPage.id);
-                    context.pop();
-                  },
+                  onPressed: onEditPressed,
                   iconSize: 20.h,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
