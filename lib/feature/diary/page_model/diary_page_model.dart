@@ -35,12 +35,11 @@ class DiaryPageModel extends ChangeNotifier {
   final TextEditingController _diaryTextFormController;
   final TextEditingController _searchTextFormController;
   DiaryData? _diaryData;
-  String? _filteredValue;
+  String? _searchedValue;
   String? _localPath;
 
-  List<DiaryData> _allDiaryData = [];
-  List<DiaryData> _reversedData = [];
-  List<DiaryData?> _filteredReversedData = [];
+  List<DiaryData> _diaryDataList = [];
+  List<DiaryData?> _searchedData = [];
 
   bool _isLargeTextForm = false;
   bool _isSearchState = false;
@@ -60,11 +59,9 @@ class DiaryPageModel extends ChangeNotifier {
 
   DiaryData? get diaryData => _diaryData;
 
-  List<DiaryData> get allDiaryData => _allDiaryData;
+  List<DiaryData> get diaryDataList => _diaryDataList;
 
-  List<DiaryData> get reversedData => _reversedData;
-
-  List<DiaryData?> get filteredReversedData => _filteredReversedData;
+  List<DiaryData?> get searchedData => _searchedData;
 
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
@@ -89,8 +86,7 @@ class DiaryPageModel extends ChangeNotifier {
     String? locate,
   }) async {
     await _localService.editDiaryData(
-      key: date.toString(),
-      diaryDataModel: DiaryData(
+      diaryData: DiaryData(
         contents: contents,
         time: date,
         cameraImage: cameraImage,
@@ -122,8 +118,7 @@ class DiaryPageModel extends ChangeNotifier {
   }) async {
     DateTime time = DateTime.now();
     await _localService.setDiaryData(
-      key: time.toString(),
-      diaryDataModel: DiaryData(
+      diaryData: DiaryData(
         contents: contents,
         time: time,
         cameraImage: cameraImage,
@@ -177,10 +172,6 @@ class DiaryPageModel extends ChangeNotifier {
     }
   }
 
-  void getChange() {
-    notifyListeners();
-  }
-
   void gestureOnTap() {
     FocusScopeNode currentFocus = FocusScope.of(_context);
     if (!currentFocus.hasPrimaryFocus && _isLargeTextForm == false) {
@@ -199,43 +190,39 @@ class DiaryPageModel extends ChangeNotifier {
   }
 
   void getAllDiaryData() {
-    _allDiaryData = _localService.getAllDiaryData();
-    getReversedData();
+    _diaryDataList = _localService.getAllDiaryData();
+    _diaryDataList.sort((a, b) {
+      return a.time.compareTo(b.time);
+    });
+    _diaryDataList = _diaryDataList.reversed.toList();
+
+    _getSearchedData();
+
     notifyListeners();
   }
 
-  void getReversedData() {
-    _reversedData = _allDiaryData.reversed.map((data) => data).toList();
-    _getFilteredReversedData();
-  }
-
-  void _getFilteredReversedData() {
-    if (_filteredValue == null) {
-      _filteredReversedData = [];
+  void _getSearchedData() {
+    if (_searchedValue == null) {
+      _searchedData = [];
       return;
     }
 
-    _filteredReversedData = _allDiaryData
-        .map((diaryData) {
-          if (diaryData.contents.contains(_filteredValue!)) {
-            return diaryData;
-          }
-        })
-        .toList()
-        .reversed
-        .map((data) => data)
-        .toList();
+    _searchedData = _diaryDataList.map((diaryData) {
+      if (diaryData.contents.contains(_searchedValue!)) {
+        return diaryData;
+      }
+    }).toList();
   }
 
-  void handleFilteredDataChanged(String value) {
-    _filteredValue = value;
+  void handleSearchedDataChanged(String value) {
+    _searchedValue = value;
     if (value == '') {
-      _filteredReversedData = [];
+      _searchedData = [];
       notifyListeners();
       return;
     }
 
-    _filteredReversedData = _allDiaryData
+    _searchedData = _diaryDataList
         .map((diaryData) {
           if (diaryData.contents.contains(value)) {
             return diaryData;
@@ -382,18 +369,6 @@ class DiaryPageModel extends ChangeNotifier {
       onSharePressed: () => onSharePressed(data),
       onEditPressed: () => onEditPressed(data),
     );
-    // dataProvider.getDiaryData();
-  }
-
-  void onDiaryItemTap(DiaryData data) {
-    ModalHelper.openDiaryDetailModal(
-      context: _context,
-      diaryData: data,
-      imageItemBuilder: (context, index) =>
-          imageItemBuilder(context, index, data),
-      imageItemCount: handleImageItemCount(data),
-      onOptionPressed: () => onOptionPressed(data),
-    );
   }
 
   void onDeletePressed() {
@@ -417,8 +392,8 @@ class DiaryPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onItemPressed(DiaryData data) {
-    ModalHelper.openDiaryDetailModal(
+  void onItemPressed(DiaryData data) async {
+    await ModalHelper.openDiaryDetailModal(
       context: _context,
       diaryData: data,
       imageItemBuilder: (context, index) =>
@@ -426,5 +401,18 @@ class DiaryPageModel extends ChangeNotifier {
       imageItemCount: handleImageItemCount(data),
       onOptionPressed: () => onOptionPressed(data),
     );
+    getAllDiaryData();
+  }
+
+  Future<bool> onBackButtonPressed() async {
+    if (_isSearchState == true) {
+      _isSearchState = false;
+      _searchTextFormController.clear();
+      _searchedValue = null;
+      _searchedData = [];
+      notifyListeners();
+    }
+
+    return false;
   }
 }
