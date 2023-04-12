@@ -42,9 +42,7 @@ class DiaryEditPageModel extends ChangeNotifier {
 
   void onEditPressed() async {
     await _localService.editDiaryData(
-      key: _diaryData.time.toString(),
-      diaryDataModel:
-          _diaryData.copyWith(contents: _diaryTextFormController.text),
+      diaryData: _diaryData.copyWith(contents: _diaryTextFormController.text),
     );
 
     _diaryTextFormController.clear();

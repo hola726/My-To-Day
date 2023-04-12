@@ -22,11 +22,11 @@ class DiaryPage extends StatelessWidget {
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: model.filteredReversedData.length,
+            itemCount: model.searchedData.length,
             itemBuilder: (context, index) {
-              DiaryData? data = model.filteredReversedData[index];
+              DiaryData? data = model.searchedData[index];
               DiaryData? previousData =
-                  0 <= index - 1 ? model.filteredReversedData[index - 1] : null;
+                  0 <= index - 1 ? model.searchedData[index - 1] : null;
 
               return data == null
                   ? Container()
@@ -89,11 +89,11 @@ class DiaryPage extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: model.allDiaryData.length,
+            itemCount: model.diaryDataList.length,
             itemBuilder: (context, index) {
-              DiaryData data = model.reversedData[index];
+              DiaryData data = model.diaryDataList[index];
               DiaryData? previousData =
-                  0 <= index - 1 ? model.reversedData[index - 1] : null;
+                  0 <= index - 1 ? model.diaryDataList[index - 1] : null;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +102,7 @@ class DiaryPage extends StatelessWidget {
                     SubTitleDate(data: data),
                   DiaryItem(
                     data: data,
-                    onTap: () => model.onDiaryItemTap(data),
+                    onTap: () => model.onItemPressed(data),
                   ),
                 ],
               );
@@ -187,7 +187,7 @@ class DiaryPage extends StatelessWidget {
           controller: model.searchTextFormController,
           hintText: CS.SEARCH,
           isLargeTextForm: model.isLargeTextForm,
-          handleOnChanged: model.handleFilteredDataChanged,
+          handleOnChanged: model.handleSearchedDataChanged,
           hintStyle: AppTheme.button_large_KR.copyWith(
             color: AppTheme.grey800,
           ),
@@ -197,7 +197,7 @@ class DiaryPage extends StatelessWidget {
           suffixIcon: IconButton(
             onPressed: () {
               model.searchTextFormController.clear();
-              model.handleFilteredDataChanged(
+              model.handleSearchedDataChanged(
                   model.searchTextFormController.text);
             },
             splashColor: Colors.transparent,
@@ -243,21 +243,24 @@ class DiaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final DiaryPageModel model = context.watch<DiaryPageModel>();
 
-    return GestureDetector(
-      onTap: model.gestureOnTap,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: MainAppBar(
-          title: model.isLargeTextForm ? WRITE : MY_TO_DAY,
-          leadingWidth: model.isLargeTextForm == true ? null : 100.w,
-          leading: buildLeading(model),
-          appBarWidgets: buildSearchWidgets(model),
-          rightTopWidget: buildRightTopWidget(model),
-          bottomShadow: true,
-          titleColor: AppTheme.primaryContrastColor,
-          backgroundColors: AppTheme.textPrimaryColor,
+    return WillPopScope(
+      onWillPop: model.onBackButtonPressed,
+      child: GestureDetector(
+        onTap: model.gestureOnTap,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: MainAppBar(
+            title: model.isLargeTextForm ? WRITE : MY_TO_DAY,
+            leadingWidth: model.isLargeTextForm == true ? null : 100.w,
+            leading: buildLeading(model),
+            appBarWidgets: buildSearchWidgets(model),
+            rightTopWidget: buildRightTopWidget(model),
+            bottomShadow: true,
+            titleColor: AppTheme.primaryContrastColor,
+            backgroundColors: AppTheme.textPrimaryColor,
+          ),
+          body: _buildMain(model),
         ),
-        body: _buildMain(model),
       ),
     );
   }
