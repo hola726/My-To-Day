@@ -1,64 +1,103 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../model/data/diary_data.dart';
-import '../../../provider/data_provider.dart';
+import '../../../utils/modal_helper.dart';
+import '../../diary/page/diary_edit_page.dart';
+import '../page/calendar_page.dart';
 
 class CalendarPageModel extends ChangeNotifier {
   CalendarPageModel({
     required BuildContext context,
-    required DataProvider dataProvider,
+    required DiaryLocalService localService,
   })  : _context = context,
-        _dataProvider = dataProvider {
+        _localService = localService {
     init();
   }
 
   final BuildContext _context;
-  final DataProvider _dataProvider;
+  final DiaryLocalService _localService;
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
+  List<DiaryData> _selectData = [];
+  DateTime _selectDate = DateTime.now();
+  int _targetDataIndex = 0;
+  late String _localPath;
 
   BuildContext get context => _context;
-  DataProvider get dataProvider => _dataProvider;
+  List<DiaryData> get selectData => _selectData;
+  DateTime get selectDate => _selectDate;
 
-  void init() {
-    SchedulerBinding.instance.addPostFrameCallback((_) =>
-        _dataProvider.selectDateReversedData = _getSelectDateReversedData());
+  void init() async {
+    _localPath = (await getApplicationDocumentsDirectory()).path;
+    _selectData = _filterData(DateTime.now());
+    notifyListeners();
   }
 
   bool isSameDay(DateTime day) {
     return selectedDay == day;
   }
 
+  bool isSameDate(DiaryData data, DiaryData? previousData) {
+    return data.time.year == previousData?.time.year &&
+        data.time.month == previousData?.time.month &&
+        data.time.day == previousData?.time.day;
+  }
+
   void onDaySelected(DateTime select, DateTime focused) {
     selectedDay = select;
     focusedDay = focused;
-    dataProvider.handleSelectDateDataChanged(select);
+    _handleSelectDate(select);
     notifyListeners();
   }
 
-  List<DiaryData> eventHandler(DateTime day) {
-    List<DiaryData> event = [];
-    for (DiaryData data in _dataProvider.allDiaryData) {
-      if (data.time.year == day.year &&
-          data.time.month == day.month &&
-          data.time.day == day.day) {
-        event.add(data);
-      }
-    }
-
-    return event;
+  void _handleSelectDate(DateTime date) {
+    _selectDate = date;
+    _selectData = _filterData(date);
+    notifyListeners();
   }
 
-  List<DiaryData?> _getSelectDateReversedData() {
-    List<DiaryData?> result = [];
-    for (DiaryData data in _dataProvider.allDiaryData) {
-      if (data.time.year == DateTime.now().year &&
-          data.time.month == DateTime.now().month &&
-          data.time.day == DateTime.now().day) {
-        result.add(data);
+  List<DiaryData> _filterData(DateTime date) {
+    List<DiaryData> result = [];
+    List<DiaryData> allDiaryData = _localService.getAllDiaryData();
+
+    for (DiaryData diaryData in allDiaryData) {
+      if (diaryData.time.year == date.year &&
+          diaryData.time.month == date.month &&
+          diaryData.time.day == date.day) {
+        result.add(diaryData);
       }
     }
-    return result.reversed.map((data) => data).toList();
+    result.sort((a, b) {
+      return a.time.compareTo(b.time);
+    });
+
+    return result.reversed.toList();
+  }
+
+  List<DiaryData> eventHandler(DateTime date) {
+    return _filterData(date);
+  }
+
+  void _onEditPressed(DiaryData data) {
+    context.go(CalendarPage.id + DiaryEditPage.id, extra: data);
+    context.pop();
+    notifyListeners();
+  }
+
+  void onItemTap(int index) async {
+    DiaryData data = _selectData[index];
+    _targetDataIndex = index;
+    await ModalHelper.openDiaryDetailModal(
+      context: context,
+      diaryData: data,
+      localPath: _localPath,
+      onEditPressed: () => _onEditPressed(data),
+    );
+
+    _selectData = _filterData(_selectDate);
+    notifyListeners();
   }
 }
