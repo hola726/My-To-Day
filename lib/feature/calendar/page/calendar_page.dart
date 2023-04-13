@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_to_day/feature/calendar/page_model/calendar_page_model.dart';
-import 'package:my_to_day/utils/modal_helper.dart';
 import 'package:my_to_day/widgets/common/main_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -55,35 +54,22 @@ class CalendarPage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: model.dataProvider.selectDateReversedData.length,
+              itemCount: model.selectData.length,
               itemBuilder: (context, index) {
-                DiaryData? data =
-                    model.dataProvider.selectDateReversedData[index];
-                DiaryData? previousData = 0 <= index - 1
-                    ? model.dataProvider.selectDateReversedData[index - 1]
-                    : null;
+                DiaryData? data = model.selectData[index];
+                DiaryData? previousData =
+                    0 <= index - 1 ? model.selectData[index - 1] : null;
 
                 return data == null
                     ? Container()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (model.dataProvider
-                                  .isSameDay(data, previousData) ==
-                              false)
+                          if (model.isSameDate(data, previousData) == false)
                             SubTitleDate(data: data),
                           DiaryItem(
                             data: data,
-                            dataProvider: model.dataProvider,
-                            onTap: () async {
-                              model.dataProvider.targetDataIndex = index;
-                              model.dataProvider.diaryData = data;
-                              await ModalHelper.openDiaryDetailModal(
-                                context: context,
-                                dataProvider: model.dataProvider,
-                              );
-                              model.dataProvider.getSelectDateData();
-                            },
+                            onTap: () => model.onItemTap(index),
                           ),
                         ],
                       );

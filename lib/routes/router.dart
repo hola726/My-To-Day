@@ -7,10 +7,9 @@ import 'package:my_to_day/feature/diary/page/diary_page.dart';
 import 'package:my_to_day/feature/diary/page_model/diary_edit_page_model.dart';
 import 'package:my_to_day/feature/diary/page_model/diary_page_model.dart';
 import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
+import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/service/local_service.dart';
 import 'package:provider/provider.dart';
-
-import '../provider/data_provider.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -25,6 +24,12 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'calendarPage',
           builder: calendarPage,
+          routes: [
+            GoRoute(
+              path: 'diaryEditPage',
+              builder: diaryEditPage,
+            ),
+          ],
         ),
       ],
     ),
@@ -44,11 +49,11 @@ Widget diaryPage(_, __) {
   );
 }
 
-Widget diaryEditPage(_, __) {
+Widget diaryEditPage(_, GoRouterState state) {
   return ChangeNotifierProvider(
     create: (context) => DiaryEditPageModel(
       context: context,
-      dataProvider: context.read<DataProvider>(),
+      diaryData: state.extra as DiaryData,
       diaryTextFormController: TextEditingController(),
       diaryTextFormFocusNode: FocusNode(),
       diaryLocalService: DiaryLocalService(localService: LocalService()),
@@ -61,7 +66,7 @@ Widget calendarPage(_, __) {
   return ChangeNotifierProvider(
     create: (context) => CalendarPageModel(
       context: context,
-      dataProvider: context.read<DataProvider>(),
+      localService: DiaryLocalService(localService: LocalService()),
     ),
     child: CalendarPage(),
   );
