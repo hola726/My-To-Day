@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../model/data/diary_data.dart';
 import '../../../utils/modal_helper.dart';
@@ -36,7 +35,7 @@ class DiaryPageModel extends ChangeNotifier {
   final TextEditingController _searchTextFormController;
   DiaryData? _diaryData;
   String? _searchedValue;
-  String? _localPath;
+  late String _localPath;
 
   List<DiaryData> _diaryDataList = [];
   List<DiaryData?> _searchedData = [];
@@ -305,72 +304,6 @@ class DiaryPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Widget imageItemBuilder(BuildContext context, int index, DiaryData data) {
-    bool isExistCameraImage = data.cameraImage != null;
-    if (isExistCameraImage && index == 0) {
-      return Image.file(
-        File(
-          "$_localPath/${data.cameraImage!}",
-        ),
-      );
-    }
-    return Image.file(
-      File(
-        "$_localPath/${data.pickerImages![index - (isExistCameraImage ? 1 : 0)]}",
-      ),
-    );
-  }
-
-  int handleImageItemCount(DiaryData data) {
-    if (data.cameraImage != null && data.pickerImages != null) {
-      return data.pickerImages!.length + 1;
-    }
-    if (data.cameraImage != null) {
-      return 1;
-    }
-    if (data.pickerImages == null) return 0;
-
-    return data.pickerImages!.length;
-  }
-
-  void onSharePressed(DiaryData data) {
-    String contents = data.contents;
-    if (data.pickerImages == null && data.cameraImage == null) {
-      Share.share(
-        contents,
-        subject: contents,
-      );
-      return;
-    }
-    List<String> images = [];
-    if (data.cameraImage != null) {
-      images.add(data.cameraImage!);
-    }
-    if (data.pickerImages != null) {
-      images.addAll(data.pickerImages!);
-    }
-
-    Share.shareFiles(
-      images,
-      text: contents,
-      subject: contents,
-    );
-  }
-
-  void onEditPressed(DiaryData data) {
-    context.go(DiaryEditPage.id, extra: data);
-    context.pop();
-    notifyListeners();
-  }
-
-  void onOptionPressed(DiaryData data) async {
-    await ModalHelper.openEditBottomModal(
-      context: _context,
-      onSharePressed: () => onSharePressed(data),
-      onEditPressed: () => onEditPressed(data),
-    );
-  }
-
   void onDeletePressed() {
     _diaryTextFormController.clear();
     _diaryData = null;
@@ -392,14 +325,18 @@ class DiaryPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _onEditPressed(DiaryData data) {
+    context.go(DiaryEditPage.id, extra: data);
+    context.pop();
+    notifyListeners();
+  }
+
   void onItemPressed(DiaryData data) async {
     await ModalHelper.openDiaryDetailModal(
       context: _context,
       diaryData: data,
-      imageItemBuilder: (context, index) =>
-          imageItemBuilder(context, index, data),
-      imageItemCount: handleImageItemCount(data),
-      onOptionPressed: () => onOptionPressed(data),
+      localPath: _localPath,
+      onEditPressed: () => _onEditPressed(data),
     );
     getAllDiaryData();
   }
