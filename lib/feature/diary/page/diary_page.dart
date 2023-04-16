@@ -37,6 +37,7 @@ class DiaryPage extends StatelessWidget {
                           SubTitleDate(data: data),
                         DiaryItem(
                           data: data,
+                          localPath: model.localPath,
                           onTap: () => model.onItemPressed(data),
                         ),
                       ],
@@ -52,7 +53,7 @@ class DiaryPage extends StatelessWidget {
     return IconButton(
       padding: EdgeInsets.all(10.w),
       onPressed: model.onCheckBoxIconPressed,
-      iconSize: 55.w,
+      iconSize: 55.sp,
       icon: Icon(
         Icons.check_box,
         color: model.diaryTextFormController.text.isNotEmpty
@@ -102,6 +103,7 @@ class DiaryPage extends StatelessWidget {
                     SubTitleDate(data: data),
                   DiaryItem(
                     data: data,
+                    localPath: model.localPath,
                     onTap: () => model.onItemPressed(data),
                   ),
                 ],
@@ -132,7 +134,7 @@ class DiaryPage extends StatelessWidget {
         splashColor: Colors.transparent,
         icon: Icon(
           Icons.clear,
-          size: 27.w,
+          size: 27.sp,
         ),
       );
     } else {
@@ -167,22 +169,21 @@ class DiaryPage extends StatelessWidget {
         onPressed: () => model.isSearchState = false,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
+        iconSize: 25.sp,
         icon: Icon(
           Icons.arrow_back_ios,
-          size: 25.w,
         ),
       ),
       IconButton(
         onPressed: () => {},
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
+        iconSize: 27.sp,
         icon: Icon(
           Icons.search,
-          size: 27.w,
         ),
       ),
-      SizedBox(
-        width: 267.w,
+      Expanded(
         child: DiaryTextFormField(
           controller: model.searchTextFormController,
           hintText: CS.SEARCH,
@@ -201,7 +202,7 @@ class DiaryPage extends StatelessWidget {
                   model.searchTextFormController.text);
             },
             splashColor: Colors.transparent,
-            iconSize: 20.w,
+            iconSize: 20.sp,
             icon: Icon(
               Icons.cancel,
               color: AppTheme.grey200,
@@ -251,7 +252,7 @@ class DiaryPage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: MainAppBar(
             title: model.isLargeTextForm ? WRITE : MY_TO_DAY,
-            leadingWidth: model.isLargeTextForm == true ? null : 100.w,
+            leadingWidth: model.isLargeTextForm == true ? null : 115.w,
             leading: buildLeading(model),
             appBarWidgets: buildSearchWidgets(model),
             rightTopWidget: buildRightTopWidget(model),

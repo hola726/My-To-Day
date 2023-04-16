@@ -62,6 +62,8 @@ class DiaryPageModel extends ChangeNotifier {
 
   List<DiaryData?> get searchedData => _searchedData;
 
+  String get localPath => _localPath;
+
   set isLargeTextForm(bool isLargeTextForm) {
     _isLargeTextForm = isLargeTextForm;
     notifyListeners();
