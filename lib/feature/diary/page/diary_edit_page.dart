@@ -55,7 +55,7 @@ class DiaryEditPage extends StatelessWidget {
       splashColor: Colors.transparent,
       icon: Icon(
         Icons.clear,
-        size: 27.w,
+        size: 27.sp,
       ),
     );
   }
@@ -68,7 +68,7 @@ class DiaryEditPage extends StatelessWidget {
       color: model.diaryTextFormController.text.isNotEmpty ? Colors.red : null,
       icon: Icon(
         Icons.check,
-        size: 27.w,
+        size: 27.sp,
       ),
     );
   }

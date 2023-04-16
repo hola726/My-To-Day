@@ -29,6 +29,7 @@ class CalendarPageModel extends ChangeNotifier {
   BuildContext get context => _context;
   List<DiaryData> get selectData => _selectData;
   DateTime get selectDate => _selectDate;
+  String get localPath => _localPath;
 
   void init() async {
     _localPath = (await getApplicationDocumentsDirectory()).path;

@@ -56,23 +56,22 @@ class CalendarPage extends StatelessWidget {
             child: ListView.builder(
               itemCount: model.selectData.length,
               itemBuilder: (context, index) {
-                DiaryData? data = model.selectData[index];
+                DiaryData data = model.selectData[index];
                 DiaryData? previousData =
                     0 <= index - 1 ? model.selectData[index - 1] : null;
 
-                return data == null
-                    ? Container()
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (model.isSameDate(data, previousData) == false)
-                            SubTitleDate(data: data),
-                          DiaryItem(
-                            data: data,
-                            onTap: () => model.onItemTap(index),
-                          ),
-                        ],
-                      );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (model.isSameDate(data, previousData) == false)
+                      SubTitleDate(data: data),
+                    DiaryItem(
+                      data: data,
+                      onTap: () => model.onItemTap(index),
+                      localPath: model.localPath,
+                    ),
+                  ],
+                );
               },
             ),
           ),
