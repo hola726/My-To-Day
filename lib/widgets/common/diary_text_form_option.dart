@@ -136,6 +136,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
         children: [
           IconButton(
             onPressed: widget.onCameraPressed,
+            constraints: const BoxConstraints(),
             icon: Icon(
               Icons.camera_alt_outlined,
               color: widget.diaryData?.cameraImage != null
@@ -145,6 +146,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           ),
           IconButton(
             onPressed: widget.onImagesPressed,
+            constraints: const BoxConstraints(),
             icon: Icon(
               Icons.add_photo_alternate_outlined,
               color: widget.diaryData?.pickerImages != null
@@ -154,6 +156,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           ),
           IconButton(
             onPressed: () => ModalHelper.openMapsModal(context: context),
+            constraints: const BoxConstraints(),
             icon: const Icon(
               Icons.location_on_outlined,
               color: Colors.white,
@@ -161,6 +164,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           ),
           IconButton(
             onPressed: widget.reSizedDiaryTextFormField,
+            constraints: const BoxConstraints(),
             icon: Icon(
               widget.isLargeTextForm
                   ? Icons.zoom_in
@@ -170,6 +174,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           ),
           IconButton(
             onPressed: widget.diaryData != null ? openDeleteTextModal : null,
+            constraints: const BoxConstraints(),
             icon: const Icon(
               Icons.restore_from_trash_outlined,
               color: Colors.white,
@@ -181,7 +186,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
               DateHelper.convertDate(_nowTime),
               style: AppTheme.subtitle1.copyWith(
                 color: Colors.white,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
               ),
             ),
           ),
