@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_to_day/app_theme.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/feature/diary/page_model/diary_page_model.dart';
-import 'package:my_to_day/model/data/diary_data.dart';
 import 'package:my_to_day/widgets/common/diary_item.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_field.dart';
 import 'package:my_to_day/widgets/common/diary_text_form_option.dart';
@@ -18,31 +17,39 @@ class DiaryPage extends StatelessWidget {
   DiaryPage({Key? key}) : super(key: key);
 
   Widget _buildSearchPage(DiaryPageModel model) {
+    if (model.searchedData.isEmpty) return Container();
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            itemCount: model.searchedData.length,
-            itemBuilder: (context, index) {
-              DiaryData? data = model.searchedData[index];
-              DiaryData? previousData =
-                  0 <= index - 1 ? model.searchedData[index - 1] : null;
-
-              return data == null
-                  ? Container()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (model.isSameDay(data, previousData) == false)
-                          SubTitleDate(data: data),
-                        DiaryItem(
-                          data: data,
-                          localPath: model.localPath,
-                          onTap: () => model.onItemPressed(data),
-                        ),
-                      ],
-                    );
-            },
+          child: SingleChildScrollView(
+            child: Column(
+              children: model.searchedData
+                  .asMap()
+                  .map(
+                    (idx, data) => MapEntry(
+                      idx,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (model.isSameDay(data, idx) == false)
+                                SubTitleDate(data: data),
+                              DiaryItem(
+                                data: data,
+                                localPath: model.localPath,
+                                onTap: () => model.onItemPressed(data),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .values
+                  .toList(),
+            ),
           ),
         ),
       ],
@@ -72,7 +79,6 @@ class DiaryPage extends StatelessWidget {
           hintText: TODAY_IS,
           initialImage: model.diaryData?.cameraImage,
           initialPickerImages: model.diaryData?.pickerImages,
-          handleOnChanged: model.handleDiaryTextFormChanged,
           isDisableIcon: model.isLargeTextForm,
           suffixIcon: _buildCheckBoxIcon(model),
           textFocusNode: model.diaryTextFormFocusNode,
@@ -89,26 +95,28 @@ class DiaryPage extends StatelessWidget {
           onDeletePressed: model.onDeletePressed,
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: model.diaryDataList.length,
-            itemBuilder: (context, index) {
-              DiaryData data = model.diaryDataList[index];
-              DiaryData? previousData =
-                  0 <= index - 1 ? model.diaryDataList[index - 1] : null;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (model.isSameDay(data, previousData) == false)
-                    SubTitleDate(data: data),
-                  DiaryItem(
-                    data: data,
-                    localPath: model.localPath,
-                    onTap: () => model.onItemPressed(data),
-                  ),
-                ],
-              );
-            },
+          child: SingleChildScrollView(
+            child: Column(
+              children: model.diaryDataList
+                  .asMap()
+                  .map((idx, data) => MapEntry(
+                        idx,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (model.isSameDay(data, idx) == false)
+                              SubTitleDate(data: data),
+                            DiaryItem(
+                              data: data,
+                              localPath: model.localPath,
+                              onTap: () => model.onItemPressed(data),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .values
+                  .toList(),
+            ),
           ),
         ),
       ],
