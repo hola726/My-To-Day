@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../model/data/diary_data.dart';
 
@@ -70,7 +66,7 @@ class DiaryEditPageModel extends ChangeNotifier {
     _context.pop();
   }
 
-  void _setPhoto(String? imageFileName) {
+  void onCameraPressed(String imageFileName) {
     if (_diaryData != null) {
       _diaryData = _diaryData!.copyWith(
         cameraImage: imageFileName,
@@ -85,23 +81,7 @@ class DiaryEditPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onCameraPressed() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-
-    if (photo != null) {
-      final String path = (await getApplicationDocumentsDirectory()).path;
-
-      String localPath = "$path/${photo.name}";
-      await File(photo.path).copy(localPath);
-
-      String imageFileName = photo.name;
-
-      _setPhoto(imageFileName);
-    }
-  }
-
-  void _setPickerImages(List<String>? imagesFileName) {
+  void onImagesPressed(List<String> imagesFileName) {
     if (_diaryData != null) {
       _diaryData = _diaryData!.copyWith(
         pickerImages: imagesFileName,
@@ -114,30 +94,6 @@ class DiaryEditPageModel extends ChangeNotifier {
       );
     }
     notifyListeners();
-  }
-
-  void onImagesPressed() async {
-    final ImagePicker _picker = ImagePicker();
-    final List<XFile>? images = await _picker.pickMultiImage();
-    if (images == null) return;
-
-    final String path = (await getApplicationDocumentsDirectory()).path;
-
-    List<String>? imagesFileName;
-
-    for (XFile image in images) {
-      String localPath = "$path/${image.name}";
-
-      await File(image.path).copy(localPath);
-
-      if (imagesFileName == null) {
-        imagesFileName = [image.name];
-      } else {
-        imagesFileName.add(image.name);
-      }
-    }
-
-    _setPickerImages(imagesFileName);
   }
 
   void onDeletePressed() {
