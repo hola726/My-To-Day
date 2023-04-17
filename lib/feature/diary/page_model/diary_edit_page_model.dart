@@ -28,23 +28,40 @@ class DiaryEditPageModel extends ChangeNotifier {
   final FocusNode _diaryTextFormFocusNode;
   final DiaryLocalService _localService;
   final TextEditingController _diaryTextFormController;
-  DiaryData _diaryData;
+  late final String _key;
+  DiaryData? _diaryData;
 
   BuildContext get context => _context;
-  DiaryData get diaryData => _diaryData;
+  DiaryData? get diaryData => _diaryData;
   TextEditingController get diaryTextFormController => _diaryTextFormController;
   FocusNode get diaryTextFormFocusNode => _diaryTextFormFocusNode;
 
-
   void init() {
+    _key = _diaryData!.key!;
     _diaryTextFormFocusNode.requestFocus();
+    _diaryTextFormController.addListener(textControllerListener);
+  }
+
+  void textControllerListener() {
+    if (_diaryData != null) {
+      _diaryData =
+          _diaryData?.copyWith(contents: _diaryTextFormController.text);
+    } else {
+      _diaryData = DiaryData(
+        contents: _diaryTextFormController.text,
+        time: DateTime.now(),
+      );
+    }
+    notifyListeners();
   }
 
   void onEditPressed() async {
-    await _localService.editDiaryData(
-      diaryData: _diaryData.copyWith(contents: _diaryTextFormController.text),
-    );
+    if (_diaryData == null || _diaryData!.contents.isEmpty) return;
 
+    await _localService.editDiaryData(
+      diaryData: _diaryData!
+          .copyWith(key: _key, contents: _diaryTextFormController.text),
+    );
     _diaryTextFormController.clear();
     _context.pop();
   }
@@ -53,10 +70,18 @@ class DiaryEditPageModel extends ChangeNotifier {
     _context.pop();
   }
 
-  void _setPhoto(String? photo) {
-    _diaryData = _diaryData.copyWith(
-      cameraImage: photo,
-    );
+  void _setPhoto(String? imageFileName) {
+    if (_diaryData != null) {
+      _diaryData = _diaryData!.copyWith(
+        cameraImage: imageFileName,
+      );
+    } else {
+      _diaryData = DiaryData(
+        contents: '',
+        time: DateTime.now(),
+        cameraImage: imageFileName,
+      );
+    }
     notifyListeners();
   }
 
@@ -70,16 +95,24 @@ class DiaryEditPageModel extends ChangeNotifier {
       String localPath = "$path/${photo.name}";
       await File(photo.path).copy(localPath);
 
-      String photoString = photo.name;
+      String imageFileName = photo.name;
 
-      _setPhoto(photoString);
+      _setPhoto(imageFileName);
     }
   }
 
-  void _setPickerImages(List<String>? images) {
-    _diaryData = _diaryData.copyWith(
-      pickerImages: images,
-    );
+  void _setPickerImages(List<String>? imagesFileName) {
+    if (_diaryData != null) {
+      _diaryData = _diaryData!.copyWith(
+        pickerImages: imagesFileName,
+      );
+    } else {
+      _diaryData = DiaryData(
+        contents: '',
+        time: DateTime.now(),
+        pickerImages: imagesFileName,
+      );
+    }
     notifyListeners();
   }
 
@@ -90,33 +123,32 @@ class DiaryEditPageModel extends ChangeNotifier {
 
     final String path = (await getApplicationDocumentsDirectory()).path;
 
-    List<String>? imageStrings;
+    List<String>? imagesFileName;
 
     for (XFile image in images) {
       String localPath = "$path/${image.name}";
 
       await File(image.path).copy(localPath);
 
-      if (imageStrings == null) {
-        imageStrings = [image.name];
+      if (imagesFileName == null) {
+        imagesFileName = [image.name];
       } else {
-        imageStrings.add(image.name);
+        imagesFileName.add(image.name);
       }
     }
 
-    _setPickerImages(imageStrings);
+    _setPickerImages(imagesFileName);
   }
 
   void onDeletePressed() {
-    // todo : 삭제 기능 구현
-    // _diaryTextFormController.clear();
-    // _diaryData = null;
-    // _context.pop();
-    // notifyListeners();
+    _diaryTextFormController.clear();
+    _diaryData = null;
+    _context.pop();
+    notifyListeners();
   }
 
   double handleEditImageHeight() {
-    return (_diaryData.cameraImage != null || _diaryData.pickerImages != null)
+    return (_diaryData?.cameraImage != null || _diaryData?.pickerImages != null)
         ? 166.h
         : 116.h;
   }

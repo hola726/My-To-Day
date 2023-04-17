@@ -26,9 +26,9 @@ class DiaryEditPage extends StatelessWidget {
                 MediaQuery.of(context).viewInsets.bottom -
                 model.handleEditImageHeight(),
             hintText: TODAY_IS,
-            initialText: model.diaryData.contents,
-            initialImage: model.diaryData.cameraImage,
-            initialPickerImages: model.diaryData.pickerImages,
+            initialText: model.diaryData?.contents,
+            initialImage: model.diaryData?.cameraImage,
+            initialPickerImages: model.diaryData?.pickerImages,
             isDisableIcon: true,
             textFocusNode: model.diaryTextFormFocusNode,
             isEditTextFormOption: true,
