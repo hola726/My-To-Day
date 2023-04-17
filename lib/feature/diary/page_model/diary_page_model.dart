@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -38,7 +35,7 @@ class DiaryPageModel extends ChangeNotifier {
   late String _localPath;
 
   List<DiaryData> _diaryDataList = [];
-  List<DiaryData?> _searchedData = [];
+  List<DiaryData> _searchedData = [];
 
   bool _isLargeTextForm = false;
   bool _isSearchState = false;
@@ -60,7 +57,7 @@ class DiaryPageModel extends ChangeNotifier {
 
   List<DiaryData> get diaryDataList => _diaryDataList;
 
-  List<DiaryData?> get searchedData => _searchedData;
+  List<DiaryData> get searchedData => _searchedData;
 
   String get localPath => _localPath;
 
@@ -76,6 +73,18 @@ class DiaryPageModel extends ChangeNotifier {
 
   void init() async {
     _localPath = (await getApplicationDocumentsDirectory()).path;
+    _diaryTextFormController.addListener(() {
+      if (_diaryData != null) {
+        _diaryData =
+            _diaryData?.copyWith(contents: _diaryTextFormController.text);
+      } else {
+        _diaryData = DiaryData(
+          contents: _diaryTextFormController.text,
+          time: DateTime.now(),
+        );
+      }
+      notifyListeners();
+    });
     getAllDiaryData();
   }
 
@@ -111,31 +120,13 @@ class DiaryPageModel extends ChangeNotifier {
         : 100.h;
   }
 
-  Future<void> setDiaryData({
-    required String contents,
-    String? cameraImage,
-    List<String>? pickerImage,
-    String? locate,
-  }) async {
-    DateTime time = DateTime.now();
-    await _localService.setDiaryData(
-      diaryData: DiaryData(
-        contents: contents,
-        time: time,
-        cameraImage: cameraImage,
-        pickerImages: pickerImage,
-        locate: locate,
-      ),
-    );
-  }
-
   void onCheckBoxIconPressed() async {
-    if (_diaryTextFormController.text == "") return;
-    await setDiaryData(
-      contents: _diaryTextFormController.text,
-      cameraImage: _diaryData?.cameraImage,
-      pickerImage: _diaryData?.pickerImages,
-      locate: _diaryData?.locate,
+    if (_diaryData == null || _diaryData!.contents.isEmpty) return;
+
+    await _localService.setDiaryData(
+      diaryData: _diaryData!.copyWith(
+        time: DateTime.now(),
+      ),
     );
     _diaryData = null;
     getAllDiaryData();
@@ -145,16 +136,6 @@ class DiaryPageModel extends ChangeNotifier {
 
   void handleSearchTextFormChanged(String value) {
     _searchTextFormController.value = TextEditingValue(
-      text: value,
-      selection: TextSelection.fromPosition(
-        TextPosition(offset: value.length),
-      ),
-    );
-    notifyListeners();
-  }
-
-  void handleDiaryTextFormChanged(String value) {
-    _diaryTextFormController.value = TextEditingValue(
       text: value,
       selection: TextSelection.fromPosition(
         TextPosition(offset: value.length),
@@ -184,10 +165,13 @@ class DiaryPageModel extends ChangeNotifier {
     context.go(CalendarPage.id);
   }
 
-  bool isSameDay(DiaryData data, DiaryData? previousData) {
-    return data.time.year == previousData?.time.year &&
-        data.time.month == previousData?.time.month &&
-        data.time.day == previousData?.time.day;
+  bool isSameDay(DiaryData data, int idx) {
+    if (idx - 1 < 0) return false;
+
+    DiaryData previousData = _diaryDataList[idx - 1];
+    return data.time.year == previousData.time.year &&
+        data.time.month == previousData.time.month &&
+        data.time.day == previousData.time.day;
   }
 
   void getAllDiaryData() {
@@ -203,104 +187,58 @@ class DiaryPageModel extends ChangeNotifier {
   }
 
   void _getSearchedData() {
-    if (_searchedValue == null) {
-      _searchedData = [];
-      return;
-    }
+    _searchedData = [];
+    if (_searchedValue == null) return;
 
-    _searchedData = _diaryDataList.map((diaryData) {
+    _diaryDataList.forEach((diaryData) {
       if (diaryData.contents.contains(_searchedValue!)) {
-        return diaryData;
+        _searchedData.add(diaryData);
       }
-    }).toList();
+    });
   }
 
   void handleSearchedDataChanged(String value) {
     _searchedValue = value;
-    if (value == '') {
-      _searchedData = [];
+    _searchedData = [];
+    if (value.isEmpty) {
       notifyListeners();
       return;
     }
 
-    _searchedData = _diaryDataList
-        .map((diaryData) {
-          if (diaryData.contents.contains(value)) {
-            return diaryData;
-          }
-        })
-        .toList()
-        .reversed
-        .map((data) => data)
-        .toList();
-    notifyListeners();
-  }
-
-  void onCameraPressed() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-
-    if (photo != null) {
-      final String path = (await getApplicationDocumentsDirectory()).path;
-
-      String localPath = "$path/${photo.name}";
-      await File(photo.path).copy(localPath);
-
-      String photoString = photo.name;
-
-      _setPhoto(photoString);
-    }
-  }
-
-  void _setPhoto(String? photo) {
-    if (_diaryData != null) {
-      _diaryData = _diaryData!.copyWith(
-        cameraImage: photo,
-      );
-    } else {
-      _diaryData = DiaryData(
-        contents: '',
-        time: DateTime.now(),
-        cameraImage: photo,
-      );
-    }
-    notifyListeners();
-  }
-
-  void onImagesPressed() async {
-    final ImagePicker _picker = ImagePicker();
-    final List<XFile>? images = await _picker.pickMultiImage();
-    if (images == null) return;
-
-    final String path = (await getApplicationDocumentsDirectory()).path;
-
-    List<String>? imageStrings;
-
-    for (XFile image in images) {
-      String localPath = "$path/${image.name}";
-
-      await File(image.path).copy(localPath);
-
-      if (imageStrings == null) {
-        imageStrings = [image.name];
-      } else {
-        imageStrings.add(image.name);
+    _diaryDataList.forEach((diaryData) {
+      if (diaryData.contents.contains(value)) {
+        _searchedData.add(diaryData);
       }
-    }
+    });
 
-    _setPickerImages(imageStrings);
+    notifyListeners();
   }
 
-  void _setPickerImages(List<String>? images) {
+  void onCameraPressed(String fileName) {
     if (_diaryData != null) {
       _diaryData = _diaryData!.copyWith(
-        pickerImages: images,
+        cameraImage: fileName,
       );
     } else {
       _diaryData = DiaryData(
         contents: '',
         time: DateTime.now(),
-        pickerImages: images,
+        cameraImage: fileName,
+      );
+    }
+    notifyListeners();
+  }
+
+  void onImagesPressed(List<String> fileNames) {
+    if (_diaryData != null) {
+      _diaryData = _diaryData!.copyWith(
+        pickerImages: fileNames,
+      );
+    } else {
+      _diaryData = DiaryData(
+        contents: '',
+        time: DateTime.now(),
+        pickerImages: fileNames,
       );
     }
     notifyListeners();
@@ -314,11 +252,12 @@ class DiaryPageModel extends ChangeNotifier {
   }
 
   void onSavePressed() async {
-    await setDiaryData(
-      contents: _diaryTextFormController.text,
-      cameraImage: _diaryData?.cameraImage,
-      pickerImage: _diaryData?.pickerImages,
-      locate: _diaryData?.locate,
+    if (_diaryData == null || _diaryData!.contents.isEmpty) return;
+
+    await _localService.setDiaryData(
+      diaryData: _diaryData!.copyWith(
+        time: DateTime.now(),
+      ),
     );
     _diaryData = null;
     getAllDiaryData();
