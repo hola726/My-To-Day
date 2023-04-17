@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../app_theme.dart';
 import '../../model/data/diary_data.dart';
@@ -27,8 +30,8 @@ class DiaryTextFormOption extends StatefulWidget {
   final TextEditingController diaryTextFormController;
   final Function() reSizedDiaryTextFormField;
   final bool isLargeTextForm;
-  final Function() onCameraPressed;
-  final Function() onImagesPressed;
+  final Function(String) onCameraPressed;
+  final Function(List<String>) onImagesPressed;
   final Function() onDeletePressed;
   final DiaryData? diaryData;
 
@@ -39,11 +42,17 @@ class DiaryTextFormOption extends StatefulWidget {
 class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
   DateTime _nowTime = DateTime.now();
   Timer? _timer;
+  late final String _path;
 
   @override
   void initState() {
     super.initState();
 
+    init();
+  }
+
+  void init() async {
+    _path = (await getApplicationDocumentsDirectory()).path;
     _timer = Timer.periodic(
         Duration(seconds: 1),
         (Timer t) => setState(() {
@@ -55,6 +64,38 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
   void dispose() {
     _timer?.cancel();
     super.dispose();
+  }
+
+  void _handleCamera() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+    if (photo != null) {
+      String localPath = "$_path/${photo.name}";
+      await File(photo.path).copy(localPath);
+
+      String photoString = photo.name;
+
+      widget.onCameraPressed(photoString);
+    }
+  }
+
+  void _handleImages() async {
+    final ImagePicker _picker = ImagePicker();
+    final List<XFile>? images = await _picker.pickMultiImage();
+    if (images == null) return;
+
+    List<String> imageStrings = [];
+
+    for (XFile image in images) {
+      String localPath = "$_path/${image.name}";
+
+      await File(image.path).copy(localPath);
+
+      imageStrings.add(image.name);
+    }
+
+    widget.onImagesPressed(imageStrings);
   }
 
   Future<void> openDeleteTextModal() async {
@@ -135,7 +176,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            onPressed: widget.onCameraPressed,
+            onPressed: _handleCamera,
             constraints: const BoxConstraints(),
             icon: Icon(
               Icons.camera_alt_outlined,
@@ -145,7 +186,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
             ),
           ),
           IconButton(
-            onPressed: widget.onImagesPressed,
+            onPressed: _handleImages,
             constraints: const BoxConstraints(),
             icon: Icon(
               Icons.add_photo_alternate_outlined,
