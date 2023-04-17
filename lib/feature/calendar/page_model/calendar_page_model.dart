@@ -23,7 +23,6 @@ class CalendarPageModel extends ChangeNotifier {
   DateTime focusedDay = DateTime.now();
   List<DiaryData> _selectData = [];
   DateTime _selectDate = DateTime.now();
-  int _targetDataIndex = 0;
   late String _localPath;
 
   BuildContext get context => _context;
@@ -90,7 +89,6 @@ class CalendarPageModel extends ChangeNotifier {
 
   void onItemTap(int index) async {
     DiaryData data = _selectData[index];
-    _targetDataIndex = index;
     await ModalHelper.openDiaryDetailModal(
       context: context,
       diaryData: data,
