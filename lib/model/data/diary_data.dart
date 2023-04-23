@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:hive/hive.dart';
 
 part 'diary_data.g.dart';
@@ -12,19 +10,24 @@ class DiaryData extends HiveObject {
     this.cameraImage,
     this.pickerImages,
     this.locate,
+    this.key,
   });
+
   @HiveField(0)
-  final String contents;
+  final String? key;
   @HiveField(1)
-  final DateTime time;
+  final String contents;
   @HiveField(2)
-  final String? cameraImage;
+  final DateTime time;
   @HiveField(3)
-  final List<String>? pickerImages;
+  final String? cameraImage;
   @HiveField(4)
+  final List<String>? pickerImages;
+  @HiveField(5)
   final String? locate;
 
   DiaryData copyWith({
+    String? key,
     String? contents,
     DateTime? time,
     String? cameraImage,
@@ -32,6 +35,7 @@ class DiaryData extends HiveObject {
     String? locate,
   }) {
     return DiaryData(
+      key: key ?? this.key,
       contents: contents ?? this.contents,
       time: time ?? this.time,
       cameraImage: cameraImage ?? this.cameraImage,
@@ -42,6 +46,7 @@ class DiaryData extends HiveObject {
 
   Map<String, dynamic> toJson() {
     return {
+      'key': key,
       'contents': contents,
       'time': time,
       'image': cameraImage,
@@ -51,6 +56,7 @@ class DiaryData extends HiveObject {
 
   factory DiaryData.fromJson(Map<String, dynamic> map) {
     return DiaryData(
+      key: map['key'] as String,
       contents: map['contents'] as String,
       time: map['time'] as DateTime,
       cameraImage: map['image'] as dynamic,

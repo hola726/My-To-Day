@@ -5,14 +5,11 @@
 나의 하루 일과를 기록하는 앱입니다.
 
 
-
-
 ## Prerequisite
 
 |    NAME     | VERSION |
 | :---------: | :-----: |
-| Flutter SDK |  3.0.1  |
-
+| Flutter SDK |  3.7.7  |
 
 
 ## Project Stack
@@ -21,6 +18,7 @@
 - Fvm
 - Provider
 - Hive
+- Go_router
 - google maps
 
 ## Getting started

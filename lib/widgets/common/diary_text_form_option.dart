@@ -1,59 +1,106 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_to_day/constants/constant_strings.dart' as CS;
-import 'package:my_to_day/provider/data_provider.dart';
-import 'package:my_to_day/provider/diary_provider.dart';
 import 'package:my_to_day/utils/date_helper.dart';
 import 'package:my_to_day/utils/modal_helper.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../app_theme.dart';
+import '../../model/data/diary_data.dart';
 import 'contour.dart';
 
 class DiaryTextFormOption extends StatefulWidget {
   const DiaryTextFormOption({
     Key? key,
-    required DiaryProvider diaryProvider,
-    required DataProvider dataProvider,
-    bool? isEditTextFormOption,
-  })  : _isEditTextFormOption = isEditTextFormOption,
-        _diaryProvider = diaryProvider,
-        _dataProvider = dataProvider,
-        super(key: key);
+    required this.diaryTextFormController,
+    required this.reSizedDiaryTextFormField,
+    required this.context,
+    required this.isLargeTextForm,
+    required this.diaryData,
+    required this.onCameraPressed,
+    required this.onImagesPressed,
+    required this.onDeletePressed,
+  }) : super(key: key);
 
-  final DiaryProvider _diaryProvider;
-  final DataProvider _dataProvider;
-  final bool? _isEditTextFormOption;
+  final BuildContext context;
+  final TextEditingController diaryTextFormController;
+  final Function() reSizedDiaryTextFormField;
+  final bool isLargeTextForm;
+  final Function(String) onCameraPressed;
+  final Function(List<String>) onImagesPressed;
+  final Function() onDeletePressed;
+  final DiaryData? diaryData;
 
   @override
   State createState() => _DiaryTextFormOptionState();
 }
 
 class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
-  DateTime nowTime = DateTime.now();
-  Timer? timer;
+  DateTime _nowTime = DateTime.now();
+  Timer? _timer;
+  late final String _path;
 
   @override
   void initState() {
     super.initState();
 
-    timer = Timer.periodic(
+    init();
+  }
+
+  void init() async {
+    _path = (await getApplicationDocumentsDirectory()).path;
+    _timer = Timer.periodic(
         Duration(seconds: 1),
         (Timer t) => setState(() {
-              nowTime = DateTime.now();
+              _nowTime = DateTime.now();
             }));
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    _timer?.cancel();
     super.dispose();
+  }
+
+  void _handleCamera() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+
+    if (photo != null) {
+      String localPath = "$_path/${photo.name}";
+      await File(photo.path).copy(localPath);
+
+      String photoString = photo.name;
+
+      widget.onCameraPressed(photoString);
+    }
+  }
+
+  void _handleImages() async {
+    final ImagePicker _picker = ImagePicker();
+    final List<XFile>? images = await _picker.pickMultiImage();
+    if (images == null) return;
+
+    List<String> imageStrings = [];
+
+    for (XFile image in images) {
+      String localPath = "$_path/${image.name}";
+
+      await File(image.path).copy(localPath);
+
+      imageStrings.add(image.name);
+    }
+
+    widget.onImagesPressed(imageStrings);
   }
 
   Future<void> openDeleteTextModal() async {
     await showModalBottomSheet(
-        context: widget._diaryProvider.context,
+        context: widget.context,
         backgroundColor: AppTheme.textSecondary2Color,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -82,10 +129,7 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
                 Padding(
                   padding: EdgeInsets.all(10.h),
                   child: InkWell(
-                    onTap: () {
-                      widget._diaryProvider.diaryTextFormController.clear();
-                      Navigator.of(context).pop();
-                    },
+                    onTap: widget.onDeletePressed,
                     splashColor: Colors.transparent,
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -132,44 +176,46 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            onPressed: () =>
-                widget._dataProvider.getPhoto(widget._isEditTextFormOption),
+            onPressed: _handleCamera,
+            constraints: const BoxConstraints(),
             icon: Icon(
               Icons.camera_alt_outlined,
-              color: widget._dataProvider
-                  .setPhotoColor(widget._isEditTextFormOption),
+              color: widget.diaryData?.cameraImage != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
-            onPressed: () => widget._dataProvider
-                .getPickerImages(widget._isEditTextFormOption),
+            onPressed: _handleImages,
+            constraints: const BoxConstraints(),
             icon: Icon(
               Icons.add_photo_alternate_outlined,
-              color: widget._dataProvider
-                  .setPickerImageColor(widget._isEditTextFormOption),
+              color: widget.diaryData?.pickerImages != null
+                  ? Colors.red
+                  : Colors.white,
             ),
           ),
           IconButton(
             onPressed: () => ModalHelper.openMapsModal(context: context),
+            constraints: const BoxConstraints(),
             icon: const Icon(
               Icons.location_on_outlined,
               color: Colors.white,
             ),
           ),
           IconButton(
-            onPressed: widget._diaryProvider.reSizedDiaryTextFormField,
+            onPressed: widget.reSizedDiaryTextFormField,
+            constraints: const BoxConstraints(),
             icon: Icon(
-              widget._diaryProvider.isLargeTextForm
+              widget.isLargeTextForm
                   ? Icons.zoom_in
                   : Icons.zoom_out_map_outlined,
               color: Colors.white,
             ),
           ),
           IconButton(
-            onPressed:
-                widget._diaryProvider.diaryTextFormController.text.isNotEmpty
-                    ? openDeleteTextModal
-                    : null,
+            onPressed: widget.diaryData != null ? openDeleteTextModal : null,
+            constraints: const BoxConstraints(),
             icon: const Icon(
               Icons.restore_from_trash_outlined,
               color: Colors.white,
@@ -178,10 +224,10 @@ class _DiaryTextFormOptionState extends State<DiaryTextFormOption> {
           InkWell(
             onTap: () => {},
             child: Text(
-              DateHelper.convertDate(nowTime),
+              DateHelper.convertDate(_nowTime),
               style: AppTheme.subtitle1.copyWith(
                 color: Colors.white,
-                fontSize: 15.sp,
+                fontSize: 14.sp,
               ),
             ),
           ),

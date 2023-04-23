@@ -1,19 +1,21 @@
+import 'dart:io';
+
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_to_day/constants/constant_strings.dart';
-import 'package:my_to_day/provider/data_provider.dart';
+import 'package:my_to_day/model/data/diary_data.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../app_theme.dart';
-import '../routes.dart';
-import '../screens/main/diary_edit_screen.dart';
 import 'date_helper.dart';
 
 class ModalHelper {
   static Future<void> openEditBottomModal({
-    required DataProvider dataProvider,
     required BuildContext context,
+    required Function() onSharePressed,
+    required Function() onEditPressed,
   }) async {
     await showModalBottomSheet(
         context: context,
@@ -31,12 +33,7 @@ class ModalHelper {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () async {
-                    await Navigator.of(context).push(
-                      routeWithFullScreenDialog(DiaryEditScreen.id),
-                    );
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: onEditPressed,
                   iconSize: 20.h,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -49,7 +46,7 @@ class ModalHelper {
                   width: 40.w,
                 ),
                 IconButton(
-                  onPressed: dataProvider.onShareButtonPressed,
+                  onPressed: onSharePressed,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   iconSize: 20.h,
@@ -65,9 +62,71 @@ class ModalHelper {
   }
 
   static Future<void> openDiaryDetailModal({
-    required DataProvider dataProvider,
     required BuildContext context,
+    required DiaryData diaryData,
+    required String localPath,
+    required Function() onEditPressed,
   }) async {
+    Widget _imageItemBuilder(BuildContext context, int index, DiaryData data) {
+      bool isExistCameraImage = data.cameraImage != null;
+      if (isExistCameraImage && index == 0) {
+        return Image.file(
+          File(
+            "$localPath/${data.cameraImage!}",
+          ),
+        );
+      }
+      return Image.file(
+        File(
+          "$localPath/${data.pickerImages![index - (isExistCameraImage ? 1 : 0)]}",
+        ),
+      );
+    }
+
+    int _handleImageItemCount(DiaryData data) {
+      if (data.cameraImage != null && data.pickerImages != null) {
+        return data.pickerImages!.length + 1;
+      }
+      if (data.cameraImage != null) {
+        return 1;
+      }
+      if (data.pickerImages == null) return 0;
+
+      return data.pickerImages!.length;
+    }
+
+    void _onSharePressed(DiaryData data) {
+      String contents = data.contents;
+      if (data.pickerImages == null && data.cameraImage == null) {
+        Share.share(
+          contents,
+          subject: contents,
+        );
+        return;
+      }
+      List<String> images = [];
+      if (data.cameraImage != null) {
+        images.add(data.cameraImage!);
+      }
+      if (data.pickerImages != null) {
+        images.addAll(data.pickerImages!);
+      }
+
+      Share.shareFiles(
+        images,
+        text: contents,
+        subject: contents,
+      );
+    }
+
+    void _onOptionPressed(BuildContext context, DiaryData data) async {
+      await ModalHelper.openEditBottomModal(
+        context: context,
+        onSharePressed: () => _onSharePressed(data),
+        onEditPressed: onEditPressed,
+      );
+    }
+
     await showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -88,15 +147,15 @@ class ModalHelper {
                     children: [
                       Stack(
                         children: [
-                          dataProvider.diaryData?.cameraImage != null ||
-                                  dataProvider.diaryData?.pickerImages != null
+                          diaryData.cameraImage != null ||
+                                  diaryData.pickerImages != null
                               ? Container(
                                   height: 300.h,
                                   child: Swiper(
-                                    itemCount:
-                                        dataProvider.handleSwipeItemCount(),
-                                    itemBuilder:
-                                        dataProvider.handleSwipeItemBuilder,
+                                    itemCount: _handleImageItemCount(diaryData),
+                                    itemBuilder: (context, index) =>
+                                        _imageItemBuilder(
+                                            context, index, diaryData),
                                     scrollDirection: Axis.horizontal,
                                     pagination: SwiperPagination(
                                       builder: DotSwiperPaginationBuilder(
@@ -131,22 +190,15 @@ class ModalHelper {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  DateHelper.convertDateMonth(
-                                      dataProvider.diaryData!.time),
+                                  DateHelper.convertDateMonth(diaryData!.time),
                                   style: AppTheme.button_small.copyWith(
                                     color: AppTheme.grey400,
                                     fontSize: 11.sp,
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () async {
-                                    await openEditBottomModal(
-                                      context: context,
-                                      dataProvider: dataProvider,
-                                    );
-                                    dataProvider.getDiaryData();
-                                    modalSetState(() {});
-                                  },
+                                  onPressed: () =>
+                                      _onOptionPressed(context, diaryData),
                                   icon: const Icon(
                                     Icons.more_horiz_outlined,
                                     color: Colors.white,
@@ -158,7 +210,7 @@ class ModalHelper {
                               height: 12.h,
                             ),
                             Text(
-                              dataProvider.diaryData!.contents,
+                              diaryData.contents,
                               style: AppTheme.button_small_KR.copyWith(
                                 color: Colors.white,
                               ),
@@ -167,8 +219,7 @@ class ModalHelper {
                               height: 12.h,
                             ),
                             Text(
-                              DateHelper.convertDateAmPm(
-                                  dataProvider.diaryData!.time),
+                              DateHelper.convertDateAmPm(diaryData.time),
                               style: AppTheme.button_small.copyWith(
                                 color: AppTheme.grey400,
                                 fontSize: 11.sp,
@@ -248,9 +299,6 @@ class ModalHelper {
                         onMapCreated: (GoogleMapController controller) {
                           mapController = controller;
                         },
-                        // myLocationButtonEnabled: true,
-                        // myLocationEnabled: true,
-                        // zoomGesturesEnabled: true,
                         onCameraMoveStarted: () => {},
                         onCameraMove: (CameraPosition position) {
                           print("position");

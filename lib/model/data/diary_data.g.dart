@@ -17,27 +17,30 @@ class DiaryDataAdapter extends TypeAdapter<DiaryData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return DiaryData(
-      contents: fields[0] as String,
-      time: fields[1] as DateTime,
-      cameraImage: fields[2] as String?,
-      pickerImages: (fields[3] as List?)?.cast<String>(),
-      locate: fields[4] as String?,
+      contents: fields[1] as String,
+      time: fields[2] as DateTime,
+      cameraImage: fields[3] as String?,
+      pickerImages: (fields[4] as List?)?.cast<String>(),
+      locate: fields[5] as String?,
+      key: fields[0] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, DiaryData obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.contents)
+      ..write(obj.key)
       ..writeByte(1)
-      ..write(obj.time)
+      ..write(obj.contents)
       ..writeByte(2)
-      ..write(obj.cameraImage)
+      ..write(obj.time)
       ..writeByte(3)
-      ..write(obj.pickerImages)
+      ..write(obj.cameraImage)
       ..writeByte(4)
+      ..write(obj.pickerImages)
+      ..writeByte(5)
       ..write(obj.locate);
   }
 
