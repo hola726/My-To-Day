@@ -1,22 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_to_day/feature/diary/service/diary_local_service.dart';
 import 'package:my_to_day/model/data/diary_data.dart';
-import 'package:my_to_day/utils/local_storage_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DataProvider extends ChangeNotifier {
   DataProvider({
-    required LocalStorageHelper localStorageHelper,
-  }) : _localStorageHelper = localStorageHelper {
+    required DiaryLocalService localService,
+  }) : _localService = localService {
     init();
   }
 
-  final LocalStorageHelper _localStorageHelper;
+  final DiaryLocalService _localService;
   late List<DiaryData> _allDiaryData;
   DiaryData? _diaryData;
   DiaryData? _tmpDiaryData;
@@ -86,7 +85,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   void getAllDiaryData() {
-    _allDiaryData = _localStorageHelper.getAllDiaryData();
+    _allDiaryData = _localService.getAllDiaryData();
     getReversedData();
     notifyListeners();
   }
@@ -182,7 +181,7 @@ class DataProvider extends ChangeNotifier {
     return (tmpDiaryData?.cameraImage != null ||
             tmpDiaryData?.pickerImages != null)
         ? 166.h
-        : 116.h;
+        : 100.h;
   }
 
   double handleEditImageHeight() {
@@ -216,11 +215,20 @@ class DataProvider extends ChangeNotifier {
   void getPhoto(bool? isEdit) async {
     final ImagePicker _picker = ImagePicker();
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    final String? photoString = photo != null ? photo.path : null;
-    if (isEdit == true) {
-      _editPhoto(photoString);
-    } else {
-      _setPhoto(photoString);
+
+    if (photo != null) {
+      final String path = (await getApplicationDocumentsDirectory()).path;
+
+      String localPath = "$path/${photo.name}";
+      await File(photo.path).copy(localPath);
+
+      String photoString = photo.name;
+
+      if (isEdit == true) {
+        _editPhoto(photoString);
+      } else {
+        _setPhoto(photoString);
+      }
     }
   }
 
