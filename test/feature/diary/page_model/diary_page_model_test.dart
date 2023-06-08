@@ -4,8 +4,8 @@ import 'package:my_to_day/feature/diary/page_model/diary_page_model.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import '../../mock/diary_local_service.mocks.dart';
-import '../../mock/mock.mocks.dart';
+import '../../../mock/diary_local_service.mocks.dart';
+import '../../../mock/mock.mocks.dart';
 
 const String kApplicationDocumentsPath = 'applicationDocumentsPath';
 
