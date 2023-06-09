@@ -34,6 +34,8 @@ final List<DiaryData> mockDiaryDataList = [
   ),
 ];
 
+const List<String> mockFileNames = ["fileName1", "fileName2", "fileName3"];
+
 void main() {
   late DiaryPageModel diaryPageModel;
   MockDiaryLocalService mockDiaryLocalService = MockDiaryLocalService();
@@ -144,6 +146,33 @@ void main() {
         expect(diaryPageModel.searchedData.length, 0);
         expect(diaryPageModel.searchedData.isEmpty, true);
       });
+    });
+
+    test("should on camera pressed", () {
+      // when
+      diaryPageModel.onCameraPressed(mockFileNames.first);
+
+      // then
+      expect(diaryPageModel.diaryData!.cameraImage, mockFileNames.first);
+    });
+
+    test("should on images pressed", () {
+      // when
+      diaryPageModel.onImagesPressed(mockFileNames);
+
+      // then
+      expect(diaryPageModel.diaryData!.pickerImages, mockFileNames);
+    });
+
+    test("should on save pressed", () {
+      // when
+      diaryPageModel.onSavePressed();
+
+      // then
+      expect(diaryPageModel.diaryData, null);
+      verifyNever(
+          mockDiaryLocalService.setDiaryData(diaryData: anyNamed("diaryData")));
+      verifyNever(mockTextEditingController.clear());
     });
   });
 }
