@@ -1,159 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:my_to_day/utils/foundatioin.dart';
 
 class AppTheme {
-  static ThemeData buildLightTheme() {
-    final ColorScheme colorScheme = const ColorScheme.light().copyWith(
-      primary: primaryMainColor,
-      secondary: secondaryColor,
-    );
-    final ThemeData base = ThemeData.light();
-    return base.copyWith(
-      colorScheme: colorScheme,
-      primaryColor: primaryMainColor,
-      indicatorColor: Colors.white,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      splashFactory: InkRipple.splashFactory,
-      canvasColor: Colors.white,
-      backgroundColor: Colors.white,
-      scaffoldBackgroundColor: Colors.white,
-      errorColor: primaryMainColor,
-      iconTheme: const IconThemeData(
-        color: primaryMainColor,
-      ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: primaryMainColor,
-        foregroundColor: Colors.white,
-      ),
-      buttonTheme: ButtonThemeData(
-        colorScheme: colorScheme,
-        textTheme: ButtonTextTheme.primary,
-      ),
-      platform: isIos ? TargetPlatform.iOS : TargetPlatform.android,
-    );
-  }
-
   static final brandTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w600,
-    fontStyle: FontStyle.normal,
-    fontSize: 15.0.sp,
-    color: primaryMainColor,
-  );
-
-  static final primaryMainTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w500,
-    fontStyle: FontStyle.normal,
-    fontSize: 18.0.sp,
-    color: primaryColor,
-  );
-
-  static final secondaryMainTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w600,
-    fontStyle: FontStyle.normal,
-    fontSize: 14.0.sp,
-    color: primaryMainColor,
-  );
-
-  static final checkBoxTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w500,
-    fontStyle: FontStyle.normal,
-    fontSize: 14.0.sp,
-    color: primaryMainColor,
-  );
-  static final helpServiceBundleTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w600,
-    fontStyle: FontStyle.normal,
-    fontSize: 12.0.sp,
-    color: primaryMainColor,
-  );
-
-  static final tertiaryMainTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w600,
-    fontStyle: FontStyle.normal,
-    fontSize: 15.0.sp,
-    color: tertiaryMainColor,
-  );
-
-  static final whiteTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    fontWeight: FontWeight.w400,
-    fontStyle: FontStyle.normal,
-    fontSize: 15.0.sp,
-    color: Colors.white,
-  );
-
-  static final robotoTextStyle = TextStyle(
     fontFamily: Roboto,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontStyle: FontStyle.normal,
     fontSize: 15.0.sp,
-    color: textPrimaryColor,
-  );
-
-  static final notoSansKRTextStyle = TextStyle(
-    fontFamily: NotoSansKR,
-    fontWeight: FontWeight.w400,
-    fontStyle: FontStyle.normal,
-    fontSize: 15.0.sp,
-    color: textPrimaryColor,
-  );
-
-  static final headerTextStyle = TextStyle(
-    fontFamily: NotoSansKR,
-    fontWeight: FontWeight.w600,
-    fontSize: 16.0.sp,
-    color: primaryMainColor,
-  );
-
-  static final inactiveTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    color: inactiveColor,
-    fontWeight: FontWeight.w600,
-    fontSize: 10.0.sp,
-  );
-
-  static final dialogContentTextStyle = TextStyle(
-    fontFamily: AppleSDGothicNeo,
-    color: secondaryColor,
-    fontWeight: FontWeight.w500,
-    fontSize: 14.0.sp,
-  );
-
-  static final approveTextStyle = TextStyle(
-    color: const Color(0xff807675),
-    fontWeight: FontWeight.w400,
-    fontFamily: AppleSDGothicNeo,
-    fontStyle: FontStyle.normal,
-    fontSize: 13.0.sp,
-  );
-  static final blastingMainTextStyle = TextStyle(
-    fontFamily: Arial,
-    fontWeight: FontWeight.w500,
-    fontStyle: FontStyle.normal,
-    fontSize: 14.0.sp,
-    color: primaryMainColor,
-  );
-  static final blastingMainBoldTextStyle = TextStyle(
-    fontFamily: Arial,
-    fontWeight: FontWeight.w700,
-    fontStyle: FontStyle.normal,
-    fontSize: 14.0.sp,
-    color: primaryMainColor,
-  );
-
-  static final blastingTitleTextStyle = TextStyle(
-    fontFamily: Arial,
-    fontWeight: FontWeight.w700,
-    fontStyle: FontStyle.normal,
-    fontSize: 18.0.sp,
     color: primaryMainColor,
   );
 
@@ -163,7 +16,7 @@ class AppTheme {
   );
 
   static final basicInterTextStyle = TextStyle(
-    fontFamily: Inter,
+    fontFamily: Roboto,
     fontWeight: FontWeight.w500,
     fontStyle: FontStyle.normal,
     fontSize: 14.0.sp,
@@ -563,12 +416,6 @@ class AppTheme {
     letterSpacing: 0.14.sp,
   );
 
-  static const AppleSDGothicNeo = 'AppleSDGothicNeo';
-  static const SFUIDisplay = 'SFUIDisplay';
-  static const SFProDisplay = 'SFProDisplay';
-  static const SFProText = 'SFProText';
-  static const Inter = 'Inter';
-  static const Arial = 'Arial';
   static const Roboto = 'Roboto';
   static const NotoSansKR = 'NotoSansKR';
 
