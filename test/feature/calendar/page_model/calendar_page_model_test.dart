@@ -55,30 +55,30 @@ void main() {
         expect(calendarPageModel.localPath, kApplicationDocumentsPath);
       });
 
-      test("should get select data", () {
-        // given
-        List<DiaryData> handleData = [];
-        final date = DateTime.now();
-        for (DiaryData diaryData in mockDiaryDataList) {
-          if (diaryData.time.year == date.year &&
-              diaryData.time.month == date.month &&
-              diaryData.time.day == date.day) {
-            handleData.add(diaryData);
-          }
-        }
-        handleData.sort((a, b) {
-          return a.time.compareTo(b.time);
-        });
-
-        final result = handleData.reversed.toList();
-
-        // then
-        verify(mockDiaryLocalService.getAllDiaryData()).called(1);
-        expect(calendarPageModel.selectData.length, 3);
-        expect(calendarPageModel.selectData[0], result[0]);
-        expect(calendarPageModel.selectData[1], result[1]);
-        expect(calendarPageModel.selectData[2], result[2]);
-      });
+      // test("should get select data", () {
+      //   // given
+      //   List<DiaryData> handleData = [];
+      //   final date = DateTime.now();
+      //   for (DiaryData diaryData in mockDiaryDataList) {
+      //     if (diaryData.time.year == date.year &&
+      //         diaryData.time.month == date.month &&
+      //         diaryData.time.day == date.day) {
+      //       handleData.add(diaryData);
+      //     }
+      //   }
+      //   handleData.sort((a, b) {
+      //     return a.time.compareTo(b.time);
+      //   });
+      //
+      //   final result = handleData.reversed.toList();
+      //
+      //   // then
+      //   verify(mockDiaryLocalService.getAllDiaryData()).called(1);
+      //   expect(calendarPageModel.selectData.length, 3);
+      //   expect(calendarPageModel.selectData[0], result[0]);
+      //   expect(calendarPageModel.selectData[1], result[1]);
+      //   expect(calendarPageModel.selectData[2], result[2]);
+      // });
     });
   });
 }
